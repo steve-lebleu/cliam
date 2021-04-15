@@ -1,14 +1,14 @@
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
-import { IPayload } from '@interfaces/IPayload.interface';
-import { Transporter } from '@transporters/transporter.class';
-import { Container } from '@services/container.service';
-import { Compiler } from '@services/compiler.service';
-import { COMPILER } from '@enums/compiler.enum';
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IBuffer } from '@interfaces/IBuffer.interface';
-import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
-import { mailSchema } from '@validations/mail.validation';
+import { SendingResponse } from './../classes/sending-response.class';
+import { SendingError } from './../classes/sending-error.class';
+import { IPayload } from './../types/interfaces/IPayload.interface';
+import { Transporter } from './../transporters/transporter.class';
+import { Container } from './../services/container.service';
+import { Compiler } from './../services/compiler.service';
+import { COMPILER } from './../types/enums/compiler.enum';
+import { IBuildable } from './../types/interfaces/IBuildable.interface';
+import { IBuffer } from './../types/interfaces/IBuffer.interface';
+import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
+import { mailSchema } from './../validations/mail.validation';
 
 /**
  * @description Manage incoming mail requests

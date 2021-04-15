@@ -1,4 +1,4 @@
-import { IError } from '@interfaces/IError.interface';
+import { IError } from './../types/interfaces/IError.interface';
 
 /**
  * Type sending error

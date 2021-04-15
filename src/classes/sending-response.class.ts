@@ -1,5 +1,5 @@
-import { ISending } from '@interfaces/ISending.interface';
-import { HTTP_METHOD } from '@enums/http-method.enum';
+import { ISending } from './../types/interfaces/ISending.interface';
+import { HTTP_METHOD } from './../types/enums/http-method.enum';
 
 /**
  * Sending response wrapper
@@ -34,7 +34,7 @@ export class SendingResponse implements ISending {
   /**
    * @description Request headers
    */
-  headers: Object;
+  headers: object;
 
   /**
    * @description Response body

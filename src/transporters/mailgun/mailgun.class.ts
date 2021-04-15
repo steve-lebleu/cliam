@@ -1,16 +1,16 @@
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from './../transporter.class';
 
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IMailgunError } from '@transporters/mailgun/IMailgunError.interface';
-import { IAttachment } from '@interfaces/IAttachment.interface';
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { ITransporter } from '@transporters/ITransporter.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMailgunError } from './IMailgunError.interface';
+import { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { ITransporter } from './../ITransporter.interface';
+import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
-import { SendingError } from '@classes/sending-error.class';
-import { SendingResponse } from '@classes/sending-response.class';
+import { SendingError } from './../../classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from '@enums/compiler.enum';
+import { COMPILER } from './../../types/enums/compiler.enum';
 
 /**
  * This class set a Mailgun transporter for mail sending.

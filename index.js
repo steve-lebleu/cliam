@@ -1,1 +1,1 @@
-module.exports = require('./lib').Cliam
+module.exports = require('./lib');

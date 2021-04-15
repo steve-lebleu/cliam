@@ -5,7 +5,7 @@ import * as Color from 'color';
 
 import { htmlToText } from 'html-to-text';
 
-import { Container } from '@services/container.service';
+import { Container } from './../services/container.service';
 
 /**
  * On the fly hbs compilation middleware

@@ -1,9 +1,9 @@
-import { Mailer } from '@services/mailer.service';
+import { Mailer } from './../services/mailer.service';
 
-import { IPayload } from '@interfaces/IPayload.interface';
+import { IPayload } from './../types/interfaces/IPayload.interface';
 
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
+import { SendingResponse } from './../classes/sending-response.class';
+import { SendingError } from './../classes/sending-error.class';
 
 /**
  * @description

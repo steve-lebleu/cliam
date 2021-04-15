@@ -1,19 +1,19 @@
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from './../transporter.class';
 
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { ISendgridResponse } from 'transporters/sendgrid/ISendgridResponse.interface';
-import { ITransporter } from '@transporters/ITransporter.interface';
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { IAddressB } from '@interfaces/addresses/IAddressB.interface';
-import { ISendgridError } from 'transporters/sendgrid/ISendgridError.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { ISendgridResponse } from './ISendgridResponse.interface';
+import { ITransporter } from './../ITransporter.interface';
+import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
+import { ISendgridError } from './ISendgridError.interface';
+import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
+import { SendingError } from './../../classes/sending-error.class';
 
-import { COMPILER } from '@enums/compiler.enum';
+import { COMPILER } from './../../types/enums/compiler.enum';
 
-import { Debug } from '@decorators/debug.decorator';
+import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
  * Set a Sendgrid transporter for mail sending.

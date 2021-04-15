@@ -1,22 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "./lib/",
+    "outDir": "./lib",
     "sourceMap": false,
     "baseUrl": "./src",
-    "paths": {
-      "@classes/*": ["classes/*"],
-      "@ctypes/*": ["types/types/*"],
-      "@decorators/*": ["types/decorators/*"],
-      "@enums/*": ["types/enums/*"],
-      "@errors/*": ["types/errors/*"],
-      "@interfaces/*": ["types/interfaces/*"],
-      "@schemas/*": ["types/schemas/*"],
-      "@services/*": ["services/*"],
-      "@subscribers/*": ["subscribers/*"],
-      "@transporters/*": ["transporters/*"],
-      "@utils/*": ["utils/*"],
-      "@validations/*": ["validations/*"]
-    },
     "lib": ["dom", "esNext"],
     "target": "esNext",
     "module": "commonjs",

@@ -1,7 +1,7 @@
-import { IAttachment } from '@interfaces/IAttachment.interface';
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { IBuffer } from '@interfaces/IBuffer.interface';
-import { Compiler } from '@ctypes/compiler.type';
+import { IAttachment } from './IAttachment.interface';
+import { IAddressable } from './addresses/IAddressable.interface';
+import { IBuffer } from './IBuffer.interface';
+import { Compiler } from '../types/compiler.type';
 
 /**
  * Define a payload schema type

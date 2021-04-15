@@ -1,13 +1,13 @@
 import * as Joi from 'joi';
 
-import { COMPILER } from '@enums/compiler.enum';
-import { ATTACHMENT_MIME_TYPE } from '@enums/attachment-mime-type.enum';
-import { ATTACHMENT_DISPOSITION } from '@enums/attachment-disposition.enum';
-import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
+import { COMPILER } from '../types/enums/compiler.enum';
+import { ATTACHMENT_MIME_TYPE } from '../types/enums/attachment-mime-type.enum';
+import { ATTACHMENT_DISPOSITION } from '../types/enums/attachment-disposition.enum';
+import { BUFFER_MIME_TYPE } from '../types/enums/buffer-mime-type.enum';
 
-import { recipient } from '@schemas/recipient.schema';
+import { recipient } from '../types/schemas/recipient.schema';
 
-import { list } from '@utils/enum.util';
+import { list } from '../utils/enum.util';
 
 const addresses = () => {
 	return Joi.alternatives().try(

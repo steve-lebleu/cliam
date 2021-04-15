@@ -1,5 +1,5 @@
-import { Container } from '@services/container.service';
-import { TRANSPORTER } from '@enums/transporter.enum';
+import { Container } from './../../services/container.service';
+import { TRANSPORTER } from './../enums/transporter.enum';
 
 /**
  * @description

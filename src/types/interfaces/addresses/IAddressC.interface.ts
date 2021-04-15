@@ -1,5 +1,5 @@
-import { IAddressA } from '@interfaces/addresses/IAddressA.interface';
-import { IAddressB } from '@interfaces/addresses/IAddressB.interface';
+import { IAddressA } from './IAddressA.interface';
+import { IAddressB } from './IAddressB.interface';
 
 /**
  * @description
