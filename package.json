@@ -1,12 +1,12 @@
 {
   "name": "cliam",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "engines": {
     "node": ">=14.16"
   },
   "author": "Steve Lebleu",
   "license": "GPL",
-  "description": "Wrapper for mail sending",
+  "description": "Agnostic transactional email sending in Node.js environment",
   "keywords": [
     "node",
     "typescript",
@@ -44,7 +44,8 @@
     "test:unit": "./node_modules/.bin/mocha -r ts-node/register -r tsconfig-paths/register ./test/units/00-bootstrap.unit.test.js --exit --reporter spec --timeout 5000 --env test",
     "test:e2e": "./node_modules/.bin/mocha -r ts-node/register -r tsconfig-paths/register ./test/e2e/00-bootstrap.e2e.test.js --exit --reporter spec --timeout 5000 --env test",
     "doc:typedoc": "typedoc --name 'Cliam documentation' --defaultCategory 'Test' --categorizeByGroup true --out ./docs/typedoc ./src",
-    "todo": "leasot -x --reporter markdown './src/**/*.ts' > TODO.md && git add TODO.md"
+    "todo": "leasot -x --reporter markdown './src/**/*.ts' > TODO.md && git add TODO.md",
+    "version": "git add package.json && git add README.md && auto-changelog -p && git add CHANGELOG.md && git commit -m \"Update changelog\""
   },
   "_moduleAliases": {
     "@classes": "lib/classes",
