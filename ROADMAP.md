@@ -5,6 +5,8 @@
   - [ ] Integration HTML/CSS for all transactions. Factored code. 4 colours
   - [ ] Export views in lib
   - [ ] Check meta.to validation
+  - [ ] Le merge des propriétés addresse ne semble pas fonctionner
+  - [ ] Validation sur le meta replyTo ne semble pas fonctionner
   
 - [ ] **v1.1.0**
   - [ ] Check / sanitize payloads
