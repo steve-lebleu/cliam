@@ -20,17 +20,17 @@ class Compiler {
   /**
    * @description
    */
-  private readonly LAYOUT: string = '/src/views/layouts/default.hbs';
+  private readonly LAYOUT: string = '/../../src/views/layouts/default.hbs';
 
   /**
    * @description
    */
-  private readonly PARTIALS: string = '/src/views/partials/';
+  private readonly PARTIALS: string = '/../../src/views/partials';
 
   /**
    * @description
    */
-  private readonly BLOCKS: string = '/src/views/blocks/';
+  private readonly BLOCKS: string = '/../../src/views/blocks';
 
   /**
    * @description
@@ -119,11 +119,11 @@ class Compiler {
 
     data.banner = this.getBanner(event);
 
-    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${process.cwd()}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
-    Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${process.cwd()}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
-    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${process.cwd()}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
+    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
+    Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
+    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
 
-    const html = Hbs.handlebars.compile( readFileSync(`${process.cwd()}${this.LAYOUT}`, { encoding: 'utf-8' } ) )(data);
+    const html = Hbs.handlebars.compile( readFileSync(`${__dirname}${this.LAYOUT}`, { encoding: 'utf-8' } ) )(data);
 
     return {
       text: this.textify(html),

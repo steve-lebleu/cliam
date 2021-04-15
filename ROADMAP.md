@@ -1,9 +1,11 @@
 # Roadmap
 
-- [ ] **v1.0.1** 
+- [ ] **v1.0.3** 
   - [ ] Headers images 
   - [ ] Integration HTML/CSS for all transactions. Factored code. 4 colours
-
+  - [ ] Export views in lib
+  - [ ] Check meta.to validation
+  
 - [ ] **v1.1.0**
   - [ ] Check / sanitize payloads
   - [ ] Support inlines images
