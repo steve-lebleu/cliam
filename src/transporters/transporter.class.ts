@@ -1,7 +1,7 @@
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
-import { ISendMail } from '@interfaces/ISendMail.interface';
-import { IBuildable } from '@interfaces/IBuildable.interface';
+import { SendingResponse } from './../classes/sending-response.class';
+import { SendingError } from './../classes/sending-error.class';
+import { ISendMail } from './../types/interfaces/ISendMail.interface';
+import { IBuildable } from './../types/interfaces/IBuildable.interface';
 
 /**
  * Main Transporter class

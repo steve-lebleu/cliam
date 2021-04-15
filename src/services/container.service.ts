@@ -1,15 +1,13 @@
-require('module-alias/register');
-
 import * as Chalk from 'chalk';
 
 import { existsSync, readFileSync } from 'fs';
 
-import { Transporter } from '@transporters/transporter.class';
-import { TransporterFactory } from '@transporters/transporter.factory';
+import { Transporter } from './../transporters/transporter.class';
+import { TransporterFactory } from './../transporters/transporter.factory';
 
-import { ClientConfiguration } from '@classes/client-configuration.class';
+import { ClientConfiguration } from './../classes/client-configuration.class';
 
-import { configurationSchema } from '@validations/configuration.validation';
+import { configurationSchema } from './../validations/configuration.validation';
 
 /**
  * @description

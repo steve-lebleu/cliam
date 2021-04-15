@@ -1,11 +1,10 @@
 import * as Joi from 'joi';
 
-import { smtp as smtpSchema } from '@schemas/smtp.schema';
+import { smtp as smtpSchema } from '../types/schemas/smtp.schema';
 
-import { list } from '@utils/enum.util';
-import { EVENT } from '@enums/event.enum';
-import { TRANSPORTER } from '@enums/transporter.enum';
-import { SOCIAL_NETWORK } from '@enums/social-network.enum';
+import { list } from '../utils/enum.util';
+import { TRANSPORTER } from '../types/enums/transporter.enum';
+import { SOCIAL_NETWORK } from '../types/enums/social-network.enum';
 
 const configurationSchema = Joi.object({
   sandbox: Joi.object({

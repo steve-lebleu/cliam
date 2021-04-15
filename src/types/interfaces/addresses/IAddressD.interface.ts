@@ -1,4 +1,4 @@
-import { IAddressB } from '@interfaces/addresses/IAddressB.interface';
+import { IAddressB } from './IAddressB.interface';
 
 export interface IAddressD {
   address: string | IAddressB;

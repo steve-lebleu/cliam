@@ -1,9 +1,9 @@
-import { Emitter } from '@services/emitter.service';
-import { Event } from '@ctypes/event.type';
-import { IPayload } from '@interfaces/IPayload.interface';
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
-import { Container } from '@services/container.service';
+import { Emitter } from './../services/emitter.service';
+import { Container } from './../services/container.service';
+import { Event } from './../types/types/event.type';
+import { IPayload } from './../types/interfaces/IPayload.interface';
+import { SendingResponse } from './sending-response.class';
+import { SendingError } from './sending-error.class';
 
 /**
  * @summary Main class of cliam project. The Cliam class act as entry point and open wrapped methods such subscribe and emit.

@@ -1,4 +1,4 @@
-import { BufferMimeType } from '@ctypes/buffer-mime-type.type';
+import { BufferMimeType } from '../types/buffer-mime-type.type';
 
 /**
  * Describe fields of an email buffer

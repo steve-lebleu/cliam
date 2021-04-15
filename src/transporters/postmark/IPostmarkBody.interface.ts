@@ -1,4 +1,4 @@
-import { IAttachment } from '@interfaces/IAttachment.interface';
+import { IAttachment } from '../../types/interfaces/IAttachment.interface';
 
 export interface IPostmarkBody {
   from: string;

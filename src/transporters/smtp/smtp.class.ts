@@ -1,20 +1,20 @@
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from './../transporter.class';
 
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { ISMTPResponse } from '@transporters/smtp/ISMTPResponse.interface';
-import { IAttachment } from '@interfaces/IAttachment.interface';
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IGmailError } from '@transporters/smtp/IGmailError.interface';
-import { IInfomaniakError } from '@transporters/smtp/IInformaniakError.interface';
-import { ISMTPError } from '@transporters/smtp/ISMTPError.interface';
-import { ITransporter } from '@transporters/ITransporter.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { ISMTPResponse } from './ISMTPResponse.interface';
+import { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IGmailError } from './IGmailError.interface';
+import { IInfomaniakError } from './IInformaniakError.interface';
+import { ISMTPError } from './ISMTPError.interface';
+import { ITransporter } from './../ITransporter.interface';
+import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
-import { SendingError } from '@classes/sending-error.class';
-import { SendingResponse } from '@classes/sending-response.class';
+import { SendingError } from './../../classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
 
-import { HTTP_METHOD } from '@enums/http-method.enum';
-import { Debug } from '@decorators/debug.decorator';
+import { HTTP_METHOD } from './../../types/enums/http-method.enum';
+import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
  * Set a Nodemailer SMTP transporter for mail sending.

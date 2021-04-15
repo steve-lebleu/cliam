@@ -1,4 +1,4 @@
-import { Transporter } from '@ctypes/transporter.type';
+import { Transporter } from './../types/types/transporter.type';
 
 /**
  * @description

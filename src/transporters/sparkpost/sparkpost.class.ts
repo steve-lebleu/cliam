@@ -1,18 +1,18 @@
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from '../transporter.class';
 
-import { ITransporter } from '@transporters/ITransporter.interface';
-import { IAttachment } from '@interfaces/IAttachment.interface';
-import { ISparkpostError } from 'transporters/sparkpost/ISparkpostError.interface';
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { ISparkpostBody } from 'transporters/sparkpost/ISparkpostBody.interface';
-import { IAddressD } from '@interfaces/addresses/IAddressD.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { ITransporter } from '../ITransporter.interface';
+import { IAttachment } from '../../types/interfaces/IAttachment.interface';
+import { ISparkpostError } from './ISparkpostError.interface';
+import { IBuildable } from '../../types/interfaces/IBuildable.interface';
+import { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
+import { ISparkpostBody } from './ISparkpostBody.interface';
+import { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
+import { ISendMail } from '../../types/interfaces/ISendMail.interface';
 
-import { SendingError } from '@classes/sending-error.class';
-import { SendingResponse } from '@classes/sending-response.class';
+import { SendingError } from '../../classes/sending-error.class';
+import { SendingResponse } from '../../classes/sending-response.class';
 
-import { COMPILER } from '@enums/compiler.enum';
+import { COMPILER } from '../../types/enums/compiler.enum';
 
 /**
  * Set a Sparkpost transporter for mail sending.

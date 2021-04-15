@@ -1,5 +1,5 @@
-import { ATTACHMENT_DISPOSITION } from '@enums/attachment-disposition.enum';
-import { ATTACHMENT_MIME_TYPE } from '@enums/attachment-mime-type.enum';
+import { ATTACHMENT_DISPOSITION } from '../enums/attachment-disposition.enum';
+import { ATTACHMENT_MIME_TYPE } from '../enums/attachment-mime-type.enum';
 
 /**
  * Describe fields of an email attachment

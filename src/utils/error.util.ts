@@ -1,4 +1,4 @@
-import { IMailjetErrorMessage } from 'transporters/mailjet/IMailjetErrorMessage.interface';
+import { IMailjetErrorMessage } from './../transporters/mailjet/IMailjetErrorMessage.interface';
 
 /**
  * @description

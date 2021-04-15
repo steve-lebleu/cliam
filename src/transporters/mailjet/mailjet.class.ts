@@ -1,23 +1,23 @@
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from './../transporter.class';
 
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { IAddressA } from '@interfaces/addresses/IAddressA.interface';
-import { IAttachment } from '@interfaces/IAttachment.interface';
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IMailjetResponse } from 'transporters/mailjet/IMailjetResponse.interface';
-import { IMailjetError } from 'transporters/mailjet/IMailjetError.interface';
-import { IMailjetErrorMessage } from 'transporters/mailjet/IMailjetErrorMessage.interface';
-import { ITransporter } from '@transporters/ITransporter.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
+import { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMailjetResponse } from './IMailjetResponse.interface';
+import { IMailjetError } from './IMailjetError.interface';
+import { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
+import { ITransporter } from './../ITransporter.interface';
+import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
-import { SendingError } from '@classes/sending-error.class';
-import { SendingResponse } from '@classes/sending-response.class';
+import { SendingError } from './../../classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from '@enums/compiler.enum';
+import { COMPILER } from './../../types/enums/compiler.enum';
 
-import { getMailjetErrorMessages } from '@utils/error.util';
+import { getMailjetErrorMessages } from './../../utils/error.util';
 
-import { Debug } from '@decorators/debug.decorator';
+import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
  * Set a Mailjet transporter for mail sending.
