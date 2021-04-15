@@ -21,7 +21,7 @@
       name: string,
       email: string
     },
-    reply?: {
+    replyTo?: {
       name: string,
       email: string
     }
