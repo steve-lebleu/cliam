@@ -217,14 +217,14 @@ describe('Client configuration', () => {
       it(`error - social network must be valid object`, (done) => {
         payload.consumer.socials.push(5);
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.socials[4]" must be of type object`);
+        expect(error.details[0].message).to.be.eqls(`"consumer.socials[1]" must be of type object`);
         done();
       });
 
       it(`error - social network must be a well know network`, (done) => {
         payload.consumer.socials.push({ name: 'Yoda', url: 'https://yoda.com' });
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.socials[4].name" must be one of [facebook, twitter, youtube, google, github, linkedin]`);
+        expect(error.details[0].message).to.be.eqls(`"consumer.socials[1].name" must be one of [facebook, twitter, youtube, google, github, linkedin]`);
         done();
       });
 
