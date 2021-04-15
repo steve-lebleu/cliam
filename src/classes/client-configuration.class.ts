@@ -1,9 +1,7 @@
-require('module-alias/register');
+import { Smtp } from './smtp.class';
+import { Consumer } from './consumer.class';
 
-import { Smtp } from '@classes/smtp.class';
-import { Consumer } from '@classes/consumer.class';
-
-import { Transporter } from '@ctypes/transporter.type';
+import { Transporter } from './../types/types/transporter.type';
 
 /**
  * @description

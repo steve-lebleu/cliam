@@ -1,12 +1,10 @@
-require('module-alias/register');
+import { ClientConfiguration } from './../classes/client-configuration.class';
+import { IPayload } from './../types/interfaces/IPayload.interface';
+import { SendingResponse } from './../classes/sending-response.class';
+import { SendingError } from './../classes/sending-error.class';
+import { Subscriber } from './../services/subscriber.service';
 
-import { ClientConfiguration } from '@classes/client-configuration.class';
-import { IPayload } from '@interfaces/IPayload.interface';
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
-import { Subscriber } from '@services/subscriber.service';
-
-import { Event } from '@ctypes/event.type';
+import { Event } from './../types/types/event.type';
 
 /**
  * @summary

@@ -1,4 +1,2 @@
-
-import { Cliam } from '@classes/cliam.class';
-
+import { Cliam } from './classes/cliam.class';
 export { Cliam }

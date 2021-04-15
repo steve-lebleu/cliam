@@ -1,18 +1,18 @@
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from './../transporter.class';
 
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IAttachment } from '@interfaces/IAttachment.interface';
+import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IPostmarkError } from 'transporters/postmark/IPostmarkError.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
+import { SendingError } from './../../classes/sending-error.class';
 
-import { COMPILER } from '@enums/compiler.enum';
+import { COMPILER } from './../../types/enums/compiler.enum';
 import { IPostmarkBody } from './IPostmarkBody.interface';
 
-import { Debug } from '@decorators/debug.decorator';
+import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
  * Set a Postmark transporter for mail sending.

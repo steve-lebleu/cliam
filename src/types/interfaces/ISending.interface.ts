@@ -1,4 +1,4 @@
-import { HTTP_METHOD } from '@enums/http-method.enum';
+import { HTTP_METHOD } from '../enums/http-method.enum';
 
 /**
  * Define mail sending uniform response properties.

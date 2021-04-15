@@ -1,4 +1,4 @@
-import { IPayload } from '@interfaces/IPayload.interface';
+import { IPayload } from '../interfaces/IPayload.interface';
 
 /**
  * @description

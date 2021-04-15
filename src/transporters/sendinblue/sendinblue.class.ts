@@ -1,18 +1,18 @@
-import { Container } from '@services/container.service';
+import { Container } from './../../services/container.service';
 
-import { Transporter } from '@transporters/transporter.class';
+import { Transporter } from './../transporter.class';
 
-import { IAddressable } from '@interfaces/addresses/IAddressable.interface';
-import { ISendinblueResponse } from 'transporters/sendinblue/ISendinblueResponse.interface';
-import { IAttachment } from '@interfaces/IAttachment.interface';
-import { IBuildable } from '@interfaces/IBuildable.interface';
-import { IAddressB } from '@interfaces/addresses/IAddressB.interface';
-import { ISendMail } from '@interfaces/ISendMail.interface';
+import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { ISendinblueResponse } from './ISendinblueResponse.interface';
+import { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
+import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
-import { SendingError } from '@classes/sending-error.class';
-import { SendingResponse } from '@classes/sending-response.class';
+import { SendingError } from './../../classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from '@enums/compiler.enum';
+import { COMPILER } from './../../types/enums/compiler.enum';
 
 /**
  * Set a Sendinblue transporter for mail sending.

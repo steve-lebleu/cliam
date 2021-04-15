@@ -8,22 +8,22 @@ import * as mailjetTransport from 'node-mailjet';
 
 import { createTransport } from 'nodemailer';
 
-import { Transporter as TransporterType } from '@ctypes/transporter.type';
-import { TRANSPORTER } from '@enums/transporter.enum';
+import { Transporter as TransporterType } from '../types/types/transporter.type';
+import { TRANSPORTER } from '../types/enums/transporter.enum';
 
-import { Smtp } from '@classes/smtp.class';
-import { SendingResponse } from '@classes/sending-response.class';
-import { SendingError } from '@classes/sending-error.class';
+import { Smtp } from '../classes/smtp.class';
+import { SendingResponse } from '../classes/sending-response.class';
+import { SendingError } from '../classes/sending-error.class';
 
-import { Transporter } from '@transporters/transporter.class';
-import { SmtpTransporter } from '@transporters/smtp/smtp.class';
-import { SparkpostTransporter } from '@transporters/sparkpost/sparkpost.class';
-import { SendgridTransporter } from '@transporters/sendgrid/sendgrid.class';
-import { SendinblueTransporter } from '@transporters/sendinblue/sendinblue.class';
-import { MandrillTransporter } from '@transporters/mandrill/mandrill.class';
-import { MailgunTransporter } from '@transporters/mailgun/mailgun.class';
-import { MailjetTransporter } from '@transporters/mailjet/mailjet.class';
-import { PostmarkTransporter } from '@transporters/postmark/postmark.class';
+import { Transporter } from './transporter.class';
+import { SmtpTransporter } from './smtp/smtp.class';
+import { SparkpostTransporter } from './sparkpost/sparkpost.class';
+import { SendgridTransporter } from './sendgrid/sendgrid.class';
+import { SendinblueTransporter } from './sendinblue/sendinblue.class';
+import { MandrillTransporter } from './mandrill/mandrill.class';
+import { MailgunTransporter } from './mailgun/mailgun.class';
+import { MailjetTransporter } from './mailjet/mailjet.class';
+import { PostmarkTransporter } from './postmark/postmark.class';
 
 /**
  * @description
