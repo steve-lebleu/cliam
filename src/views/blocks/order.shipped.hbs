@@ -1,0 +1,52 @@
+<!-- ORDER SHIPPED : BEGIN -->
+<tr>
+  <td width="100%" class="td-title">
+    Your order has been shipped !
+  </td>
+</tr>
+<tr>
+  <td align="center" valign="top" style="padding: 10px;">
+    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr valign="top">
+        <!-- Column : BEGIN -->
+        <td class="stack-column-center">
+          <table cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+              <td style="padding: 10px; text-align: center; font-weight: bold;">
+                Shipping address
+              </td>
+            </tr>
+            <tr>
+              <td style="font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #2a2a2a; padding: 0 10px 10px; text-align: left;" class="center-on-narrow">
+                {{ customer.name }} <br />
+                {{ customer.street }} <br />
+                {{ customer.zip }} {{ customer.city }} <br />
+                {{ customer.country }}
+              </td>
+            </tr>
+          </table>
+        </td>
+        <!-- Column : END -->
+        <!-- Column : BEGIN -->
+        <td class="stack-column-center">
+          <table cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+              <td style="padding: 10px; text-align: center; font-weight: bold">
+                Date shipped
+              </td>
+            </tr>
+            <tr>
+              <td style="font-family: sans-serif; font-size: 15px; mso-height-rule: exactly; line-height: 20px; color: #2a2a2a; padding: 0 10px 10px; text-align: left;" class="center-on-narrow">
+                {{ order.date }} <br />
+                <br />
+                <span class="header-sm">Reference</span> {{ order.reference }}
+              </td>
+            </tr>
+          </table>
+        </td>
+        <!-- Column : END -->
+      </tr>
+    </table>
+  </td>
+</tr>
+<!-- ORDER SHIPPED : END -->

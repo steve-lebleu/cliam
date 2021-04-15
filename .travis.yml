@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+    - "14.16"
+script: npm i typescript -g && npm i && tsc && env ENVIRONMENT=test env RUNNER=travis && npm run ci:test
+after_success: npm run ci:coverage
+deploy:
+  on:
+    branch: main
+    tags: true
+  provider: npm
+  email: $NPM_AUTH_EMAIL
+  api_key: $NPM_AUTH_TOKEN
+cache:
+  directories:
+    - "node_modules"

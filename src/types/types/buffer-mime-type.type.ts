@@ -1,0 +1,1 @@
+export type BufferMimeType =   'text/plain' | 'text/html';

@@ -1,0 +1,29 @@
+<!-- FOOTER : BEGIN -->
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto; background-color: #333333" class="email-container">
+  <tr>
+    <td class="td-title--footer">
+      Follow us on social networks !
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 0 10px 50px 10px; mso-height-rule: exactly; text-align: center;">
+      {{#each socials as | social|}}
+        <a href="{{social.url}}" class="social-link--footer"><img width="64px" src="{{social.icon}}" alt="{{social.name}}" /></a>
+      {{/each}}  
+    </td>
+  </tr>
+</table>
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="600" style="margin: auto;" class="email-container">
+  <tr>
+    <td style="padding: 20px 10px 40px 0; width: 100%; font-size: 12px; font-family: sans-serif; mso-height-rule: exactly; line-height:18px; text-align: center; color: #333333;">
+      <a href="{{domain}}" class="mobile-link--footer" >{{company}}</a>
+      <br>
+      <span>{{location.street}}, {{location.num}} {{location.zip}} {{location.city}} - {{location.country}}</span>
+      <br>
+      <span><a href="mailto:{{email}}" class="mobile-link--footer">{{email}}</a> - <a href="tel:{{phone}}" class="mobile-link--footer">{{phone}}</a></span>
+      <br><br> 
+      <unsubscribe>Unsubscribe</unsubscribe>
+    </td>
+  </tr>
+</table>
+<!-- FOOTER : END -->

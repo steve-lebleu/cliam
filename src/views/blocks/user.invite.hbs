@@ -1,0 +1,47 @@
+<!-- 1 Column Text : BEGIN -->
+<tr>
+  <td width="100%" class="td-title">
+    You're been invited to join us !
+  </td>
+</tr>
+<tr>
+  <td dir="rtl" align="center" valign="top" width="100%" style="padding: 10px;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td dir="ltr" valign="top" style="padding: 0 10px; text-align: center">
+          {{#if from.picture}}
+            <img src="{{ from.picture }}" width="170" width="170" alt="{{ from.username }}" border="0" class="center-on-narrow">
+            {{else}}
+            <img src="https://cdn.cliam.email/images/default/default-user-icon.jpg" width="170" width="170" alt="{{ from.username }}" border="0" class="center-on-narrow">
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td dir="ltr" valign="top" style="padding: 0 10px; text-align: center">
+          <span style="font-style: italic;"><a href="mailto:{{from.email}}" class="plain-text-link">@{{ from.username }}</a></span> wish invite you on the platform
+        </td>
+      </tr>
+      <tr>
+        <td dir="ltr" valign="top" style="padding: 20px 10px 0 10px; text-align: center; font-size: 16px; font-style: italic;">
+          {{ message }}
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+  <td class="td-button-container">
+    <!-- Button : Begin -->
+    <table cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto">
+      <tr>
+        <td class="button-td">
+          <a href="{{ cta.link }}" style="" class="button-a">
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ffffff">{{ cta.label }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </td>
+      </tr>
+    </table>
+    <!-- Button : END -->
+  </td>
+</tr>
+<!-- 1 Column Text : BEGIN -->
