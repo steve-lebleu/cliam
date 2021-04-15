@@ -60,7 +60,7 @@ class Mailer {
    */
   private setAddresses(payload: IPayload): void {
     payload.meta.from = !payload.meta.from ? Container.configuration.consumer?.addresses?.from : payload.meta.from;
-    payload.meta.replyTo = !payload.meta.replyTo ? Container.configuration.consumer?.addresses?.reply : payload.meta.replyTo;
+    payload.meta.replyTo = !payload.meta.replyTo ? Container.configuration.consumer?.addresses?.replyTo : payload.meta.replyTo;
   }
 
   /**
