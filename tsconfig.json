@@ -5,6 +5,7 @@
     "baseUrl": "./src",
     "lib": ["dom", "esNext"],
     "target": "esNext",
+    "declaration": false,
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
