@@ -9,22 +9,15 @@ import { recipient } from '../types/schemas/recipient.schema';
 
 import { list } from '../utils/enum.util';
 
-const addresses = () => {
-	return Joi.alternatives().try(
-			recipient().required(),
-			Joi.array().items( recipient() ).required()
-		)
-};
-
 const mailSchema = Joi.object({
   compiler: Joi.any().valid(...list(COMPILER)),
   meta: Joi.object({
     subject: Joi.string().max(128).required(),
     from: recipient(),
     replyTo: recipient(),
-    to: addresses().required(),
-    cc: addresses(),
-    bcc: addresses(),
+    to: Joi.array().items( recipient() ).required(),
+    cc: Joi.array().items( recipient() ),
+    bcc: Joi.array().items( recipient() ),
     attachments: Joi.array().items(
       Joi.object({
         content: Joi.alternatives([ Joi.string().base64(), Joi.string().regex(/^data:[a-zA-Z-\/]{1,48};base64,.*$/) ]).required(),
