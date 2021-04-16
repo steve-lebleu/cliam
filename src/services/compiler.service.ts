@@ -71,18 +71,18 @@ class Compiler {
    * @description
    */
   private readonly COLORS: Array<{key: string, value: string}> = [
-    { key: '111111', value: Container.configuration.consumer.theme.primaryColor },
-    { key: '222222', value: Container.configuration.consumer.theme.secondaryColor },
-    { key: '333333', value: Container.configuration.consumer.theme.tertiaryColor },
-    { key: '444444', value: Container.configuration.consumer.theme.quaternaryColor },
-    { key: 'fffff1', value: Color(`#${Container.configuration.consumer.theme.primaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: 'fffff2', value: Color(`#${Container.configuration.consumer.theme.secondaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: 'fffff3', value: Color(`#${Container.configuration.consumer.theme.tertiaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: 'fffff4', value: Color(`#${Container.configuration.consumer.theme.quaternaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: '000001', value: Color(`#${Container.configuration.consumer.theme.primaryColor}`).darken(0.50).hex().substring(1) },
-    { key: '000002', value: Color(`#${Container.configuration.consumer.theme.secondaryColor}`).darken(0.50).hex().substring(1) },
-    { key: '000003', value: Color(`#${Container.configuration.consumer.theme.tertiaryColor}`).darken(0.50).hex().substring(1) },
-    { key: '000004', value: Color(`#${Container.configuration.consumer.theme.quaternaryColor}`).darken(0.50).hex().substring(1) }
+    { key: '111111', value: Container.configuration.consumer?.theme?.primaryColor },
+    { key: '222222', value: Container.configuration.consumer?.theme?.secondaryColor },
+    { key: '333333', value: Container.configuration.consumer?.theme?.tertiaryColor },
+    { key: '444444', value: Container.configuration.consumer?.theme?.quaternaryColor },
+    { key: 'fffff1', value: Color(`#${Container.configuration.consumer?.theme?.primaryColor}`).lighten(0.50).hex().substring(1) },
+    { key: 'fffff2', value: Color(`#${Container.configuration.consumer?.theme?.secondaryColor}`).lighten(0.50).hex().substring(1) },
+    { key: 'fffff3', value: Color(`#${Container.configuration.consumer?.theme?.tertiaryColor}`).lighten(0.50).hex().substring(1) },
+    { key: 'fffff4', value: Color(`#${Container.configuration.consumer?.theme?.quaternaryColor}`).lighten(0.50).hex().substring(1) },
+    { key: '000001', value: Color(`#${Container.configuration.consumer?.theme?.primaryColor}`).darken(0.50).hex().substring(1) },
+    { key: '000002', value: Color(`#${Container.configuration.consumer?.theme?.secondaryColor}`).darken(0.50).hex().substring(1) },
+    { key: '000003', value: Color(`#${Container.configuration.consumer?.theme?.tertiaryColor}`).darken(0.50).hex().substring(1) },
+    { key: '000004', value: Color(`#${Container.configuration.consumer?.theme?.quaternaryColor}`).darken(0.50).hex().substring(1) }
   ];
 
   constructor() {
