@@ -21,6 +21,8 @@ import { COMPILER } from './../../types/enums/compiler.enum';
  * @see https://nodemailer.com/smtp/
  * @see https://www.npmjs.com/package/nodemailer-mailgun-transport
  * @see https://documentation.mailgun.com/en/latest/index.html
+ * @see https://documentation.mailgun.com/en/latest/user_manual.html#introduction
+ *
  */
 export class MailgunTransporter extends Transporter implements ITransporter {
 

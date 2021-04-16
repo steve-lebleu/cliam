@@ -10,10 +10,31 @@ const Debug = ( transporter: string ): any => {
   return ( target: Record<string,({...args}: any)=>any>, key: string ) => {
     const method = target[key] as ({...args}: any) => any;
     target[key] = function (...args: any[]): any {
-      const output = method.apply(this, args) as { Message?: {From: { Email: string, Name: string}}, Messages?: Array<{From: { Email: string, Name: string}}>, from?: string, to?: Array<string>, cc?: Array<string>, bcc?: Array<string>, html?: string, text?: string };
+      const output = method.apply(this, args) as {
+        Message?: {
+          From: {
+            Email: string,
+            Name: string
+          }
+        },
+        Messages?: Array<{From: { Email: string, Name: string}}>,
+        from?: string,
+        to?: Array<string>,
+        cc?: Array<string>,
+        bcc?: Array<string>,
+        html?: string,
+        text?: string,
+        options?: { sandbox: boolean },
+        content?: {
+          from?: string
+        }
+      };
       if (output) {
         if (Container.configuration?.sandbox?.active) {
           switch(transporter) {
+            case TRANSPORTER.mailgun:
+              Object.assign(output, { testmode: true })
+              break;
             case TRANSPORTER.mailjet:
               Object.assign(output, {
                 SandboxMode: true,
@@ -24,15 +45,6 @@ const Debug = ( transporter: string ): any => {
                 }
               });
               output.Messages[0].From = { Email: Container.configuration.sandbox.from.email, Name: Container.configuration.sandbox.from.name };
-              break;
-            case TRANSPORTER.sendgrid:
-              Object.assign(output, {
-                mail_settings: {
-                  sandbox_mode: {
-                    enable: true
-                  }
-                }
-              });
               break;
             case TRANSPORTER.postmark:
               output.from = `${Container.configuration.sandbox.from.name} ${Container.configuration.sandbox.from.email}`;
@@ -50,6 +62,25 @@ const Debug = ( transporter: string ): any => {
                 });
               }
               break;
+            case TRANSPORTER.sendgrid:
+              Object.assign(output, {
+                mail_settings: {
+                  sandbox_mode: {
+                    enable: true
+                  }
+                }
+              });
+              break;
+            case TRANSPORTER.sparkpost:
+              Object.assign(output, {
+                options: {
+                  sandbox: true
+                },
+                content: {
+                  from: Container.configuration.sandbox.to.email
+                }
+              });
+              break;
           }
         }
         return output;
@@ -60,6 +91,3 @@ const Debug = ( transporter: string ): any => {
 }
 
 export { Debug }
-
-
-
