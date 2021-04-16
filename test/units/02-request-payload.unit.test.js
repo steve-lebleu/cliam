@@ -56,43 +56,73 @@ describe('Request payload', () => {
     ['from', 'replyTo', 'to', 'cc', 'bcc'].forEach(property => {
 
       describe(`.${property}`, () => {
+  
+        if ( ['to', 'cc', 'bcc'].includes(property) ) {
 
-        if (property === 'to') {
+          if ( property === 'to' ) {
 
-          it(`error - ${property}.name is required`, (done) => {
-            payload.meta[property] = { name: null, email: 'info@example.com' };
+            it(`error - ${property} is required`, (done) => {
+              payload.meta[property] = undefined;
+              const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+              expect(error.details[0].message).to.be.eqls(`"meta.${property}" is required`);
+              done();
+            });
+
+          }
+
+          it(`error - ${property} must be an array`, (done) => {
+            payload.meta[property] = {};
             const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-            expect(error.details[0].message).to.be.eqls(`"meta.${property}.name" must be a string`);
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}" must be an array`);
             done();
           });
 
-        }
-        
-        it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
-          payload.meta[property] = { name: chance.string({ length: 49 }), email: 'info@example.com' };
-          const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"meta.${property}.name" length must be less than or equal to 48 characters long`);
-          done();
-        });
-  
-        if (property === 'to') {
+          it(`error - ${property}.name is required`, (done) => {
+            payload.meta[property] = [ { name: null, email: 'info@example.com' } ];
+            const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}[0].name" must be a string`);
+            done();
+          });
+
+          it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
+            payload.meta[property] = [ { name: chance.string({ length: 49 }), email: 'info@example.com' } ];
+            const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}[0].name" length must be less than or equal to 48 characters long`);
+            done();
+          });
 
           it(`error - ${property}.email is required`, (done) => {
-            payload.meta[property] = { name: 'Yoda', email : null };
+            payload.meta[property] = [ { name: 'Yoda', email : null } ];
             const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-            expect(error.details[0].message).to.be.eqls(`"meta.${property}.email" must be a string`);
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}[0].email" must be a string`);
+            done();
+          });
+
+          it(`error - ${property}.email should be a valid email address`, (done) => {
+            payload.meta[property] = [ { name: 'Yoda', email : 'Yoda' } ];
+            const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}[0].email" must be a valid email`);
+            done();
+          });
+
+        } else {
+
+          it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
+            payload.meta[property] = { name: chance.string({ length: 49 }), email: 'info@example.com' };
+            const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}.name" length must be less than or equal to 48 characters long`);
+            done();
+          });
+
+          it(`error - ${property}.email should be a valid email address`, (done) => {
+            payload.meta[property] = { name: 'Yoda', email : 'Yoda' };
+            const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+            expect(error.details[0].message).to.be.eqls(`"meta.${property}.email" must be a valid email`);
             done();
           });
 
         }
     
-        it(`error - ${property}.email should be a valid email address`, (done) => {
-          payload.meta[property] = { name: 'Yoda', email : 'Yoda' };
-          const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"meta.${property}.email" must be a valid email`);
-          done();
-        });
-
       });
 
     });
