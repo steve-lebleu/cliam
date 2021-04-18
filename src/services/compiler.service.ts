@@ -20,6 +20,11 @@ class Compiler {
   /**
    * @description
    */
+  private readonly THEME = Container.configuration.consumer?.theme;
+
+  /**
+   * @description
+   */
   private readonly LAYOUT: string = '/../../src/views/layouts/default.hbs';
 
   /**
@@ -71,18 +76,18 @@ class Compiler {
    * @description
    */
   private readonly COLORS: Array<{key: string, value: string}> = [
-    { key: '111111', value: Container.configuration.consumer?.theme?.primaryColor },
-    { key: '222222', value: Container.configuration.consumer?.theme?.secondaryColor },
-    { key: '333333', value: Container.configuration.consumer?.theme?.tertiaryColor },
-    { key: '444444', value: Container.configuration.consumer?.theme?.quaternaryColor },
-    { key: 'fffff1', value: Color(`#${Container.configuration.consumer?.theme?.primaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: 'fffff2', value: Color(`#${Container.configuration.consumer?.theme?.secondaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: 'fffff3', value: Color(`#${Container.configuration.consumer?.theme?.tertiaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: 'fffff4', value: Color(`#${Container.configuration.consumer?.theme?.quaternaryColor}`).lighten(0.50).hex().substring(1) },
-    { key: '000001', value: Color(`#${Container.configuration.consumer?.theme?.primaryColor}`).darken(0.50).hex().substring(1) },
-    { key: '000002', value: Color(`#${Container.configuration.consumer?.theme?.secondaryColor}`).darken(0.50).hex().substring(1) },
-    { key: '000003', value: Color(`#${Container.configuration.consumer?.theme?.tertiaryColor}`).darken(0.50).hex().substring(1) },
-    { key: '000004', value: Color(`#${Container.configuration.consumer?.theme?.quaternaryColor}`).darken(0.50).hex().substring(1) }
+    { key: '111111', value: this.THEME?.primaryColor || null },
+    { key: '222222', value: this.THEME?.secondaryColor || null },
+    { key: '333333', value: this.THEME?.tertiaryColor || null },
+    { key: '444444', value: this.THEME?.quaternaryColor || null },
+    { key: 'fffff1', value: this.THEME?.primaryColor ? Color(`#${this.THEME.primaryColor}`).lighten(0.50).hex().substring(1) : null },
+    { key: 'fffff2', value: this.THEME?.secondaryColor ? Color(`#${this.THEME.secondaryColor}`).lighten(0.50).hex().substring(1) : null },
+    { key: 'fffff3', value: this.THEME?.tertiaryColor ? Color(`#${this.THEME.tertiaryColor}`).lighten(0.50).hex().substring(1) : null },
+    { key: 'fffff4', value: this.THEME?.quaternaryColor ? Color(`#${this.THEME.quaternaryColor}`).lighten(0.50).hex().substring(1) : null },
+    { key: '000001', value: this.THEME?.primaryColor ? Color(`#${this.THEME.primaryColor}`).darken(0.50).hex().substring(1) : null },
+    { key: '000002', value: this.THEME?.secondaryColor ? Color(`#${this.THEME.secondaryColor}`).darken(0.50).hex().substring(1) : null },
+    { key: '000003', value: this.THEME?.tertiaryColor ? Color(`#${this.THEME.tertiaryColor}`).darken(0.50).hex().substring(1) : null },
+    { key: '000004', value: this.THEME?.quaternaryColor ? Color(`#${this.THEME.quaternaryColor}`).darken(0.50).hex().substring(1) : null }
   ];
 
   constructor() {
