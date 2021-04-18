@@ -407,10 +407,10 @@ describe('Client configuration', () => {
         done();
       });
 
-      it(`error - password should be less than or equals to 16 chars long`, (done) => {
+      it(`error - password should be less than or equals to 24 chars long`, (done) => {
         payload.mode.smtp.password = chance.string({ length: 32 });
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.password" length must be less than or equal to 16 characters long`);
+        expect(error.details[0].message).to.be.eqls(`"mode.smtp.password" length must be less than or equal to 24 characters long`);
         done();
       });
 
