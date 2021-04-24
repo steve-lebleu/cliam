@@ -42,21 +42,21 @@ class Compiler {
    */
    private readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
     { event: 'default', banner: '', default: true },
-    { event: 'event.subscribe', banner: '', default: true },
-    { event: 'event.unsubscribe', banner: '', default: true },
-    { event: 'event.updated', banner: '', default: true },
-    { event: 'order.invoice', banner: '' },
-    { event: 'order.progress', banner: '' },
-    { event: 'order.shipped', banner: '' },
-    { event: 'password.request', banner: '', default: true },
-    { event: 'password.updated', banner: '', default: true },
-    { event: 'user.invite', banner: '' },
-    { event: 'user.contact', banner: '', default: true },
-    { event: 'user.progress', banner: '' },
-    { event: 'user.survey', banner: '' },
-    { event: 'user.welcome', banner: '', default: true },
-    { event: 'user.bye', banner: '', default: true },
-    { event: 'user.confirm', banner: '', default: true }
+    { event: 'event.subscribe', banner: 'https://cdn.cliam.email/images/banners/event.png', default: true },
+    { event: 'event.unsubscribe', banner: 'https://cdn.cliam.email/images/banners/event.png', default: true },
+    { event: 'event.updated', banner: 'https://cdn.cliam.email/images/banners/event.png', default: true },
+    { event: 'order.invoice', banner: 'https://cdn.cliam.email/images/banners/invoice.png' },
+    { event: 'order.progress', banner: 'https://cdn.cliam.email/images/banners/progress.png' },
+    { event: 'order.shipped', banner: 'https://cdn.cliam.email/images/banners/shhipped.png' },
+    { event: 'password.request', banner: 'https://cdn.cliam.email/images/banners/password.png', default: true },
+    { event: 'password.updated', banner: 'https://cdn.cliam.email/images/banners/password.png', default: true },
+    { event: 'user.invite', banner: 'https://cdn.cliam.email/images/banners/invite.png' },
+    { event: 'user.contact', banner: 'https://cdn.cliam.email/images/banners/contact.png', default: true },
+    { event: 'user.progress', banner: 'https://cdn.cliam.email/images/banners/progress.png' },
+    { event: 'user.survey', banner: 'https://cdn.cliam.email/images/banners/survey.png' },
+    { event: 'user.welcome', banner: 'https://cdn.cliam.email/images/banners/welcome.png', default: true },
+    { event: 'user.bye', banner: 'https://cdn.cliam.email/images/banners/leave.png', default: true },
+    { event: 'user.confirm', banner: 'https://cdn.cliam.email/images/banners/confirm.png', default: true }
   ];
 
   /**
@@ -123,6 +123,7 @@ class Compiler {
     }
 
     data.banner = this.getBanner(event);
+    console.log('data.banner', data.banner);
 
     Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
     Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
@@ -151,7 +152,7 @@ class Compiler {
    * @param event
    */
    private getBanner(event: string) {
-    return this.TEMPLATES.find(template => template.event === event).banner || 'http://placehold.it/600x300';
+    return this.TEMPLATES.find(template => template.event === event).banner || 'https://cdn.cliam.email/images/default/default-thumbnail.jpg'; // 600x300
   }
 
   /**

@@ -1,11 +1,7 @@
 # Roadmap
 
-- [ ] **v1.0.3** 
-  - [ ] Headers images 
-  - [ ] Integration HTML/CSS for all transactions. Factored code. 4 colours
+- [ ] **v1.0.11** 
   - [ ] .d.ts
-
-- [ ] **v1.1.0**
   - [ ] Check / sanitize / securize payloads & addresses
   - [ ] Support inlines images
   - [ ] SMTP custom sandbox 
