@@ -39,8 +39,8 @@
     "commitLimit": false
   },
   "scripts": {
-    "ci:coverage": "nyc --reporter=lcov --report-dir=./reports/coverage npm-run-all -s test:* && cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./reports/coverage",
-    "ci:test": "npm-run-all -s test:*",
+    "ci:coverage": "RUNNER=github nyc --reporter=lcov --report-dir=./reports/coverage npm-run-all -s test:* && cat ./reports/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./reports/coverage",
+    "ci:test": "RUNNER=github npm-run-all -s test:*",
     "test": "nyc --reporter=html --report-dir=./reports/nyc-coverage npm-run-all -s test:*",
     "test:unit": "./node_modules/.bin/mocha -r ts-node/register -r tsconfig-paths/register ./test/units/00-bootstrap.unit.test.js --exit --reporter spec --timeout 5000 --env test",
     "test:e2e": "./node_modules/.bin/mocha -r ts-node/register -r tsconfig-paths/register ./test/e2e/00-bootstrap.e2e.test.js --exit --reporter spec --timeout 5000 --env test",

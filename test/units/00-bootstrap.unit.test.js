@@ -1,4 +1,4 @@
-if (process.env.RUNNER !== 'travis') require('dotenv').config();
+if (process.env.RUNNER !== 'github') require('dotenv').config();
 
 describe('Units tests', () => {
   require('./01-client-configuration.unit.test');
