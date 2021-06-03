@@ -34,8 +34,6 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
-      - name: Show environment
-        run: cat .env
       - name: Execute tests sets
         run: npm run ci:coverage
       - name: Publish to coveralls.io
