@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
+    "incremental": true,
+    "target": "esNext",
     "outDir": "./lib",
+    "removeComments": true,
     "sourceMap": false,
     "baseUrl": "./src",
-    "lib": ["dom", "esNext"],
-    "target": "esNext",
+    "lib": ["esNext"],
     "declaration": false,
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
