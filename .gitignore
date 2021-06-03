@@ -79,7 +79,7 @@ credentials.js
 .vscode/
 
 # Generated lib
-./lib
+lib/
 
 # Test configuration
 .cliamrc.json
