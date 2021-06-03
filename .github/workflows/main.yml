@@ -21,18 +21,18 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo EMAIL_FROM = "${{ secrets.EMAIL_FROM }}"\n >> .env
-          echo EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}"\n >> .env
-          echo EMAIL_TO = "${{ secrets.EMAIL_TO }}"\n >> .env
-          echo MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}"\n >> .env
-          echo MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}"\n >> .env
-          echo MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}"\n >> .env
-          echo POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}"\n >> .env
-          echo SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}"\n >> .env
-          echo SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}"\n >> .env
-          echo SMTP_HOST = "${{ secrets.SMTP_HOST }}"\n >> .env
-          echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}"\n >> .env
-          echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}"\n >> .env
+          echo EMAIL_FROM = "${{ secrets.EMAIL_FROM }}" >> .env
+          echo EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}" >> .env
+          echo EMAIL_TO = "${{ secrets.EMAIL_TO }}" >> .env
+          echo MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}" >> .env
+          echo MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}" >> .env
+          echo MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}" >> .env
+          echo POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}" >> .env
+          echo SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}" >> .env
+          echo SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}" >> .env
+          echo SMTP_HOST = "${{ secrets.SMTP_HOST }}" >> .env
+          echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
+          echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
       - name: Show environment
         run: cat .env
