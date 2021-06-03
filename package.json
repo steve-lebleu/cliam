@@ -22,7 +22,7 @@
     "postmark",
     "smtp"
   ],
-  "main": "./lib/index.js ",
+  "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "homepage": "https://github.com/konfer-be/cliam#readme",
   "repository": {
