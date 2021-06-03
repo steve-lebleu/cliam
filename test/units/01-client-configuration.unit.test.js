@@ -16,6 +16,7 @@ describe('Client configuration', () => {
 
     beforeEach(() => {
       payload = JSON.parse( JSON.stringify(cliamrc) );
+      console.log('cliamrc', cliamrc);
     });
 
     ['from', 'to'].forEach(property => {
