@@ -4,7 +4,7 @@
   - [ ] Check / sanitize / securize payloads & addresses
   - [ ] Support inlines images
   - [ ] SMTP custom sandbox 
-  - [ ] Fix sendgrid / sendinblue tests 
+  - [ ] Fix sendgrid / sendinblue testing 
 
 - [ ] **v1.2.0**
   - [ ] Support Mandrill
