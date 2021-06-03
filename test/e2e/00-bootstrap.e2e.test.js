@@ -1,4 +1,4 @@
-if (process.env.RUNNER !== 'travis') require('dotenv').config();
+require('dotenv').config();
 
 describe('E2e tests', () => {
   require('./01-smtp-mail-sending.e2e.test');

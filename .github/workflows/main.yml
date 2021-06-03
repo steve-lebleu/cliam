@@ -18,6 +18,22 @@ jobs:
         run: npm i
       - name: Compile Typescript files with declarations
         run: tsc --declaration
+      - name: Create .env file
+        run: |
+          touch .env
+          printf  EMAIL_FROM = "${{ secrets.EMAIL_FROM }}"
+                  EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}"
+                  EMAIL_TO = "${{ secrets.EMAIL_TO }}"
+                  MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}"
+                  MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}"
+                  MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}"
+                  POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}"
+                  SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}"
+                  SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}"
+                  SMTP_HOST = "${{ secrets.SMTP_HOST }}"
+                  SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}"
+                  SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}"
+                  SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" > .env
       - name: Execute tests sets
         run: npm run ci:test
       - name: Share code coverage
