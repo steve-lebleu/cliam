@@ -44,9 +44,6 @@ jobs:
           path-to-lcov: ./reports/coverage/lcov.info
       - name: Delete unpackaged files
         run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f tsconfig.json && rm -f ROADMAP.md
-      - name: Fix typing export
-        run: |
-          printf "import { Cliam } from './classes/cliam.class';\nexport = Cliam;" > ./lib/index.d.ts
       - name: Publish package on NPM registery
         uses: JS-DevTools/npm-publish@v1
         with:
