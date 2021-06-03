@@ -21,19 +21,19 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          printf  EMAIL_FROM = "${{ secrets.EMAIL_FROM }}"
-                  EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}"
-                  EMAIL_TO = "${{ secrets.EMAIL_TO }}"
-                  MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}"
-                  MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}"
-                  MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}"
-                  POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}"
-                  SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}"
-                  SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}"
-                  SMTP_HOST = "${{ secrets.SMTP_HOST }}"
-                  SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}"
-                  SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}"
-                  SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" > .env
+          echo EMAIL_FROM = "${{ secrets.EMAIL_FROM }}"\n >> .env
+          echo EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}"\n >> .env
+          echo EMAIL_TO = "${{ secrets.EMAIL_TO }}"\n >> .env
+          echo MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}"\n >> .env
+          echo MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}"\n >> .env
+          echo MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}"\n >> .env
+          echo POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}"\n >> .env
+          echo SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}"\n >> .env
+          echo SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}"\n >> .env
+          echo SMTP_HOST = "${{ secrets.SMTP_HOST }}"\n >> .env
+          echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}"\n >> .env
+          echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}"\n >> .env
+          echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
       - name: Execute tests sets
         run: npm run ci:test
       - name: Share code coverage
