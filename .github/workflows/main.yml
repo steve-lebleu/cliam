@@ -1,0 +1,31 @@
+name: Cliam CI / CD pipeline
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github checkout
+        uses: actions/checkout@v1
+      - name: Setup node.js environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.16'
+      - name: Install global dependencies
+        run: npm i typescript -g
+      - name: Install local dependencies
+        run: npm i
+      - name: Compile Typescript files with declarations
+        run: tsc --declaration
+      - name: Execute tests sets
+        run: npm run ci:coverage
+      - name: Delete unpackaged files
+        run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f tsconfig.json && rm -f ROADMAP.md
+      - name: Fix typing export
+        run: |
+          printf "import { Cliam } from './classes/cliam.class';\nexport = Cliam;" > ./lib/index.d.ts
+      - name: Publish package on NPM registery
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}

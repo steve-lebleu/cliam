@@ -22,6 +22,8 @@
     "postmark",
     "smtp"
   ],
+  "main": "./lib/index.js ",
+  "types": "./lib/index.d.ts",
   "homepage": "https://github.com/konfer-be/cliam#readme",
   "repository": {
     "type": "git",
@@ -30,7 +32,6 @@
   "bugs": {
     "url": "https://github.com/konfer-be/cliam/issues"
   },
-  "main": "./lib/index.js ",
   "auto-changelog": {
     "output": "CHANGELOG.md",
     "template": "keepachangelog",
