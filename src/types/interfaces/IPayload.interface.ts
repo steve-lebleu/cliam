@@ -27,7 +27,7 @@ export interface IPayload {
     /**
      * @description From address object
      */
-    from: IAddressable;
+    from?: IAddressable;
 
     /**
      * @description Recipients addresses objects
@@ -37,7 +37,7 @@ export interface IPayload {
     /**
      * @description Reply-to address object
      */
-    replyTo: IAddressable;
+    replyTo?: IAddressable;
 
     /**
      * @description Subject of email
