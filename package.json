@@ -22,6 +22,8 @@
     "postmark",
     "smtp"
   ],
+  "main": "./lib/index.js ",
+  "types": "./lib/index.d.ts",
   "homepage": "https://github.com/konfer-be/cliam#readme",
   "repository": {
     "type": "git",
@@ -30,7 +32,6 @@
   "bugs": {
     "url": "https://github.com/konfer-be/cliam/issues"
   },
-  "main": "./lib/index.js ",
   "auto-changelog": {
     "output": "CHANGELOG.md",
     "template": "keepachangelog",
@@ -53,7 +54,7 @@
     "hbs": "^4.1.2",
     "html-to-text": "^7.0.0",
     "joi": "17.4.0",
-    "node-mailjet": "^3.3.1",
+    "node-mailjet": "^3.3.3",
     "nodemailer": "6.5.0",
     "nodemailer-mailgun-transport": "^2.0.2",
     "nodemailer-mandrill-transport": "^1.2.0",
