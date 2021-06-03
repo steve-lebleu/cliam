@@ -19,6 +19,8 @@ jobs:
       - name: Compile Typescript files with declarations
         run: tsc --declaration
       - name: Execute tests sets
+        run: npm run ci:test
+      - name: Share code coverage
         run: npm run ci:coverage
       - name: Delete unpackaged files
         run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f tsconfig.json && rm -f ROADMAP.md
