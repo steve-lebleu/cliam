@@ -78,6 +78,9 @@ credentials.js
 # Vs code settings
 .vscode/
 
+# Generated lib
+./lib/
+
 # Test configuration
 .cliamrc.json
 .cliamrc-bk.json
