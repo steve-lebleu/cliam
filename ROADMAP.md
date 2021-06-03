@@ -1,7 +1,6 @@
 # Roadmap
 
-- [ ] **v1.0.11** 
-  - [ ] .d.ts
+- [ ] **v1.0.14** 
   - [ ] Check / sanitize / securize payloads & addresses
   - [ ] Support inlines images
   - [ ] SMTP custom sandbox 
