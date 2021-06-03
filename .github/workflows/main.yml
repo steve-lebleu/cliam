@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: '14.16'
       - name: Install global dependencies
-        run: npm i typescript -g
+        run: npm i typescript@4.2.2 -g
       - name: Install local dependencies
         run: npm i
       - name: Compile Typescript files with declarations
