@@ -1,23 +1,26 @@
-name: Cliam CI / CD pipeline
+name: Build
 on:
   push:
-    branches: [ main ]
+    branches: [ dev, hotfix/*, feature/*, release/* ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: node-modules-${{ hashfiles('**/package-lock.json') }}
       - name: Github checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Setup node.js environment
         uses: actions/setup-node@v1
         with:
           node-version: '14.16'
-      - name: Install global dependencies
-        run: npm i typescript@4.2.2 -g
-      - name: Install local dependencies
-        run: npm i
-      - name: Compile Typescript files with declarations
-        run: tsc --declaration
+      - name: Install NPM dependencies
+        run: npm i typescript@4.2.2 -g && npm i
+      - name: Compile Typescript files
+        run: tsc
       - name: Create .env file
         run: |
           touch .env
@@ -34,16 +37,5 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
-      - name: Execute tests sets
+      - name: Execute units tests
         run: npm run ci:coverage
-      - name: Publish to coveralls.io
-        uses: coverallsapp/github-action@v1.1.2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./reports/coverage/lcov.info
-      - name: Delete unpackaged files
-        run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f tsconfig.json && rm -f ROADMAP.md
-      - name: Publish package on NPM registery
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
