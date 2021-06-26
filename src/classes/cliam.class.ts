@@ -70,6 +70,6 @@ class Cliam {
   }
 }
 
-const cliam = Cliam.get( Emitter.get( Container.configuration ) ) as { emit: (event: Event, payload: IPayload) =>  Promise<SendingResponse | SendingError>, subscribe: (event: Event | string) => void };
+const cliam = Cliam.get( Emitter.get( Container.configuration ) ) as { emit: (event: Event|string, payload: IPayload) =>  Promise<SendingResponse | SendingError>, subscribe: (event: Event|string) => void };
 
 export { cliam as Cliam }
