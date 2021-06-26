@@ -117,13 +117,3 @@ export class TransporterFactory {
 
   }
 }
-
-/**
- * après création, pour le smtp ? OU ailleurs en fait
- * this.transporter.verify( (err, res) => {
-        if (err) {
-          reject(this.error(err));
-        }
-        resolve(this.transporter);
-      });
- */

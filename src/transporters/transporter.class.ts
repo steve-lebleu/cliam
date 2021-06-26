@@ -13,7 +13,9 @@ export abstract class Transporter {
    */
   public transporter: ISendMail;
 
-  constructor() {}
+  constructor(transporterEngine: ISendMail) {
+    this.transporter = transporterEngine;
+  }
 
   /**
    * @description

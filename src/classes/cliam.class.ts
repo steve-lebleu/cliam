@@ -65,7 +65,7 @@ class Cliam {
   /**
    * @description
    */
-  async emit(event: Event, payload: IPayload): Promise<SendingResponse|SendingError> {
+  async emit(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
     return this.emitter.emit(event, payload);
   }
 }
