@@ -30,19 +30,13 @@ import { COMPILER } from './../../types/enums/compiler.enum';
 export class SendinblueTransporter extends Transporter {
 
   /**
-   * @description Wrapped concrete transporter instance
+   * @description
+   *
+   * @param transporterEngine
+   * @param domain Domain which do the request
    */
-  public transporter: ISendMail;
-
-   /**
-    * @description
-    *
-    * @param transporterEngine
-    * @param domain Domain which do the request
-    */
   constructor( transporterEngine: ISendMail ) {
-    super();
-    this.transporter = transporterEngine;
+    super(transporterEngine);
   }
 
   /**
