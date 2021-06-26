@@ -31,18 +31,13 @@ import { Debug } from './../../types/decorators/debug.decorator';
 export class MailjetTransporter extends Transporter implements ITransporter {
 
   /**
-   * @description Wrapped concrete transporter instance
-   */
-  public transporter: ISendMail;
-
-  /**
    * @description
    *
    * @param transporterEngine
+   * @param domain Domain which do the request
    */
-  constructor( transporterEngine: ISendMail ) {
-    super();
-    this.transporter = transporterEngine;
+   constructor( transporterEngine: ISendMail ) {
+    super(transporterEngine);
   }
 
   /**
