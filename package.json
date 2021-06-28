@@ -55,7 +55,7 @@
     "html-to-text": "^7.0.0",
     "joi": "17.4.0",
     "node-mailjet": "^3.3.3",
-    "nodemailer": "6.5.0",
+    "nodemailer": "6.6.1",
     "nodemailer-mailgun-transport": "^2.0.2",
     "nodemailer-mandrill-transport": "^1.2.0",
     "nodemailer-postmark-transport": "^4.0.0",
