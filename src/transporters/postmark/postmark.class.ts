@@ -54,9 +54,21 @@ export class PostmarkTransporter extends Transporter {
     switch(payload.compiler.valueOf()) {
       case COMPILER.provider:
         Object.assign(output, {
-          templateModel: payload.data,
-          templateId: payload.meta.templateId || parseInt(templateId, 10)
-        });
+                    templateModel: payload.data
+                });
+
+        //setting templateId or templateAlias based on the data set
+        const tempId = payload.meta.templateId || templateId;
+
+        if(isNaN(tempId)) {
+            Object.assign(output, {
+                templateAlias: tempId
+            });
+        } else {
+            Object.assign(output, {
+                templateId: tempId
+            });
+        };
         break;
       case COMPILER.default:
       case COMPILER.self:
