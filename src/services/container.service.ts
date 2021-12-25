@@ -1,5 +1,6 @@
-import * as Chalk from 'chalk';
+import Chalk from 'chalk';
 
+console.log('CHALK', Chalk)
 import { existsSync, readFileSync } from 'fs';
 
 import { Transporter } from './../transporters/transporter.class';
