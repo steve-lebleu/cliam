@@ -1,6 +1,6 @@
 {
   "name": "cliam",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "engines": {
     "node": ">=16.6.2",
     "npm": ">=7.20.3"
@@ -50,7 +50,7 @@
     "version": "git add package.json && git add README.md && auto-changelog -p && git add CHANGELOG.md && git commit -m \"Update changelog\""
   },
   "dependencies": {
-    "chalk": "5.0.0",
+    "chalk": "^4.1.0",
     "color": "4.1.0",
     "hbs": "4.2.0",
     "html-to-text": "8.1.0",
