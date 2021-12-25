@@ -33,8 +33,6 @@ describe('SMTP', function() {
 
   beforeEach( () => {
 
-   
-    
     mockery = require('mockery');
     nodemailerMock = require('nodemailer-mock');
 
