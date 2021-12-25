@@ -3,7 +3,7 @@ import * as mailgunTransport from 'nodemailer-mailgun-transport';
 import * as mandrillTransport from 'nodemailer-mandrill-transport';
 import * as postmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
-import * as sendinblueTransport from 'nodemailer-sendinblue-transport';
+import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
 import * as mailjetTransport from 'node-mailjet';
 
 import { createTransport } from 'nodemailer';
