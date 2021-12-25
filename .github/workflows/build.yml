@@ -16,9 +16,9 @@ jobs:
       - name: Setup node.js environment
         uses: actions/setup-node@v1
         with:
-          node-version: '14.16'
+          node-version: '16.6.2'
       - name: Install NPM dependencies
-        run: npm i typescript@4.2.2 -g && npm i
+        run: npm i typescript@4.5.4 -g && npm i
       - name: Compile Typescript files
         run: tsc
       - name: Create .env file
