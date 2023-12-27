@@ -1,9 +1,8 @@
-![Cliam](https://cdn.cliam.email/images/assets/logo-cliam.png)
+![Cliam](https://fab.konfer.be/cliam/images/assets/logo-cliam.png)
 
 [![Build Status](https://travis-ci.com/konfer-be/cliam.svg?token=DmbPFqq91BhwsJKVDsHw&branch=main)](https://travis-ci.com/konfer-be/cliam)
 [![Coverage Status](https://coveralls.io/repos/github/konfer-be/cliam/badge.svg?branch=main)](https://coveralls.io/github/konfer-be/cliam?branch=main)
 ![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/konfer-be/cliam/main)
-![Requires.io (branch)](https://img.shields.io/requires/github/konfer-be/cliam/main)
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/gpl-license.php)
 
 # Transactional emails with a kick
@@ -118,15 +117,15 @@ No problem, we have all been poor once. Start with a simple SMTP server and use 
 <h2 id="supported-web-api-providers">> Supported web API providers</h2>
 
 <p>
-  <a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/sendgrid.png" alt="Sendgrid" width="240px" hspace="15" /></a>
-  <a href="https://mailgun.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/mailgun.png" alt="Mailgun" width="240px" hspace="15" /></a>
-  <a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/sparkpost.png" alt="Sparkpost" width="240px" hspace="15" /></a>
+  <a href="https://sendgrid.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/sendgrid.png" alt="Sendgrid" width="240px" hspace="15" /></a>
+  <a href="https://mailgun.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/mailgun.png" alt="Mailgun" width="240px" hspace="15" /></a>
+  <a href="https://sparkpost.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/sparkpost.png" alt="Sparkpost" width="240px" hspace="15" /></a>
 </p>
 
 <p>
-  <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
-  <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
-  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
+  <a href="https://postmarkapp.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
+  <a href="https://mailjet.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
+  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
 </p>
 
 <!--
