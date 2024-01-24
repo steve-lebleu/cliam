@@ -1,8 +1,9 @@
-![Cliam](https://fab.konfer.be/cliam/images/assets/logo-cliam.png)
+![Cliam](https://cdn.konfer.be/images/cliam/assets/logo-cliam.png)
 
-[![Build Status](https://travis-ci.com/konfer-be/cliam.svg?token=DmbPFqq91BhwsJKVDsHw&branch=main)](https://travis-ci.com/konfer-be/cliam)
-[![Coverage Status](https://coveralls.io/repos/github/konfer-be/cliam/badge.svg?branch=main)](https://coveralls.io/github/konfer-be/cliam?branch=main)
-![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/konfer-be/cliam/main)
+![Github action workflow status](https://github.com/steve-lebleu/cliam/actions/workflows/build.yml/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/steve-lebleu/cliam/badge.svg?branch=main)](https://coveralls.io/github/steve-lebleu/cliam?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/steve-lebleu/cliam/badge)](https://www.codefactor.io/repository/github/steve-lebleu/cliam)
+![GitHub Release](https://img.shields.io/github/v/release/steve-lebleu/cliam?logo=Github)
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/gpl-license.php)
 
 # Transactional emails with a kick
@@ -15,9 +16,9 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 ## > Features
 
-- Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/konfer-be/cliam/wiki/Request-payload), one [output](https://github.com/konfer-be/cliam/wiki/Outputs).
-- [Configuration](https://github.com/konfer-be/cliam/wiki/Configuration) based, not implementation based : easy switch between different modes.
-- Normalized [transactions events](https://github.com/konfer-be/cliam/wiki/Transactions).
+- Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Request-payload), one [output](https://github.com/steve-lebleu/cliam/wiki/Outputs).
+- [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) based, not implementation based : easy switch between different modes.
+- Normalized [transactions events](https://github.com/steve-lebleu/cliam/wiki/Transactions).
 - Securized payloads.
 - Customisable default templates.
 
@@ -117,25 +118,25 @@ No problem, we have all been poor once. Start with a simple SMTP server and use 
 <h2 id="supported-web-api-providers">> Supported web API providers</h2>
 
 <p>
-  <a href="https://sendgrid.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/sendgrid.png" alt="Sendgrid" width="240px" hspace="15" /></a>
-  <a href="https://mailgun.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/mailgun.png" alt="Mailgun" width="240px" hspace="15" /></a>
-  <a href="https://sparkpost.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/sparkpost.png" alt="Sparkpost" width="240px" hspace="15" /></a>
+  <a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="240px" hspace="15" /></a>
+  <a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="240px" hspace="15" /></a>
+  <a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="240px" hspace="15" /></a>
 </p>
 
 <p>
-  <a href="https://postmarkapp.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
-  <a href="https://mailjet.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
-  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://fab.konfer.be/cliam/images/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
+  <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/cliam/images/cliam/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
+  <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/cliam/images/cliam/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
+  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.konfer.be/cliam/images/cliam/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
 </p>
 
 <!--
 <p>
-  <a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.cliam.email/images/providers/amazon-ses.png" alt="Amazon SES" width="240px" hspace="15" /></a>
-  <a href="https://www.mailersend.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15"/></a>
-  <a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.cliam.email/images/providers/mandrill.png" alt="Mandrill" width="240px" hspace="15" /></a>
+  <a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="240px" hspace="15" /></a>
+  <a href="https://www.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15"/></a>
+  <a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="240px" hspace="15" /></a>
 </p>
 -->
 
 <h2 id="licence">> Licence</h2>
 
-[AGPL-3.0 License](https://github.com/konfer-be/cliam/blob/main/LICENSE)
+[AGPL-3.0 License](https://github.com/steve-lebleu/cliam/blob/main/LICENSE)
