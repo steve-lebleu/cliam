@@ -124,9 +124,9 @@ No problem, we have all been poor once. Start with a simple SMTP server and use 
 </p>
 
 <p>
-  <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/cliam/images/cliam/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
-  <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/cliam/images/cliam/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
-  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.konfer.be/cliam/images/cliam/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
+  <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
+  <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
+  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
 </p>
 
 <!--
