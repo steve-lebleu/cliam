@@ -42,21 +42,21 @@ class Compiler {
    */
    private readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
     { event: 'default', banner: '', default: true },
-    { event: 'event.subscribe', banner: 'https://cdn.cliam.email/images/banners/event.png', default: true },
-    { event: 'event.unsubscribe', banner: 'https://cdn.cliam.email/images/banners/event.png', default: true },
-    { event: 'event.updated', banner: 'https://cdn.cliam.email/images/banners/event.png', default: true },
-    { event: 'order.invoice', banner: 'https://cdn.cliam.email/images/banners/invoice.png' },
-    { event: 'order.progress', banner: 'https://cdn.cliam.email/images/banners/progress.png' },
-    { event: 'order.shipped', banner: 'https://cdn.cliam.email/images/banners/shhipped.png' },
-    { event: 'password.request', banner: 'https://cdn.cliam.email/images/banners/password.png', default: true },
-    { event: 'password.updated', banner: 'https://cdn.cliam.email/images/banners/password.png', default: true },
-    { event: 'user.invite', banner: 'https://cdn.cliam.email/images/banners/invite.png' },
-    { event: 'user.contact', banner: 'https://cdn.cliam.email/images/banners/contact.png', default: true },
-    { event: 'user.progress', banner: 'https://cdn.cliam.email/images/banners/progress.png' },
-    { event: 'user.survey', banner: 'https://cdn.cliam.email/images/banners/survey.png' },
-    { event: 'user.welcome', banner: 'https://cdn.cliam.email/images/banners/welcome.png', default: true },
-    { event: 'user.bye', banner: 'https://cdn.cliam.email/images/banners/leave.png', default: true },
-    { event: 'user.confirm', banner: 'https://cdn.cliam.email/images/banners/confirm.png', default: true }
+    { event: 'event.subscribe', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },
+    { event: 'event.unsubscribe', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },
+    { event: 'event.updated', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },
+    { event: 'order.invoice', banner: 'https://cdn.konfer.be/images/cliam/banners/invoice.png' },
+    { event: 'order.progress', banner: 'https://cdn.konfer.be/images/cliam/banners/progress.png' },
+    { event: 'order.shipped', banner: 'https://cdn.konfer.be/images/cliam/banners/shhipped.png' },
+    { event: 'password.request', banner: 'https://cdn.konfer.be/images/cliam/banners/password.png', default: true },
+    { event: 'password.updated', banner: 'https://cdn.konfer.be/images/cliam/banners/password.png', default: true },
+    { event: 'user.invite', banner: 'https://cdn.konfer.be/images/cliam/banners/invite.png' },
+    { event: 'user.contact', banner: 'https://cdn.konfer.be/images/cliam/banners/contact.png', default: true },
+    { event: 'user.progress', banner: 'https://cdn.konfer.be/images/cliam/banners/progress.png' },
+    { event: 'user.survey', banner: 'https://cdn.konfer.be/images/cliam/banners/survey.png' },
+    { event: 'user.welcome', banner: 'https://cdn.konfer.be/images/cliam/banners/welcome.png', default: true },
+    { event: 'user.bye', banner: 'https://cdn.konfer.be/images/cliam/banners/leave.png', default: true },
+    { event: 'user.confirm', banner: 'https://cdn.konfer.be/images/cliam/banners/confirm.png', default: true }
   ];
 
   /**
@@ -151,7 +151,7 @@ class Compiler {
    * @param event
    */
    private getBanner(event: string) {
-    return this.TEMPLATES.find(template => template.event === event).banner || 'https://cdn.cliam.email/images/default/default-thumbnail.jpg'; // 600x300
+    return this.TEMPLATES.find(template => template.event === event).banner || 'https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg'; // 600x300
   }
 
   /**
