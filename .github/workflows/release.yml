@@ -46,6 +46,28 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./reports/coverage/lcov.info
+  release:
+    name: Release on Github
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: node-modules-${{ hashfiles('**/package-lock.json') }}
+      - name: Github checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+      - name: Create release
+        uses: konfer-be/action-create-release-from-tag@v1.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
   publish:
     name: Publish on NPM
     runs-on: ubuntu-latest
@@ -69,28 +91,6 @@ jobs:
       - name: Delete unpackaged files
         run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f tsconfig.json && rm -f .env && rm -f ROADMAP.md
       - name: Publish package on NPM registery
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-  release:
-    name: Release on Github
-    runs-on: ubuntu-latest
-    needs: [ publish ]
-    steps:
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: node-modules-${{ hashfiles('**/package-lock.json') }}
-      - name: Github checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.19.0'
-      - name: Create release
-        uses: konfer-be/action-create-release-from-tag@v1.0.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: npm ci & npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

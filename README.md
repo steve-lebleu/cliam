@@ -1,6 +1,6 @@
 ![Cliam](https://cdn.konfer.be/images/cliam/assets/logo-cliam.png)
 
-![Github action workflow status](https://github.com/steve-lebleu/cliam/actions/workflows/build.yml/badge.svg?branch=master)
+![Github action workflow status](https://github.com/steve-lebleu/cliam/actions/workflows/build.yml/badge.svg?branch=main)
 [![Coverage Status](https://coveralls.io/repos/github/steve-lebleu/cliam/badge.svg?branch=main)](https://coveralls.io/github/steve-lebleu/cliam?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/steve-lebleu/cliam/badge)](https://www.codefactor.io/repository/github/steve-lebleu/cliam)
 ![GitHub Release](https://img.shields.io/github/v/release/steve-lebleu/cliam?logo=Github)
