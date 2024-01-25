@@ -33,10 +33,10 @@ module.exports = {
     "email": "contact@john-doe.com",
     "phone": "+44 20 7224 3688",
     "socials": [
-      { "name": "github", "url": "https://github.com/konfer-be/cliam" }
+      { "name": "github", "url": "https://github.com/steve-lebleu/cliam" }
     ],
     "theme": {
-      "logo": "https://cdn.cliam.email/images/logo-cliam.png",
+      "logo": "https://cdn.konfer.be/images/cliam/assets/logo-cliam.png",
       "primaryColor": "5bd1d7",
       "secondaryColor": "348498",
       "tertiaryColor": "004d61",

@@ -1,10 +1,10 @@
 import * as sparkpostTransport from 'nodemailer-sparkpost-transport';
 import * as mailgunTransport from 'nodemailer-mailgun-transport';
 import * as mandrillTransport from 'nodemailer-mandrill-transport';
-import * as postmarkTransport from 'nodemailer-postmark-transport';
+import PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
 import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
-import * as mailjetTransport from 'node-mailjet';
+import Mailjet from 'node-mailjet';
 
 import { createTransport } from 'nodemailer';
 
@@ -12,8 +12,6 @@ import { Transporter as TransporterType } from '../types/types/transporter.type'
 import { TRANSPORTER } from '../types/enums/transporter.enum';
 
 import { Smtp } from '../classes/smtp.class';
-import { SendingResponse } from '../classes/sending-response.class';
-import { SendingError } from '../classes/sending-error.class';
 
 import { Transporter } from './transporter.class';
 import { SmtpTransporter } from './smtp/smtp.class';
@@ -50,19 +48,11 @@ export class TransporterFactory {
         }) as unknown;
         return new MailgunTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.mailjet:
-        TransporterFactory.engine = mailjetTransport.connect(args.apiKey, args.token);
-        TransporterFactory.engine.sendMail = (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<SendingResponse|SendingError> => {
-          return TransporterFactory.engine
-            .post('send', { version : 'v3.1' })
-            .request(payload)
-            .then( (result: any) => {
-              callback(null, result);
-            })
-            .catch( (error: any) => {
-              callback(error, null);
-            });
-        }
-        return new MailjetTransporter(TransporterFactory.engine)
+        TransporterFactory.engine = new Mailjet({
+          apiKey: args.apiKey,
+          apiToken: args.token
+        }) as unknown;
+        return new MailjetTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.mandrill:
         TransporterFactory.engine = mandrillTransport({
           auth : {
@@ -71,7 +61,7 @@ export class TransporterFactory {
         }) as unknown;
         return new MandrillTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.postmark:
-        TransporterFactory.engine = postmarkTransport({
+        TransporterFactory.engine = PostmarkTransport({
           auth: {
             apiKey: args.apiKey
           }

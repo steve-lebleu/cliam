@@ -1,4 +1,4 @@
-const { base64Encode } = require( process.cwd() + '/lib/utils/string.util' );
+const { base64Encode } = require( process.cwd() + '/dist/utils/string.util' );
 
 module.exports = (compiler = 'provider') => {
   return {

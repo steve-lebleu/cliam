@@ -206,8 +206,7 @@ module.exports =  {
       "prefer-arrow/prefer-arrow-functions": "error",
       "prefer-const": "error",
       "quote-props": [
-          "error",
-          "as-needed"
+          "consistent-as-needed",
       ],
       "radix": "error",
       "spaced-comment": [

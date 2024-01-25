@@ -2,9 +2,10 @@ const BlockMailer = require(process.cwd() + '/test/utils/blocks/mailer');
 
 describe('API', async () => {
 
-  // TODO sendinblue with a sandbox
+  // TODO sendinblue (+sandbox), sendgrid, brevo, ...
+  // To fix: mailjet, postmark
   // TODO sendgrid error mock
-  ['mailgun', 'mailjet', 'postmark', 'sparkpost'].forEach(provider => {
+  ['mailgun', 'sparkpost'].forEach(provider => {
     BlockMailer(provider)
   });
 

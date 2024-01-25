@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { cliamrc, api, apis } = require(process.cwd() + '/test/utils/fixtures');
-const { configurationSchema } = require(process.cwd() + '/lib/validations/configuration.validation');
+const { configurationSchema } = require(process.cwd() + '/dist/validations/configuration.validation');
 
 const chance = require('chance').Chance();
 

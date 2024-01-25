@@ -26,10 +26,10 @@ module.exports = (provider) => {
 
       writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cfg, null, 2), { encoding: 'utf-8' });
 
-      Container = require(process.cwd() + '/lib/services/container.service');
+      Container = require(process.cwd() + '/dist/services/container.service');
       Container.Container.set();
   
-      Mailer = require(process.cwd() + '/lib/services/mailer.service');
+      Mailer = require(process.cwd() + '/dist/services/mailer.service');
       Mailer.Mailer.transporter = Container.Container.transporter;
   
     });

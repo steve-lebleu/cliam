@@ -80,6 +80,7 @@ credentials.js
 
 # Generated lib
 lib/
+dist/
 
 # Test configuration
 .cliamrc.json

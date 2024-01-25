@@ -46,7 +46,7 @@ describe('SMTP', function() {
     writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
 
     /* IMPORTANT Make sure anything that uses nodemailer is loaded here, after it is mocked just above... */
-    Cliam = require(process.cwd() + '/lib/classes/cliam.class').Cliam;
+    Cliam = require(process.cwd() + '/dist/classes/cliam.class').Cliam;
 
   });
 
