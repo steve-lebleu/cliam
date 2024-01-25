@@ -12,13 +12,13 @@ jobs:
           path: '**/node_modules'
           key: node-modules-${{ hashfiles('**/package-lock.json') }}
       - name: Github checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup node.js environment
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: '16.6.2'
+          node-version: '18.19.0'
       - name: Install NPM dependencies
-        run: npm i typescript@4.5.4 -g && npm i
+        run: npm i typescript@5.3.3 -g && npm i
       - name: Compile Typescript files
         run: tsc
       - name: Create .env file
