@@ -70,8 +70,8 @@ const configurationSchema = Joi.object({
           switch: [
             {
               is: Joi.any().valid(TRANSPORTER.mailgun).required(),
-              then: Joi.string().regex(/^key-[a-z-0-9]{32}$/)
-              // then: Joi.string().regex(/^[a-z-0-9]{32}-[a-z-0-9]{8}-[a-z-0-9]{8}$/)
+              // then: Joi.string().regex(/^key-[a-z-0-9]{32}$/)
+              then: Joi.string().regex(/^[a-z-0-9]{32}-[a-z-0-9]{8}-[a-z-0-9]{8}$/)
             },
             {
               is: Joi.any().valid(TRANSPORTER.mailjet).required(),
