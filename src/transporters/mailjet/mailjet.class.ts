@@ -145,6 +145,7 @@ export class MailjetTransporter extends Transporter implements ITransporter {
    * @param error Error from Mailgun API
    */
   error(error: IMailjetError): SendingError {
+    console.log(error)
     const err = JSON.parse(error.response.res.text) as { ErrorMessage?: string, Messages?: IMailjetErrorMessage[] };
     const messages = err.ErrorMessage ? err.ErrorMessage : getMailjetErrorMessages(err.Messages);
     return new SendingError(error.statusCode, error.ErrorMessage, Array.isArray(messages) ? messages: [messages] );
