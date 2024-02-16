@@ -1,10 +1,10 @@
 import * as sparkpostTransport from 'nodemailer-sparkpost-transport';
 import * as mailgunTransport from 'nodemailer-mailgun-transport';
 import * as mandrillTransport from 'nodemailer-mandrill-transport';
-import PostmarkTransport from 'nodemailer-postmark-transport';
+import * as PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
 import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
-import Mailjet from 'node-mailjet';
+import * as Mailjet from 'node-mailjet';
 
 import { createTransport } from 'nodemailer';
 
@@ -48,9 +48,9 @@ export class TransporterFactory {
         }) as unknown;
         return new MailgunTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.mailjet:
-        TransporterFactory.engine = new Mailjet({
+        TransporterFactory.engine = new Mailjet.Client({
           apiKey: args.apiKey,
-          apiToken: args.token
+          apiSecret: args.token
         }) as unknown;
         return new MailjetTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.mandrill:
@@ -61,12 +61,10 @@ export class TransporterFactory {
         }) as unknown;
         return new MandrillTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.postmark:
-        TransporterFactory.engine = PostmarkTransport({
-          auth: {
-            apiKey: args.apiKey
-          }
-        }) as unknown
-        return new PostmarkTransporter( createTransport( TransporterFactory.engine ) );
+        TransporterFactory.engine = PostmarkTransport.PostmarkTransport;
+        return new PostmarkTransporter( createTransport( new TransporterFactory.engine({
+          auth: { apiKey: args.apiKey }
+        }) ) );
       case TRANSPORTER.sendgrid :
         TransporterFactory.engine = sendgridTransport({
           apiKey: args.apiKey
@@ -104,6 +102,5 @@ export class TransporterFactory {
         }) as unknown;
         return new SparkpostTransporter( createTransport( TransporterFactory.engine ) );
     }
-
   }
 }

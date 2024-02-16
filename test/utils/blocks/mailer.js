@@ -1,18 +1,24 @@
 const { expect } = require('chai');
 const { writeFileSync } = require('fs');
 
+
 const { cliamrc, apis, requestPayload } = require(process.cwd() + '/test/utils/fixtures');
 
 module.exports = (provider) => {
 
-  let Mailer, Container, mockery, nodemailerMock;
+  let Mailer, Container, mockery, nodemailerMock, rewiremock;
 
   describe(`[${provider}]`, () => {
 
     beforeEach( () => {
 
+
+
+
       mockery = require('mockery');
+
       nodemailerMock = nodemailerMock || require('nodemailer-mock');
+
 
       mockery.enable({
         warnOnReplace: false,
