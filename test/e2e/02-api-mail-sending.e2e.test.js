@@ -6,8 +6,8 @@ describe('API', async () => {
   // Mailjet: timeout nodemailer-mock failure
   // sendgrid nodemailer-mock failure in SendingError
   // sendinblue timeout nodemailer-mock failure
-  // ['mailgun', 'sparkpost', 'mailjet', 'postmark', 'sendgrid', ''].forEach(provider => {
-  ['mailgun', 'sparkpost', 'postmark'].forEach(provider => {
+  // ['mailjet', 'sendgrid', 'sendinblue'].forEach(provider => {
+  ['mailgun', 'sparkpost', 'postmark', 'mailjet'].forEach(provider => {
     BlockMailer(provider)
   });
 

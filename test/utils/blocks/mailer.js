@@ -12,13 +12,9 @@ module.exports = (provider) => {
 
     beforeEach( () => {
 
-
-
-
       mockery = require('mockery');
 
-      nodemailerMock = nodemailerMock || require('nodemailer-mock');
-
+      nodemailerMock = require('nodemailer-mock');
 
       mockery.enable({
         warnOnReplace: false,
@@ -32,11 +28,11 @@ module.exports = (provider) => {
 
       writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cfg, null, 2), { encoding: 'utf-8' });
 
-      Container = require(process.cwd() + '/dist/services/container.service');
-      Container.Container.set();
+      Container = require(process.cwd() + '/dist/services/container.service').Container;
+      Container.set();
   
-      Mailer = require(process.cwd() + '/dist/services/mailer.service');
-      Mailer.Mailer.transporter = Container.Container.transporter;
+      Mailer = require(process.cwd() + '/dist/services/mailer.service').Mailer;
+      Mailer.transporter = Container.transporter;
   
     });
 
@@ -76,7 +72,7 @@ module.exports = (provider) => {
               const params = requestPayload();
               delete params.content;
 
-              const response = await Mailer.Mailer.send( event, params ).catch(e => { console.log('err', e);})
+              const response = await Mailer.send( event, params ).catch(e => { console.log('err', e);})
               
               expect(response.statusCode).to.be.eqls(202);
 
@@ -96,7 +92,7 @@ module.exports = (provider) => {
               const params = requestPayload();
               delete params.data;
 
-              const response = await Mailer.Mailer.send( event, params )
+              const response = await Mailer.send( event, params )
               
               expect(response.statusCode).to.be.eqls(202);
 
@@ -120,7 +116,7 @@ module.exports = (provider) => {
             const params = requestPayload();
             delete params.content;
             
-            await Mailer.Mailer.send(event, params).catch(err => {
+            await Mailer.send(event, params).catch(err => {
               expect(err).to.be.an('object');
               expect(err).to.haveOwnProperty('statusCode');
               expect(err).to.haveOwnProperty('statusText');
@@ -139,13 +135,12 @@ module.exports = (provider) => {
 
         it(`202 - ${event}`, async() => {
           
-          Container.Container.configuration.mode.api.templates = {};
+          Container.configuration.mode.api.templates = {};
 
           const params = requestPayload();
           delete params.content;
-          
-          const response = await Mailer.Mailer.send(event, params)
-          
+          const response = await Mailer.send(event, params).catch(e => { console.log('err', e); })
+      
           expect(response.statusCode).to.be.eqls(202);
 
           if ( ![ 'mailjet' ].includes(provider) ) {

@@ -50,7 +50,12 @@ export class TransporterFactory {
       case TRANSPORTER.mailjet:
         TransporterFactory.engine = new Mailjet.Client({
           apiKey: args.apiKey,
-          apiSecret: args.token
+          apiSecret: args.token,
+          config: {
+            host: 'api.mailjet.com',
+            version: 'v3.1',
+            output: 'json',
+          }
         }) as unknown;
         return new MailjetTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.mandrill:

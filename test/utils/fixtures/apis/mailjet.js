@@ -15,7 +15,7 @@ module.exports = {
     "user.invite": "953274",
     "user.progress": "953274",
     "user.survey": "953274",
-    "user.welcome": "953274",
+    "user.welcome": "5704402",
     "order.invoice": "953274",
     "order.progress": "953274",
     "order.shipped": "953274",
