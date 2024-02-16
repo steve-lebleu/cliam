@@ -43,8 +43,6 @@ export class PostmarkTransporter extends Transporter {
   build({...args}: IBuildable): IPostmarkBody {
 
     const { payload, templateId, body } = args;
-    
-    const tmpId = payload.meta.templateId || parseInt(templateId, 10) ;
 
     const output: IPostmarkBody = {
       from: this.address(payload.meta.from),
@@ -57,7 +55,7 @@ export class PostmarkTransporter extends Transporter {
       case COMPILER.provider:
         Object.assign(output, {
           templateModel: payload.data,
-          [isNaN(tmpId as number) ? 'templateAlias' : 'templateId']: tmpId
+          templateId: parseInt(templateId, 10),
         });
         break;
       case COMPILER.default:
