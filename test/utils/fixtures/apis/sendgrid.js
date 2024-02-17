@@ -4,21 +4,21 @@ module.exports = {
     "apiKey": process.env.SENDGRID_API_KEY
   },
   "templates" : {
-    "default": "d-cf5e5140285644998172dc46d7da9121",
-    "event.subscribe": "d-cf5e5140285644998172dc46d7da9121",
-    "event.unsubscribe": "d-cf5e5140285644998172dc46d7da9121",
-    "event.updated": "d-cf5e5140285644998172dc46d7da9121",
-    "user.bye": "d-cf5e5140285644998172dc46d7da9121",
-    "user.confirm": "d-cf5e5140285644998172dc46d7da9121",
-    "user.contact": "d-cf5e5140285644998172dc46d7da9121",
-    "user.invite": "d-cf5e5140285644998172dc46d7da9121",
-    "user.progress": "d-cf5e5140285644998172dc46d7da9121",
-    "user.survey": "d-cf5e5140285644998172dc46d7da9121",
-    "user.welcome": "d-cf5e5140285644998172dc46d7da9121",
-    "order.invoice": "d-cf5e5140285644998172dc46d7da9121",
-    "order.progress": "d-cf5e5140285644998172dc46d7da9121",
-    "order.shipped": "d-cf5e5140285644998172dc46d7da9121",
-    "password.request": "d-cf5e5140285644998172dc46d7da9121",
-    "password.updated": "d-cf5e5140285644998172dc46d7da9121"
+    "default": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "event.subscribe": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "event.unsubscribe": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "event.updated": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.bye": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.confirm": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.contact": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.invite": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.progress": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.survey": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "order.invoice": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "order.progress": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "order.shipped": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "password.request": "d-321bb40f548e4db8a628b4d6464ebacc",
+    "password.updated": "d-321bb40f548e4db8a628b4d6464ebacc"
   }
 }

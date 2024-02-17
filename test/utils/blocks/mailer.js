@@ -139,7 +139,7 @@ module.exports = (provider) => {
 
           const params = requestPayload();
           delete params.content;
-          const response = await Mailer.send(event, params).catch(e => { console.log('err', e); })
+          const response = await Mailer.send(event, params)//.catch(e => { console.log('err', e); })
       
           expect(response.statusCode).to.be.eqls(202);
 

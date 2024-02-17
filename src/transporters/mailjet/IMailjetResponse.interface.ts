@@ -1,19 +1,17 @@
 export interface IMailjetResponse {
   response: {
-    body: Record<string,unknown>,
-    res: {
-      connection: {
-        servername: string
-      },
+    config: {
+      url: string,
+      method: string,
       headers: Record<string,unknown>,
-      httpVersion: string,
-      statusMessage: string,
-      req: {
-        path: string
-      }
+      data: string,
     },
-    req: {
-      method: string
+    request: {
+      res: {
+        httpVersion: string
+      }
     }
+    status: number,
+    statusText: string
   }
 }

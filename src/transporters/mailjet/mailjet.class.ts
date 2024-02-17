@@ -91,7 +91,6 @@ export class MailjetTransporter extends Transporter implements ITransporter {
         })
       });
     }
-
     return output;
   }
 
@@ -128,13 +127,13 @@ export class MailjetTransporter extends Transporter implements ITransporter {
     const res = new SendingResponse();
 
     res
-      .set('uri', `${incoming.res.connection.servername} ${incoming.res.req.path}`)
-      .set('httpVersion', incoming.res.httpVersion)
-      .set('headers', incoming.res.headers)
-      .set('method', incoming.req.method)
-      .set('body', incoming.body)
-      .set('statusCode', 202)
-      .set('statusMessage', incoming.res.statusMessage);
+      .set('uri', `${incoming.config.url}`)
+      .set('httpVersion', incoming.request.res.httpVersion)
+      .set('headers', incoming.config.headers)
+      .set('method', incoming.config.method)
+      .set('body', incoming.config.data)
+      .set('statusCode', incoming.status === 200 ? 202 : incoming.status)
+      .set('statusMessage', incoming.statusText);
 
     return res;
   }
@@ -145,7 +144,6 @@ export class MailjetTransporter extends Transporter implements ITransporter {
    * @param error Error from Mailgun API
    */
   error(error: IMailjetError): SendingError {
-    console.log(error)
     const err = JSON.parse(error.response.res.text) as { ErrorMessage?: string, Messages?: IMailjetErrorMessage[] };
     const messages = err.ErrorMessage ? err.ErrorMessage : getMailjetErrorMessages(err.Messages);
     return new SendingError(error.statusCode, error.ErrorMessage, Array.isArray(messages) ? messages: [messages] );

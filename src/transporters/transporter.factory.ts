@@ -4,7 +4,7 @@ import * as mandrillTransport from 'nodemailer-mandrill-transport';
 import * as PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
 import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
-import * as Mailjet from 'node-mailjet';
+import * as mailjetTransport from 'node-mailjet';
 
 import { createTransport } from 'nodemailer';
 
@@ -22,6 +22,8 @@ import { MandrillTransporter } from './mandrill/mandrill.class';
 import { MailgunTransporter } from './mailgun/mailgun.class';
 import { MailjetTransporter } from './mailjet/mailjet.class';
 import { PostmarkTransporter } from './postmark/postmark.class';
+import { SendingResponse } from 'classes/sending-response.class';
+import { SendingError } from 'classes/sending-error.class';
 
 /**
  * @description
@@ -48,16 +50,19 @@ export class TransporterFactory {
         }) as unknown;
         return new MailgunTransporter( createTransport( TransporterFactory.engine ) );
       case TRANSPORTER.mailjet:
-        TransporterFactory.engine = new Mailjet.Client({
-          apiKey: args.apiKey,
-          apiSecret: args.token,
-          config: {
-            host: 'api.mailjet.com',
-            version: 'v3.1',
-            output: 'json',
-          }
-        }) as unknown;
-        return new MailjetTransporter( createTransport( TransporterFactory.engine ) );
+        TransporterFactory.engine = new mailjetTransport.Client({ apiKey: args.apiKey, apiSecret: args.token });
+        TransporterFactory.engine.sendMail = async (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<SendingResponse|SendingError> => {
+          return TransporterFactory.engine
+            .post('send', { version : 'v3.1' })
+            .request(payload)
+            .then( (result: any) => {
+              callback(null, result);
+            })
+            .catch( (error: any) => {
+              callback(error, null);
+            });
+        }
+        return new MailjetTransporter( TransporterFactory.engine );
       case TRANSPORTER.mandrill:
         TransporterFactory.engine = mandrillTransport({
           auth : {
