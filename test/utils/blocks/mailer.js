@@ -6,7 +6,7 @@ const { cliamrc, apis, requestPayload } = require(process.cwd() + '/test/utils/f
 
 module.exports = (provider) => {
 
-  let Mailer, Container, mockery, nodemailerMock, rewiremock;
+  let Mailer, Container, mockery, nodemailerMock;
 
   describe(`[${provider}]`, () => {
 
