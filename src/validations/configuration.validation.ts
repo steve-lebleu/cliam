@@ -7,25 +7,7 @@ import { TRANSPORTER } from '../types/enums/transporter.enum';
 import { SOCIAL_NETWORK } from '../types/enums/social-network.enum';
 
 const configurationSchema = Joi.object({
-  sandbox: Joi.object({
-    active: Joi.boolean().default(false),
-    from: Joi.when('active', {
-      is: true,
-      then: Joi.object({
-        name: Joi.string().max(48).required(),
-        email: Joi.string().email().required()
-      }).required(),
-      otherwise: Joi.optional()
-    }),
-    to: Joi.when('active', {
-      is: true,
-      then: Joi.object({
-        name: Joi.string().max(48).required(),
-        email: Joi.string().email().required()
-      }).required(),
-      otherwise: Joi.optional()
-    })
-  }),
+  sandbox: Joi.boolean().default(false),
   consumer: Joi.object({
     domain: Joi.string().uri().required(),
     company: Joi.string().required(),

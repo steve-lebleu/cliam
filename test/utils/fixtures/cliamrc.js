@@ -1,15 +1,5 @@
 module.exports = {
-  "sandbox": {
-    "active": true,
-    "from": {
-      "name": "Edgar Allan Poe",
-      "email": process.env.EMAIL_FROM
-    },
-    "to": {
-      "name": "John Doe",
-      "email": process.env.EMAIL_TO
-    }
-  },
+  "sandbox": true,
   "consumer": {
     "company": "My Company",
     "domain": "https://www.my-company.com",

@@ -8,17 +8,7 @@ import { Transporter } from './../types/types/transporter.type';
  */
 class ClientConfiguration {
 
-  sandbox?: {
-    active: boolean
-    from: {
-      name: string
-      email: string
-    },
-    to: {
-      name: string
-      email: string
-    }
-  }
+  sandbox?: boolean
 
   consumer: Consumer
 

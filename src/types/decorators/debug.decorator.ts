@@ -30,7 +30,7 @@ const Debug = ( transporter: string ): any => {
         }
       };
       if (output) {
-        if (Container.configuration?.sandbox?.active) {
+        if (Container.configuration?.sandbox) {
           switch(transporter) {
             case TRANSPORTER.mailgun:
               Object.assign(output, { testmode: true })
@@ -44,21 +44,19 @@ const Debug = ( transporter: string ): any => {
                   }
                 }
               });
-              output.Messages[0].From = { Email: Container.configuration.sandbox.from.email, Name: Container.configuration.sandbox.from.name };
               break;
             case TRANSPORTER.postmark:
-              output.from = `${Container.configuration.sandbox.from.name} ${Container.configuration.sandbox.from.email}`;
               output.to = [].concat(output.to).map( (recipient) => {
-                return `${Container.configuration.sandbox.to.name} ${Container.configuration.sandbox.to.email}`;
+                return `John Doe test@blackhole.postmarkapp.com`;
               });
               if(output.cc) {
                 output.cc = [].concat(output.cc).map( (recipient) => {
-                  return `${Container.configuration.sandbox.to.name} ${Container.configuration.sandbox.to.email}`;
+                  return `John Doe test@blackhole.postmarkapp.com`;
                 });
               }
               if(output.bcc) {
                 output.bcc = [].concat(output.bcc).map( (recipient) => {
-                  return `${Container.configuration.sandbox.to.name} ${Container.configuration.sandbox.to.email}`;
+                  return `John Doe test@blackhole.postmarkapp.com`;
                 });
               }
               break;
@@ -82,10 +80,7 @@ const Debug = ( transporter: string ): any => {
               Object.assign(output, {
                 options: {
                   sandbox: true
-                },
-                content: {
-                  from: Container.configuration.sandbox.to.email
-                }
+                },             
               });
               break;
           }

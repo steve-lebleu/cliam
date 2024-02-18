@@ -4,21 +4,21 @@ module.exports = {
     "apiKey": process.env.POSTMARK_API_KEY
   },
   "templates" : {
-    "default": "13124851",
-    "event.subscribe": "13124851",
-    "event.unsubscribe": "13124851",
-    "event.updated": "13124851",
-    "user.bye": "13124851",
-    "user.confirm": "13124851",
-    "user.contact": "13124851",
-    "user.invite": "13124851",
-    "user.progress": "13124851",
-    "user.survey": "13124851",
-    "user.welcome": "13124851",
-    "order.invoice": "13124851",
-    "order.progress": "13124851",
-    "order.shipped": "13124851",
-    "password.request": "13124851",
-    "password.updated": "13124851"
+    "default": "23106974",
+    "event.subscribe": "23106974",
+    "event.unsubscribe": "23106974",
+    "event.updated": "23106974",
+    "user.bye": "23106974",
+    "user.confirm": "23106974",
+    "user.contact": "23106974",
+    "user.invite": "23106974",
+    "user.progress": "23106974",
+    "user.survey": "23106974",
+    "user.welcome": "23106974",
+    "order.invoice": "23106974",
+    "order.progress": "23106974",
+    "order.shipped": "23106974",
+    "password.request": "23106974",
+    "password.updated": "23106974"
   }
 }

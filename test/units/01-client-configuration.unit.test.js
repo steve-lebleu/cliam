@@ -18,40 +18,8 @@ describe('Client configuration', () => {
       payload = JSON.parse( JSON.stringify(cliamrc) );
     });
 
-    ['from', 'to'].forEach(property => {
-
-      it(`error - ${property}.name is required if sandbox active`, (done) => {
-        payload.sandbox[property] = { name: null, email : null };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.name" must be a string`);
-        done();
-      });
-  
-      it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
-        payload.sandbox[property] = { name: chance.string({ length: 49 }), email : null };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.name" length must be less than or equal to 48 characters long`);
-        done();
-      });
-
-      it(`error - ${property}.address is required if sandbox active`, (done) => {
-        payload.sandbox[property] = { name: 'Yoda', email : null };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.email" must be a string`);
-        done();
-      });
-  
-      it(`error - ${property}.address should be a valid email address`, (done) => {
-        payload.sandbox[property] = { name: 'Yoda', email : 'Yoda' };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.email" must be a valid email`);
-        done();
-      });
-
-    });
-
     it(`success - let sandbox inactive by default`, (done) => {
-      payload.sandbox.active = undefined;
+      payload.sandbox = undefined;
       const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
       expect(error).to.be.undefined;
       done();
