@@ -209,6 +209,34 @@ module.exports = {
       }
     },
     {
+      "id": "mailersend-api",
+      "mode": "api",
+      "provider": "mailersend",
+      "auth": {
+        "apiKey": process.env.MAILERSEND_API_KEY,
+      },
+      "options": {
+        "templates": {
+          "default": "0p7kx4xdn18l9yjr",
+          "event.subscribe": "0p7kx4xdn18l9yjr",
+          "event.unsubscribe": "0p7kx4xdn18l9yjr",
+          "event.updated": "0p7kx4xdn18l9yjr",
+          "user.bye": "0p7kx4xdn18l9yjr",
+          "user.confirm": "0p7kx4xdn18l9yjr",
+          "user.contact": "0p7kx4xdn18l9yjr",
+          "user.invite": "0p7kx4xdn18l9yjr",
+          "user.progress": "0p7kx4xdn18l9yjr",
+          "user.survey": "0p7kx4xdn18l9yjr",
+          "user.welcome": "0p7kx4xdn18l9yjr",
+          "order.invoice": "0p7kx4xdn18l9yjr",
+          "order.progress": "0p7kx4xdn18l9yjr",
+          "order.shipped": "0p7kx4xdn18l9yjr",
+          "password.request": "0p7kx4xdn18l9yjr",
+          "password.updated": "0p7kx4xdn18l9yjr"
+        }
+      }
+    },
+    {
       "id": "sparkpost-api",
       "mode": "api",
       "provider": "sparkpost",

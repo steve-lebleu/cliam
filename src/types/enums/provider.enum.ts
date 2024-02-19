@@ -3,6 +3,7 @@
  */
 export enum PROVIDER {
   brevo = 'brevo',
+  mailersend = 'mailersend',
   mailgun = 'mailgun',
   mailjet = 'mailjet',
   mandrill = 'mandrill',

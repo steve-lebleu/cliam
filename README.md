@@ -146,6 +146,7 @@ No problem, we have all been poor once. Start with a simple SMTP server and use 
 
 <p>
   <a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="240px" hspace="15" /></a>
+  <a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15" /></a>
 </p>
 
 <!--
