@@ -5,6 +5,7 @@ import * as PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
 import * as mailjetTransport from 'node-mailjet';
 import * as brevoTransport from 'nodemailer-brevo-transport';
+import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
 
 import { createTransport } from 'nodemailer';
 
@@ -21,6 +22,7 @@ import { MandrillTransporter } from './mandrill/mandrill.class';
 import { MailgunTransporter } from './mailgun/mailgun.class';
 import { MailjetTransporter } from './mailjet/mailjet.class';
 import { PostmarkTransporter } from './postmark/postmark.class';
+import { SendinblueTransporter } from './sendinblue/sendinblue.class';
 import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
 
 /**
@@ -53,6 +55,14 @@ export class TransporterFactory {
     }
 
     switch(args.provider) {
+
+      case PROVIDER.brevo:
+
+        TransporterFactory.engine = brevoTransport;
+        return new BrevoTransporter( createTransport( new TransporterFactory.engine({
+          apiKey: args.auth.apiKey
+        }) ) );
+
       case PROVIDER.mailgun:
         
         return new MailgunTransporter( createTransport( mailgunTransport({
@@ -100,14 +110,15 @@ export class TransporterFactory {
         return new SendgridTransporter( createTransport( sendgridTransport({
           apiKey: args.auth.apiKey
         }) ) );
-
-      case PROVIDER.brevo:
-
-        TransporterFactory.engine = brevoTransport;
-        return new BrevoTransporter( createTransport( new TransporterFactory.engine({
-          apiKey: args.auth.apiKey
-        }) ) );
       
+      case PROVIDER.sendinblue :
+
+        TransporterFactory.engine = sendinblueTransport({
+          apiKey: args.auth.apiKey,
+          apiUrl: 'https://api.sendinblue.com/v3/smtp'
+        });
+        return new SendinblueTransporter( createTransport( TransporterFactory.engine ) );
+
       case PROVIDER.sparkpost :
 
         return new SparkpostTransporter( createTransport( sparkpostTransport({

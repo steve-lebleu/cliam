@@ -101,6 +101,10 @@ const configurationSchema = Joi.object({
               then: Joi.string().regex(/^[a-z-0-9]{40}$/)
             },
             {
+              is: Joi.any().valid(PROVIDER.sendinblue).required(),
+              then: Joi.string().regex(/^xkeysib-[a-z-0-9]{64}-[a-z-A-Z-0-9]{16}$/)
+            },
+            {
               is: Joi.any().valid(PROVIDER.brevo).required(),
               then: Joi.string().regex(/^xkeysib-[a-z-0-9]{64}-[a-z-A-Z-0-9]{16}$/)
             },
@@ -151,6 +155,10 @@ const configurationSchema = Joi.object({
                   },
                   {
                     is: Joi.any().valid(PROVIDER.brevo).required(),
+                    then: Joi.number()
+                  },
+                  {
+                    is: Joi.any().valid(PROVIDER.sendinblue).required(),
                     then: Joi.number()
                   },
                   {

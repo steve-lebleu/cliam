@@ -1,4 +1,4 @@
 /**
  * @description
  */
-export type Provider = 'sparkpost' | 'sendgrid' | 'brevo' | 'mandrill' | 'mailgun' | 'mailjet' | 'postmark';
+export type Provider = 'brevo' | 'mailgun' | 'mailjet' | 'mandrill' | 'postmark' | 'sendgrid' | 'sendinblue' | 'sparkpost';

@@ -10,7 +10,7 @@ import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
 import { mailSchema } from './../validations/mail.validation';
 import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
-import { MODE } from 'types/enums/mode.enum';
+import { MODE } from '../types/enums/mode.enum';
 
 /**
  * @description Manage incoming mail requests
