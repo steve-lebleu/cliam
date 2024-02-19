@@ -9,6 +9,8 @@ import { IBuildable } from './../types/interfaces/IBuildable.interface';
 import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
 import { mailSchema } from './../validations/mail.validation';
+import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
+import { MODE } from '../types/enums/mode.enum';
 
 /**
  * @description Manage incoming mail requests
@@ -18,25 +20,16 @@ class Mailer {
   /**
    * @description
    */
-  private static instance: Mailer = null;
+  configuration: ITransporterDefinition = null;
 
   /**
    * @description
    */
-  private transporter: Transporter = null;
+  transporter: Transporter = null;
 
-  constructor(transporter: Transporter) {
+  constructor(transporter: Transporter, configuration: ITransporterDefinition) {
     this.transporter = transporter;
-  }
-
-  /**
-   * @description
-   */
-  static get(transporter: Transporter): Mailer {
-    if(!Mailer.instance) {
-      Mailer.instance = new Mailer( transporter );
-    }
-    return Mailer.instance;
+    this.configuration = configuration;
   }
 
   /**
@@ -59,8 +52,8 @@ class Mailer {
    * @param payload
    */
   private setAddresses(payload: IPayload): void {
-    payload.meta.from = !payload.meta.from ? Container.configuration.consumer?.addresses?.from : payload.meta.from;
-    payload.meta.replyTo = !payload.meta.replyTo ? Container.configuration.consumer?.addresses?.replyTo : payload.meta.replyTo;
+    payload.meta.from = !payload.meta.from ? Container.configuration.variables.addresses.from : payload.meta.from;
+    payload.meta.replyTo = !payload.meta.replyTo ? Container.configuration.variables.addresses.replyTo : payload.meta.replyTo;
   }
 
   /**
@@ -70,7 +63,12 @@ class Mailer {
    * @param payload
    */
    private setCompiler(event: string, payload: IPayload): void {
-    payload.compiler = payload.compiler ? payload.compiler : payload.content ? COMPILER.self : this.getTemplateId(event) ? COMPILER.provider : COMPILER.default;
+    if (this.configuration.mode === MODE.smtp) {
+      payload.compiler = payload.content ? COMPILER.self : COMPILER.default;
+    }
+    if (this.configuration.mode === MODE.api) {
+      payload.compiler =  this.getTemplateId(event) ? COMPILER.provider : payload.content ? COMPILER.self : COMPILER.default;
+    }
   }
 
   /**
@@ -92,14 +90,14 @@ class Mailer {
    * @description
    */
   private getOrigin(): string {
-    return Container.configuration.consumer.domain;
+    return Container.configuration.variables.domain;
   }
 
   /**
    * @description
    */
   private getTemplateId(event: string): string {
-    return Container.configuration.mode?.api?.templates[event] as string;
+    return this.configuration.options.templates[event] as string;
   }
 
   /**
@@ -133,7 +131,5 @@ class Mailer {
 
 }
 
-const service = Mailer.get( Container.transporter );
-
-export { service as Mailer }
+export { Mailer }
 

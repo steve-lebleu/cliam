@@ -10,8 +10,14 @@ export interface IPayload {
 
   /**
    * @description
+   * @deprecated The property shouldn't be because she's can be inferred
    */
   compiler?: Compiler;
+
+  /**
+   * @description
+   */
+  transporter: string;
 
   /**
    * @description Meta data for email sending
@@ -20,7 +26,7 @@ export interface IPayload {
 
     /**
      * @description Template id to use
-     * @deprecated le template est récupéré en fonction de l'action, et du type d'email (compilé en external)
+     * @deprecated The template is retrieved regarding the action and the compilation type
      */
     templateId?: string;
 

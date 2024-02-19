@@ -20,7 +20,7 @@ class Compiler {
   /**
    * @description
    */
-  private readonly THEME = Container.configuration.consumer?.theme;
+  private readonly THEME = Container.configuration?.placeholders?.theme;
 
   /**
    * @description
@@ -116,17 +116,17 @@ class Compiler {
    */
   compile(event: string, data: Record<string,unknown>): { text: string, html: string } {
 
-    if (Container.configuration.consumer.socials) {
-      Container.configuration.consumer.socials.map(social => {
+    if (Container.configuration?.placeholders?.company?.socials) {
+      Container.configuration?.placeholders?.company?.socials.map(social => {
         social.icon = this.SOCIALS.find(s => s[social.name])[social.name];
       });
     }
 
     data.banner = this.getBanner(event);
 
-    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
+    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(Container.configuration?.placeholders?.company))
     Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
-    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(Container.configuration.consumer))
+    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(Container.configuration?.placeholders?.company))
 
     const html = Hbs.handlebars.compile( readFileSync(`${__dirname}${this.LAYOUT}`, { encoding: 'utf-8' } ) )(data);
 

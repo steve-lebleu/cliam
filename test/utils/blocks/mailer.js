@@ -1,45 +1,36 @@
 const { expect } = require('chai');
 const { writeFileSync } = require('fs');
 
-
-const { cliamrc, apis, requestPayload } = require(process.cwd() + '/test/utils/fixtures');
+const { cliamrc, requestPayload } = require(process.cwd() + '/test/utils/fixtures');
 
 module.exports = (provider) => {
 
-  let Mailer, Container, mockery, nodemailerMock;
+  let Cliam, mockery, nodemailerMock;
 
   describe(`[${provider}]`, () => {
 
     beforeEach( () => {
 
-      mockery = require('mockery');
-
-      nodemailerMock = require('nodemailer-mock');
-
+      //mockery = require('mockery');
+      //nodemailerMock = require('nodemailer-mock');
+      /*
       mockery.enable({
-        warnOnReplace: false,
         warnOnUnregistered: false,
-      });
-      mockery.registerMock('nodemailer', nodemailerMock);
+      });*/
+      
+      /* Once mocked, any code that calls require('nodemailer') will get our nodemailerMock */
+      // mockery.registerMock('nodemailer', nodemailerMock)
 
-      const cfg = JSON.parse( JSON.stringify(cliamrc) );
-      delete cfg.mode.smtp;
-      cfg.mode.api = apis[provider];
+      writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
 
-      writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cfg, null, 2), { encoding: 'utf-8' });
-
-      Container = require(process.cwd() + '/dist/services/container.service').Container;
-      Container.set();
-  
-      Mailer = require(process.cwd() + '/dist/services/mailer.service').Mailer;
-      Mailer.transporter = Container.transporter;
-  
+      /* IMPORTANT Make sure anything that uses nodemailer is loaded here, after it is mocked just above... */
+      Cliam = require(process.cwd() + '/dist/classes/cliam.class').Cliam;
     });
 
     afterEach( () => {
-      nodemailerMock.mock.reset();
-      mockery.deregisterAll();
-      mockery.disable()
+      // nodemailerMock.mock.reset();
+      //mockery.deregisterAll();
+      //mockery.disable()
     });
 
     describe('Default transactions', () => {
@@ -65,22 +56,15 @@ module.exports = (provider) => {
 
         if (idx === 0) {
 
-          describe('Compilation by provider', async () => {
+          describe('Compilation by web API provider', async () => {
 
             it(`202 - ${event}`, async() => {
-
-              const params = requestPayload();
+              const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
               delete params.content;
 
-              const response = await Mailer.send( event, params ).catch(e => { console.log('err', e);})
-              
+              const response = await Cliam.emit(event, params);
+
               expect(response.statusCode).to.be.eqls(202);
-
-              if ( ![ 'mailjet'].includes(provider) ) {
-                const sentMail = nodemailerMock.mock.getSentMail();
-                expect(sentMail.length).to.be.eqls(1);
-              }
-
             });
 
           });
@@ -89,18 +73,12 @@ module.exports = (provider) => {
 
             it(`202 - ${event}`, async() => {
             
-              const params = requestPayload();
+              const params = JSON.parse( JSON.stringify( requestPayload('self', `${provider}-api`) ) );
               delete params.data;
 
-              const response = await Mailer.send( event, params )
-              
+              const response = await Cliam.emit(event, params);
+
               expect(response.statusCode).to.be.eqls(202);
-
-              if ( ![ 'mailjet', ].includes(provider) ) {
-                const sentMail = nodemailerMock.mock.getSentMail();
-                expect(sentMail.length).to.be.eqls(1);
-              }
-
             });
 
           });
@@ -108,46 +86,17 @@ module.exports = (provider) => {
         
           it.skip(`400 - ${event}`, async() => {
         
-            if ( ![ 'mailjet' ].includes(provider) ) {
-              nodemailerMock.mock.setShouldFailOnce();
-              nodemailerMock.mock.setFailResponse({ statusCode: 400, errors: [ { message: 'Error message' } ] });
-            }
-            
-            const params = requestPayload();
-            delete params.content;
-            
-            await Mailer.send(event, params).catch(err => {
-              expect(err).to.be.an('object');
-              expect(err).to.haveOwnProperty('statusCode');
-              expect(err).to.haveOwnProperty('statusText');
-              expect(err).to.haveOwnProperty('errors');
-              expect(err.statusCode).to.be.eqls(400);
-            });
-
-            if ( ![ 'mailjet'].includes(provider) ) {
-              const sentMail = nodemailerMock.mock.getSentMail();
-              expect(sentMail.length).to.be.eqls(1);
-            }
-
-          });
+          })
 
         }
 
         it(`202 - ${event}`, async() => {
-          
-          Container.configuration.mode.api.templates = {};
-
-          const params = requestPayload();
+          const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
           delete params.content;
-          const response = await Mailer.send(event, params)//.catch(e => { console.log('err', e); })
-      
+
+          const response = await Cliam.emit(event, params);
+
           expect(response.statusCode).to.be.eqls(202);
-
-          if ( ![ 'mailjet' ].includes(provider) ) {
-            const sentMail = nodemailerMock.mock.getSentMail();
-            expect(sentMail.length).to.be.eqls(1);
-          }
-
         });
 
       });

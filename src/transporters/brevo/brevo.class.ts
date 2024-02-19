@@ -47,13 +47,12 @@ export class BrevoTransporter extends Transporter {
 
     const output = {
       headers: {
-        'api-key': Container.configuration.mode?.api.credentials.apiKey,
         'content-type': 'application/json',
         'accept': 'application/json'
       },
       to: this.addresses(payload.meta.to),
-      from: this.address(payload.meta.from),
-      replyTo: this.address(payload.meta.replyTo),
+      from: payload.meta.from,
+      'reply-to': this.address(payload.meta.replyTo),
       subject: payload.meta.subject
     };
 
@@ -113,8 +112,8 @@ export class BrevoTransporter extends Transporter {
    *
    * @param recipients Entries to format as email address
    */
-  addresses(recipients: Array<string|IAddressable>): Array<IAddressB> {
-    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient) );
+  addresses(recipients: Array<string|IAddressable>): Array<string> {
+    return [...recipients].map( (recipient: IAddressable) => recipient.email );
   }
 
   /**
@@ -128,12 +127,12 @@ export class BrevoTransporter extends Transporter {
 
     res
       .set('uri', null)
-      .set('httpVersion', response.res.httpVersion)
-      .set('headers', response.res.headers)
-      .set('method', response.res.method)
-      .set('body', response.body)
+      .set('httpVersion', null)
+      .set('headers', null)
+      .set('method', null)
+      .set('body', response.messageId)
       .set('statusCode', 202)
-      .set('statusMessage', response.res.statusMessage);
+      .set('statusMessage', null);
 
     return res;
   }
@@ -144,6 +143,7 @@ export class BrevoTransporter extends Transporter {
    * @param error Error from Brevo API
    */
   error(error: Error): SendingError {
+    console.log(error)
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
     return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);

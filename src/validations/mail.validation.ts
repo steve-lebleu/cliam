@@ -11,6 +11,7 @@ import { list } from '../utils/enum.util';
 
 const mailSchema = Joi.object({
   compiler: Joi.any().valid(...list(COMPILER)),
+  transporter: Joi.string().required(),
   meta: Joi.object({
     subject: Joi.string().max(128).required(),
     from: recipient(),

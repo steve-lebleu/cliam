@@ -4,7 +4,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/steve-lebleu/cliam/badge.svg?branch=main)](https://coveralls.io/github/steve-lebleu/cliam?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/steve-lebleu/cliam/badge)](https://www.codefactor.io/repository/github/steve-lebleu/cliam)
 ![GitHub Release](https://img.shields.io/github/v/release/steve-lebleu/cliam?logo=Github)
-![Known Vulnerabilities](https://snyk.io/test/github/steve-lebleu/cliam/badge.svg)
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/gpl-license.php)
 
 # Transactional emails with a kick

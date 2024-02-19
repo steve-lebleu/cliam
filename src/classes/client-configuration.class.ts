@@ -1,38 +1,25 @@
-import { Smtp } from './smtp.class';
-import { Consumer } from './consumer.class';
-
-import { Transporter } from './../types/types/transporter.type';
+import { IPlaceholder } from './../types/interfaces/IPlaceholder.interface';
+import { IAddressable } from './../types/interfaces/addresses/IAddressable.interface';
+import { ITransporterDefinition } from './../types/interfaces/ITransporter.interface';
 
 /**
  * @description
  */
 class ClientConfiguration {
 
-  sandbox?: {
-    active: boolean
-    from: {
-      name: string
-      email: string
-    },
-    to: {
-      name: string
-      email: string
-    }
+  sandbox: boolean
+
+  variables: {
+    domain: string
+    addresses: {
+      from: IAddressable,
+      replyTo: IAddressable
+    };
   }
 
-  consumer: Consumer
+  placeholders?: IPlaceholder;
 
-  mode: {
-    api?: {
-      credentials: {
-        apiKey: string,
-        token?: string
-      },
-      name: Transporter,
-      templates: Array<{[event: string]: string}>
-    }
-    smtp?: Smtp
-  }
+  transporters: ITransporterDefinition[]
 
   constructor(payload: Record<string,unknown>) {
     Object.assign(this, payload);

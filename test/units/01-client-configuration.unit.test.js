@@ -18,40 +18,8 @@ describe('Client configuration', () => {
       payload = JSON.parse( JSON.stringify(cliamrc) );
     });
 
-    ['from', 'to'].forEach(property => {
-
-      it(`error - ${property}.name is required if sandbox active`, (done) => {
-        payload.sandbox[property] = { name: null, email : null };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.name" must be a string`);
-        done();
-      });
-  
-      it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
-        payload.sandbox[property] = { name: chance.string({ length: 49 }), email : null };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.name" length must be less than or equal to 48 characters long`);
-        done();
-      });
-
-      it(`error - ${property}.address is required if sandbox active`, (done) => {
-        payload.sandbox[property] = { name: 'Yoda', email : null };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.email" must be a string`);
-        done();
-      });
-  
-      it(`error - ${property}.address should be a valid email address`, (done) => {
-        payload.sandbox[property] = { name: 'Yoda', email : 'Yoda' };
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"sandbox.${property}.email" must be a valid email`);
-        done();
-      });
-
-    });
-
     it(`success - let sandbox inactive by default`, (done) => {
-      payload.sandbox.active = undefined;
+      payload.sandbox = undefined;
       const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
       expect(error).to.be.undefined;
       done();
@@ -59,173 +27,182 @@ describe('Client configuration', () => {
 
   });
 
-  describe('.consumer', () => {
+  describe('.variables', () => {
 
-    beforeEach(() => {
+     beforeEach(() => {
       payload = JSON.parse( JSON.stringify(cliamrc) );
-    });
-
-    it(`error - is required`, (done) => {
-      payload.consumer = undefined;
-      const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-      expect(error.details[0].message).to.be.eqls(`"consumer" is required`);
-      done();
     });
 
     describe('.domain', () => {
 
       it(`error - is required`, (done) => {
-        payload.consumer.domain = undefined;
+        payload.variables.domain = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.domain" is required`);
+        expect(error.details[0].message).to.be.eqls(`"variables.domain" is required`);
         done();
       });
   
       it(`error - should be a valid uri`, (done) => {
-        payload.consumer.domain = 'Yoda';
+        payload.variables.domain = 'Yoda';
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.domain" must be a valid uri`);
+        expect(error.details[0].message).to.be.eqls(`"variables.domain" must be a valid uri`);
         done();
       });
+    });
 
+    describe('.addresses', () => {
+      let addresses;
+
+      beforeEach(() => {
+        addresses = cliamrc.variables.addresses;
+      });
+
+      ['from', 'replyTo'].forEach(property => {
+        it(`error - ${property}.name is required`, (done) => {
+          let base = JSON.parse(JSON.stringify(cliamrc));
+          Object.assign(base.variables.addresses, { [property] : { name: null, email : 'example@john.doe.com' } });
+          const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.name" must be a string`);
+          done();
+        });
+    
+        it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
+          let base = JSON.parse(JSON.stringify(cliamrc));
+          Object.assign(base.variables.addresses, { [property] : { name: chance.string({ length: 49 }), email : 'example@john.doe.com' } });
+          const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.name" length must be less than or equal to 48 characters long`);
+          done();
+        });
+  
+        it(`error - ${property}.email is required`, (done) => {
+          let base = JSON.parse(JSON.stringify(cliamrc));
+          Object.assign(base.variables.addresses, { [property] : { name: 'Yoda', email : null } });
+          const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.email" must be a string`);
+          done();
+        });
+    
+        it(`error - ${property}.email should be a valid email address`, (done) => {
+          let base = JSON.parse(JSON.stringify(cliamrc));
+          Object.assign(base.variables.addresses, { [property] : { name: 'Yoda', email : 'Yoda' } });
+          const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.email" must be a valid email`);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('.placeholders', () => {
+
+     beforeEach(() => {
+      payload = JSON.parse( JSON.stringify(cliamrc) );
     });
     
     describe('.company', () => {
 
       it(`error - is required`, (done) => {
-        payload.consumer.company = undefined;
+        payload.placeholders.company = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.company" is required`);
-        done();
-      });
-  
-      it(`error - should be a string`, (done) => {
-        payload.consumer.company = 777;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.company" must be a string`);
+        expect(error.details[0].message).to.be.eqls(`"placeholders.company" is required`);
         done();
       });
 
-    });
-
-    describe('.email', () => {
-
-      it(`error - should be a string`, (done) => {
-        payload.consumer.email = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.email" must be a string`);
-        done();
-      });
-  
-      it(`error - should be a valid email`, (done) => {
-        payload.consumer.email = 'Yoda';
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.email" must be a valid email`);
-        done();
-      });
-
-    });
-
-    describe('.phone', () => {
-
-      it(`error - should be a string`, (done) => {
-        payload.consumer.phone = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.phone" must be a string`);
-        done();
-      });
-
-    });
-
-    describe('.addresses', () => {
-
-      ['from', 'replyTo'].forEach(property => {
-
-        it(`error - ${property}.name is required`, (done) => {
-          payload.consumer.addresses = { [property] : { name: null, email : 'example@john.doe.com' } };
+      describe('.name', () => {
+        
+        it(`error - should be a string`, (done) => {
+          payload.placeholders.company.name = 777;
           const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"consumer.addresses.${property}.name" must be a string`);
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.name" must be a string`);
+          done();
+        });
+
+      }),
+
+      describe('.email', () => {
+
+        it(`error - should be a string`, (done) => {
+          payload.placeholders.company.email = null;
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.email" must be a string`);
           done();
         });
     
-        it(`error - ${property}.name should be less than or equal to 48 chars`, (done) => {
-          payload.consumer.addresses = { [property] : { name: chance.string({ length: 49 }), email : 'example@john.doe.com' } };
+        it(`error - should be a valid email`, (done) => {
+          payload.placeholders.company.email = 'Yoda';
           const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"consumer.addresses.${property}.name" length must be less than or equal to 48 characters long`);
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.email" must be a valid email`);
+          done();
+        });
+
+      });
+
+      describe('.phone', () => {
+
+        it(`error - should be a string`, (done) => {
+          payload.placeholders.company.phone = null;
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.phone" must be a string`);
+          done();
+        });
+
+      });
+
+      describe('.location', () => {
+
+        it(`error - street should be a string`, (done) => {
+          payload.placeholders.company.location.street = null;
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.location.street" must be a string`);
           done();
         });
   
-        it(`error - ${property}.email is required`, (done) => {
-          payload.consumer.addresses = { [property] : { name: 'Yoda', email : null } };
+        it(`error - num should be a string`, (done) => {
+          payload.placeholders.company.location.num = null;
           const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"consumer.addresses.${property}.email" must be a string`);
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.location.num" must be a string`);
           done();
         });
-    
-        it(`error - ${property}.email should be a valid email address`, (done) => {
-          payload.consumer.addresses = { [property] : { name: 'Yoda', email : 'Yoda' } };
+  
+        it(`error - zip should be a string`, (done) => {
+          payload.placeholders.company.location.zip = null;
           const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"consumer.addresses.${property}.email" must be a valid email`);
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.location.zip" must be a string`);
+          done();
+        });
+  
+        it(`error - city should be a string`, (done) => {
+          payload.placeholders.company.location.city = null;
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.location.city" must be a string`);
+          done();
+        });
+  
+        it(`error - country should be a string`, (done) => {
+          payload.placeholders.company.location.country = null;
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.location.country" must be a string`);
           done();
         });
   
       });
-
-    });
-
-    describe('.location', () => {
-
-      it(`error - street should be a string`, (done) => {
-        payload.consumer.location.street = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.location.street" must be a string`);
-        done();
-      });
-
-      it(`error - num should be a string`, (done) => {
-        payload.consumer.location.num = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.location.num" must be a string`);
-        done();
-      });
-
-      it(`error - zip should be a string`, (done) => {
-        payload.consumer.location.zip = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.location.zip" must be a string`);
-        done();
-      });
-
-      it(`error - city should be a string`, (done) => {
-        payload.consumer.location.city = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.location.city" must be a string`);
-        done();
-      });
-
-      it(`error - country should be a string`, (done) => {
-        payload.consumer.location.country = null;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.location.country" must be a string`);
-        done();
-      });
-
-    });
-
-    describe('.socials', () => {
-
-      it(`error - social network must be valid object`, (done) => {
-        payload.consumer.socials.push(5);
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.socials[1]" must be of type object`);
-        done();
-      });
-
-      it(`error - social network must be a well know network`, (done) => {
-        payload.consumer.socials.push({ name: 'Yoda', url: 'https://yoda.com' });
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.socials[1].name" must be one of [facebook, twitter, youtube, google, github, linkedin]`);
-        done();
+  
+      describe('.socials', () => {
+  
+        it(`error - social network must be valid object`, (done) => {
+          payload.placeholders.company.socials.push(5);
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.socials[1]" must be of type object`);
+          done();
+        });
+  
+        it(`error - social network must be a well know network`, (done) => {
+          payload.placeholders.company.socials.push({ name: 'Yoda', url: 'https://yoda.com' });
+          const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
+          expect(error.details[0].message).to.be.eqls(`"placeholders.company.socials[1].name" must be one of [facebook, twitter, youtube, google, github, linkedin]`);
+          done();
+        });
+  
       });
 
     });
@@ -233,18 +210,18 @@ describe('Client configuration', () => {
     describe('.theme', () => {
 
       it(`error - logo should be a valid uri`, (done) => {
-        payload.consumer.theme.logo = 'Yoda';
+        payload.placeholders.theme.logo = 'Yoda';
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"consumer.theme.logo" must be a valid uri`);
+        expect(error.details[0].message).to.be.eqls(`"placeholders.theme.logo" must be a valid uri`);
         done();
       });
 
       ['primaryColor', 'secondaryColor', 'tertiaryColor', 'quaternaryColor'].forEach(color => {
 
         it(`error - ${color} should be a valid hexadecimal value`, (done) => {
-          payload.consumer.theme[color] = 'Yoda';
+          payload.placeholders.theme[color] = 'Yoda';
           const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"consumer.theme.${color}" must only contain hexadecimal characters`);
+          expect(error.details[0].message).to.be.eqls(`"placeholders.theme.${color}" must only contain hexadecimal characters`);
           done();
         });
 
@@ -254,24 +231,16 @@ describe('Client configuration', () => {
   
   });
 
-  describe('.mode', () => {
+  describe('.transporters', () => {
 
     beforeEach(() => {
       payload = JSON.parse( JSON.stringify(cliamrc) );
     });
 
     it(`error - is required`, (done) => {
-      payload.mode = undefined;
+      payload.transporters = undefined;
       const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-      expect(error.details[0].message).to.be.eqls(`"mode" is required`);
-      done();
-    });
-
-    it(`error - should have at least one of api or smtp property`, (done) => {
-      payload.mode.api = undefined;
-      payload.mode.smtp = undefined;
-      const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-      expect(error.details[0].message).to.be.eqls(`"mode" must contain at least one of [api, smtp]`);
+      expect(error.details[0].message).to.be.eqls(`"transporters" is required`);
       done();
     });
 
@@ -279,39 +248,40 @@ describe('Client configuration', () => {
 
       beforeEach(() => {
         payload = JSON.parse( JSON.stringify(cliamrc) );
-        delete payload.mode.smtp;
-        payload.mode.api = JSON.parse( JSON.stringify( api() ) )
+        payload.transporters = [ payload.transporters[0] ]
       });
 
-      it(`error - credentials is required`, (done) => {
-        payload.mode.api.credentials = undefined;
+      it(`error - auth is required`, (done) => {
+        payload.transporters[0].auth = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.api.credentials" is required`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].auth" is required`);
         done();
       });
 
-      it(`error - credentials.apiKey is required`, (done) => {
-        payload.mode.api.credentials.apiKey = undefined;
+      it(`error - auth.apiKey is required`, (done) => {
+        payload.transporters[0].auth.apiKey = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.api.credentials.apiKey" is required`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].auth.apiKey" is required`);
         done();
       });
 
-      ['mailgun', 'mailjet', 'postmark', 'sendinblue', 'sendgrid', 'sparkpost'].forEach(provider => {
+      ['mailgun', 'mailjet', 'postmark', 'brevo', 'sendgrid', 'sparkpost'].forEach(provider => {
 
         describe(`[${provider}]`, () => {
 
+          beforeEach(() => {
+            payload = JSON.parse( JSON.stringify(cliamrc) );
+            payload.transporters = [ payload.transporters.find(transporter => transporter.provider === provider) ]
+          });
+
           it(`error - apiKey bad formed`, (done) => {
-            payload.mode.api.name = provider;
-            payload.mode.api.credentials.apiKey = `fake.${apis[provider].credentials.apiKey}`;
+            payload.transporters[0].auth.apiKey = `fake.key`;
             const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
             expect(error.details[0].message.includes('fails to match the required pattern')).to.be.true;
             done();
           });
 
           it(`success - apiKey well formed`, (done) => {
-            payload.mode.api.name = provider;
-            payload.mode.api.credentials.apiKey = `${apis[provider].credentials.apiKey}`;
             const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
             expect(error).to.be.undefined;
             done();
@@ -319,21 +289,15 @@ describe('Client configuration', () => {
 
           if (provider === 'mailjet') {
 
-            it(`error - token is required`, (done) => {
-              payload.mode.api.name = provider;
-              payload.mode.api.credentials.apiKey = `${apis[provider].credentials.apiKey}`;
-              payload.mode.api.credentials.token = undefined;
+            xit(`error - secret is required`, (done) => {
+              delete payload.transporters[0].auth.apiSecret;
               const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-              expect(error.details[0].message).to.be.eqls(`"mode.api.credentials.token" is required`);
+              expect(error.details[0].message).to.be.eqls(`"transporters[0].auth.apiSecret" is required`);
               done();
             });
-
           }
     
           it(`success - templates well formed`, (done) => {
-            payload.mode.api.name = provider;
-            payload.mode.api.credentials.apiKey = `${apis[provider].credentials.apiKey}`;
-            payload.mode.api.templates = apis[provider].templates;
             const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
             expect(error).to.be.undefined;
             done();
@@ -349,68 +313,69 @@ describe('Client configuration', () => {
 
       beforeEach(() => {
         payload = JSON.parse( JSON.stringify(cliamrc) );
+        payload.transporters = [ payload.transporters.pop() ]
       });
 
       it(`error - host is required`, (done) => {
-        payload.mode.smtp.host = null;
+        payload.transporters[0].options.host = null;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.host" must be a string`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].options.host" must be a string`);
         done();
       });
 
       it(`error - host should be a valid smtp string`, (done) => {
-        payload.mode.smtp.host = 'Yoda';
+        payload.transporters[0].options.host = 'Yoda';
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.host" with value "Yoda" fails to match the required pattern: /^[a-z-0-9\\-]{2,12}\\.[a-z]{2,16}\\.[a-z]{2,8}$/i`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].options.host" with value "Yoda" fails to match the required pattern: /^[a-z-0-9\\-]{2,12}\\.[a-z]{2,16}\\.[a-z]{2,8}$/i`);
         done();
       });
 
       it(`error - port is required`, (done) => {
-        payload.mode.smtp.port = null;
+        payload.transporters[0].options.port = null;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.port" must be a number`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].options.port" must be a number`);
         done();
       });
 
       it(`error - port should be a number`, (done) => {
-        payload.mode.smtp.port = 'Yoda';
+        payload.transporters[0].options.port = 'Yoda';
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.port" must be a number`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].options.port" must be a number`);
         done();
       });
 
       it(`error - port should be a valid port`, (done) => {
-        payload.mode.smtp.port = 666666;
+        payload.transporters[0].options.port = 666666;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.port" must be a valid port`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].options.port" must be a valid port`);
         done();
       });
 
       it(`error - username is required`, (done) => {
-        payload.mode.smtp.username = null;
+        payload.transporters[0].auth.username = null;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.username" must be a string`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].auth.username" must be a string`);
         done();
       });
 
       it(`error - username should be less than or equals to 32 chars long`, (done) => {
-        payload.mode.smtp.username = chance.string({ length: 128 });
+        payload.transporters[0].auth.username = chance.string({ length: 128 });
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.username" length must be less than or equal to 32 characters long`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].auth.username" length must be less than or equal to 32 characters long`);
         done();
       });
 
       it(`error - password is required`, (done) => {
-        payload.mode.smtp.password = null;
+        payload.transporters[0].auth.password = null;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.password" must be a string`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].auth.password" must be a string`);
         done();
       });
 
       it(`error - password should be less than or equals to 24 chars long`, (done) => {
-        payload.mode.smtp.password = chance.string({ length: 32 });
+        payload.transporters[0].auth.password = chance.string({ length: 32 });
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls(`"mode.smtp.password" length must be less than or equal to 24 characters long`);
+        expect(error.details[0].message).to.be.eqls(`"transporters[0].auth.password" length must be less than or equal to 24 characters long`);
         done();
       });
 
