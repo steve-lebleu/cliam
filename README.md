@@ -16,7 +16,7 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 ## > Features
 
-- Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Request-payload), one [output](https://github.com/steve-lebleu/cliam/wiki/Outputs).
+- Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Inputs), one [output](https://github.com/steve-lebleu/cliam/wiki/Outputs).
 - [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) based, not implementation based : easy switch between different modes.
 - Normalized [transactions events](https://github.com/steve-lebleu/cliam/wiki/Transactions).
 - Securized payloads.
@@ -88,7 +88,7 @@ Define a minimalist configuration in *.cliamrc.json* newly created:
 }
 ```
 
-See [configuration](https://github.com/konfer-be/cliam/wiki/Configuration) wiki section for more information about availables options and configurations.
+See [configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) wiki section for more information about availables options and configurations.
 
 ### Implement
 
@@ -106,7 +106,7 @@ Cliam.emit('user.confirm', payload)
   });
 ```
 
-See [request payload](https://github.com/konfer-be/cliam/wiki/Request-payload) wiki section for more information about availables options and configurations.
+See [request payload](https://github.com/steve-lebleu/cliam/wiki/Inputs) wiki section for more information about availables options and configurations.
 
 <h2 id="beneficiary-use-cases">> Beneficiary use cases</h2>
 
