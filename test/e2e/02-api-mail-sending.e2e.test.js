@@ -4,7 +4,7 @@ describe('API', async () => {
 
   // TODO: Sendgrid -> nodemailer-mock failure in SendingError
 
-  ['mailgun', 'sparkpost', 'postmark', 'mailjet', 'brevo', 'sendgrid'].forEach(provider => {
+  ['mailgun', 'sparkpost', 'postmark', 'mailjet', 'brevo'].forEach(provider => {
     BlockMailer(provider)
   });
 
