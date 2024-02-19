@@ -1,5 +1,5 @@
 import { Container } from './../../services/container.service';
-import { TRANSPORTER } from './../enums/transporter.enum';
+import { PROVIDER } from './../enums/provider.enum';
 
 /**
  * @description
@@ -32,10 +32,10 @@ const Debug = ( transporter: string ): any => {
       if (output) {
         if (Container.configuration?.sandbox) {
           switch(transporter) {
-            case TRANSPORTER.mailgun:
+            case PROVIDER.mailgun:
               Object.assign(output, { testmode: true })
               break;
-            case TRANSPORTER.mailjet:
+            case PROVIDER.mailjet:
               Object.assign(output, {
                 SandboxMode: true,
                 mail_settings: {
@@ -45,7 +45,7 @@ const Debug = ( transporter: string ): any => {
                 }
               });
               break;
-            case TRANSPORTER.postmark:
+            case PROVIDER.postmark:
               output.to = [].concat(output.to).map( (recipient) => {
                 return `John Doe test@blackhole.postmarkapp.com`;
               });
@@ -60,7 +60,7 @@ const Debug = ( transporter: string ): any => {
                 });
               }
               break;
-            case TRANSPORTER.sendgrid:
+            case PROVIDER.sendgrid:
               Object.assign(output, {
                 mail_settings: {
                   sandbox_mode: {
@@ -69,14 +69,14 @@ const Debug = ( transporter: string ): any => {
                 }
               });
               break;
-            case TRANSPORTER.sendinblue:
+            case PROVIDER.brevo:
               Object.assign(output, {
                 headers: {
                   'X-Sib-Sandbox': 'drop'
                 }
               });
               break;
-            case TRANSPORTER.sparkpost:
+            case PROVIDER.sparkpost:
               Object.assign(output, {
                 options: {
                   sandbox: true

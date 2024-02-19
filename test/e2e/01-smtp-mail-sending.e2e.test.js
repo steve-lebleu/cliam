@@ -4,6 +4,7 @@ const { writeFileSync } = require('fs');
 const { cliamrc, requestPayload } = require(process.cwd() + '/test/utils/fixtures');
 
 const internal =  {
+  transporter: 'hosting-smtp',
 	meta: {
 		subject: 'Compiled by consumer and sended by SMTP',
 		to: [
@@ -56,6 +57,12 @@ describe('SMTP', function() {
     mockery.disable();
   });
   
+  after(() => {
+    nodemailerMock.mock.reset();
+    mockery.deregisterAll();
+    mockery.disable();
+  });
+
   describe('Default transactions', async() => {
 
     [ 
@@ -88,7 +95,7 @@ describe('SMTP', function() {
             expect(response.statusCode).to.be.eqls(202);
             expect(response.statusMessage).to.be.eqls('nodemailer-mock success');
             expect(sentMail.length).to.be.eqls(1);
-  
+
           });
 
         });
@@ -98,7 +105,7 @@ describe('SMTP', function() {
           nodemailerMock.mock.setShouldFailOnce();
           nodemailerMock.mock.setFailResponse(new TypeError());
           
-          const params = requestPayload();
+          const params = requestPayload('default', 'hosting-smtp');
           delete params.content;
           
           await Cliam.emit(event, params).catch(err => {
@@ -113,7 +120,7 @@ describe('SMTP', function() {
       }
 
       it(`202 - ${event}`, async() => {
-        const params = JSON.parse( JSON.stringify( requestPayload() ) );
+        const params = JSON.parse( JSON.stringify( requestPayload('provider', 'hosting-smtp') ) );
         delete params.content;
         const response = await Cliam.emit(event, params);
         const sentMail = nodemailerMock.mock.getSentMail();

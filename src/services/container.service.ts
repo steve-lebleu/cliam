@@ -4,9 +4,7 @@ import { existsSync, readFileSync } from 'fs';
 
 import { Transporter } from './../transporters/transporter.class';
 import { TransporterFactory } from './../transporters/transporter.factory';
-
 import { ClientConfiguration } from './../classes/client-configuration.class';
-
 import { configurationSchema } from './../validations/configuration.validation';
 
 /**
@@ -29,7 +27,10 @@ class Container {
   /**
    * @description
    */
-  public transporter: Transporter = null;
+  //public transporters: Transporter[] = null;
+
+  /** */
+  public transporters: { [id:string]: Transporter } = null;
 
   /**
    * @description
@@ -55,13 +56,10 @@ class Container {
 
     this.configuration = new ClientConfiguration( this.validates( this.read(this.PATH) ) );
 
-    const params = Object.assign( { domain: this.configuration.consumer.domain }, {
-      apiKey: this.configuration.mode?.api?.credentials?.apiKey,
-      token: this.configuration.mode?.api?.credentials?.token,
-      smtp: this.configuration.mode?.smtp
-    });
-
-    this.transporter = TransporterFactory.get(this.configuration.mode?.api?.name || 'smtp', params);
+    this.transporters = this.configuration.transporters.reduce((result, transporter) => {
+      result[transporter.id] = TransporterFactory.get(this.configuration.variables, transporter);
+      return result;
+    }, {});
 
     return this;
   }

@@ -48,7 +48,6 @@ export class SendinblueTransporter extends Transporter {
 
     const output = {
       headers: {
-        'api-key': Container.configuration.mode?.api.credentials.apiKey,
         'content-type': 'application/json',
         'accept': 'application/json'
       },

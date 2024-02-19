@@ -3,27 +3,25 @@ import * as mailgunTransport from 'nodemailer-mailgun-transport';
 import * as mandrillTransport from 'nodemailer-mandrill-transport';
 import * as PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
-import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
 import * as mailjetTransport from 'node-mailjet';
+import * as brevoTransport from 'nodemailer-brevo-transport';
 
 import { createTransport } from 'nodemailer';
 
-import { Transporter as TransporterType } from '../types/types/transporter.type';
-import { TRANSPORTER } from '../types/enums/transporter.enum';
-
-import { Smtp } from '../classes/smtp.class';
+import { PROVIDER } from '../types/enums/provider.enum';
+import { MODE } from '../types/enums/mode.enum';
+import { IAddressable } from '../types/interfaces/addresses/IAddressable.interface';
 
 import { Transporter } from './transporter.class';
 import { SmtpTransporter } from './smtp/smtp.class';
 import { SparkpostTransporter } from './sparkpost/sparkpost.class';
 import { SendgridTransporter } from './sendgrid/sendgrid.class';
-import { SendinblueTransporter } from './sendinblue/sendinblue.class';
+import { BrevoTransporter } from './brevo/brevo.class';
 import { MandrillTransporter } from './mandrill/mandrill.class';
 import { MailgunTransporter } from './mailgun/mailgun.class';
 import { MailjetTransporter } from './mailjet/mailjet.class';
 import { PostmarkTransporter } from './postmark/postmark.class';
-import { SendingResponse } from 'classes/sending-response.class';
-import { SendingError } from 'classes/sending-error.class';
+import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
 
 /**
  * @description
@@ -39,78 +37,87 @@ export class TransporterFactory {
    *
    * @param key
    */
-  static get(key: TransporterType, { ...args }: { apiKey?: string, token?: string, smtp?: Smtp, domain?: string } ): Transporter {
-    switch(key) {
-      case TRANSPORTER.mailgun:
-        TransporterFactory.engine = mailgunTransport({
+  static get({...vars}: { domain: string, addresses: { from: IAddressable, replyTo: IAddressable } }, { ...args }: ITransporterDefinition): Transporter {
+    if(args.mode === MODE.smtp) {
+      return new SmtpTransporter(createTransport( {
+        host: args.options.host,
+        port: args.options.port,
+        secure: args.options.secure,
+        auth: {
+          user: args.auth.username,
+          pass: args.auth.password
+        },
+        greetingTimeout: 5000,
+        socketTimeout: 5000
+      } ))
+    }
+
+    switch(args.provider) {
+      case PROVIDER.mailgun:
+        
+        return new MailgunTransporter( createTransport( mailgunTransport({
           auth: {
-            api_key: args.apiKey,
-            domain: args.domain
+            api_key: args.auth.apiKey,
+            domain: vars.domain
           }
-        }) as unknown;
-        return new MailgunTransporter( createTransport( TransporterFactory.engine ) );
-      case TRANSPORTER.mailjet:
-        TransporterFactory.engine = new mailjetTransport.Client({ apiKey: args.apiKey, apiSecret: args.token });
-        TransporterFactory.engine.sendMail = async (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<SendingResponse|SendingError> => {
-          return TransporterFactory.engine
-            .post('send', { version : 'v3.1' })
-            .request(payload)
-            .then( (result: any) => {
-              callback(null, result);
-            })
-            .catch( (error: any) => {
-              callback(error, null);
-            });
+        }) ) );
+
+      case PROVIDER.mailjet:
+
+        let mailjetEngine = mailjetTransport.Client.apiConnect(args.auth.apiKey, args.auth.apiSecret);
+        let engine = {
+          sendMail: async (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<void> => {
+            return mailjetEngine
+              .post('send', { version : 'v3.1' })
+              .request(payload)
+              .then( (result: any) => {
+                callback(null, result);
+              })
+              .catch( (error: any) => {
+                callback(error, null);
+              });
+          }
         }
-        return new MailjetTransporter( TransporterFactory.engine );
-      case TRANSPORTER.mandrill:
-        TransporterFactory.engine = mandrillTransport({
+
+        return new MailjetTransporter( engine );
+
+      case PROVIDER.mandrill:
+
+        return new MandrillTransporter( createTransport( mandrillTransport({
           auth : {
-            apiKey: args.apiKey
+            apiKey: args.auth.apiKey
           }
-        }) as unknown;
-        return new MandrillTransporter( createTransport( TransporterFactory.engine ) );
-      case TRANSPORTER.postmark:
+        }) ) );
+
+      case PROVIDER.postmark:
         TransporterFactory.engine = PostmarkTransport.PostmarkTransport;
         return new PostmarkTransporter( createTransport( new TransporterFactory.engine({
-          auth: { apiKey: args.apiKey }
+          auth: { apiKey: args.auth.apiKey }
         }) ) );
-      case TRANSPORTER.sendgrid :
-        TransporterFactory.engine = sendgridTransport({
-          apiKey: args.apiKey
-        }) as unknown;
-        return new SendgridTransporter( createTransport( TransporterFactory.engine ) );
-      case TRANSPORTER.sendinblue:
-        TransporterFactory.engine = sendinblueTransport({
-          apiKey: args.apiKey,
-          apiUrl: 'https://api.sendinblue.com/v3/smtp'
-        }) as unknown;
-        return new SendinblueTransporter( createTransport( TransporterFactory.engine ) );
-      case TRANSPORTER.smtp :
-        TransporterFactory.engine = ((options) => {
-          return createTransport( {
-            host: options.host,
-            port: options.port,
-            secure: options.secure,
-            auth: {
-              user: options.username,
-              pass: options.password
-            },
-            greetingTimeout: 5000,
-            socketTimeout: 5000
-          } ) as unknown;
-        })(args.smtp)
-        return new SmtpTransporter(TransporterFactory.engine)
-      case TRANSPORTER.sparkpost :
-        TransporterFactory.engine = sparkpostTransport({
-          sparkPostApiKey: args.apiKey,
+
+      case PROVIDER.sendgrid :
+
+        return new SendgridTransporter( createTransport( sendgridTransport({
+          apiKey: args.auth.apiKey
+        }) ) );
+
+      case PROVIDER.brevo:
+
+        TransporterFactory.engine = brevoTransport;
+        return new BrevoTransporter( createTransport( new TransporterFactory.engine({
+          apiKey: args.auth.apiKey
+        }) ) );
+      
+      case PROVIDER.sparkpost :
+
+        return new SparkpostTransporter( createTransport( sparkpostTransport({
+          sparkPostApiKey: args.auth.apiKey,
           options: {
             open_tracking: true,
             click_tracking: true,
             transactional: true
           }
-        }) as unknown;
-        return new SparkpostTransporter( createTransport( TransporterFactory.engine ) );
+        }) ) );
     }
   }
 }

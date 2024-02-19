@@ -1,13 +1,12 @@
 /**
- * @description Define supported email transporters
+ * @description Define supported web api providers
  */
-export enum TRANSPORTER {
+export enum PROVIDER {
   sparkpost = 'sparkpost',
   sendgrid = 'sendgrid',
-  sendinblue = 'sendinblue',
+  brevo = 'brevo',
   mandrill = 'mandrill',
   mailgun = 'mailgun',
   mailjet = 'mailjet',
   postmark = 'postmark',
-  smtp = 'smtp'
 }
