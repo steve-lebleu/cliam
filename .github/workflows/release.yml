@@ -29,6 +29,7 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
+          echo BREVO_API_KEY = "${{ secrets.BREVO_API_KEY }}" >> .env
           echo EMAIL_FROM = "${{ secrets.EMAIL_FROM }}" >> .env
           echo EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}" >> .env
           echo EMAIL_TO = "${{ secrets.EMAIL_TO }}" >> .env
