@@ -55,21 +55,36 @@ Define a minimalist configuration in *.cliamrc.json* newly created:
 
 ```json
 {
-  "consumer": {
-    "domain": "https://www.john-doe.com"
-  },
-  "mode": {
-    "api": {
-      "name": "YOUR_PROVIDER",
-      "credentials": {
-        "apiKey": "YOUR_API_KEY"
+  "sandbox": true,
+  "variables": {
+    "domain": "https://www.my-website.com",
+    "addresses": {
+      "from": {
+        "name": "John Doe",
+        "email": "info@john.doe.com"
       },
-      "templates" : {
-        "user.confirm": "TEMPLATE_ID_THAT_YOU_WILL_ASSOCIATE_TO_EVENT",
-        "...": "..."
+      "replyTo": {
+        "name": "John Doe",
+        "email": "info@john.doe.com"
       }
     }
-  }
+  },
+  "transporters": [
+    {
+      "id": "unique-key-for-my-transporter",
+      "mode": "smtp",
+      "provider": "",
+      "auth": {
+        "username": "USERNAME",
+        "password": "PASSWORD"
+      },
+      "options": {
+        "host": "HOST",
+        "port": 587,
+        "secure": false
+      }
+    }
+  ]
 }
 ```
 
@@ -127,6 +142,10 @@ No problem, we have all been poor once. Start with a simple SMTP server and use 
   <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
   <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
   <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
+</p>
+
+<p>
+  <a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="240px" hspace="15" /></a>
 </p>
 
 <!--
