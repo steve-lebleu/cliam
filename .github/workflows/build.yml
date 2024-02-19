@@ -28,6 +28,7 @@ jobs:
           echo EMAIL_FROM = "${{ secrets.EMAIL_FROM }}" >> .env
           echo EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}" >> .env
           echo EMAIL_TO = "${{ secrets.EMAIL_TO }}" >> .env
+          echo MAILERSEND_API_KEY = "${{ secrets.MAILERSEND_API_KEY }}" >> .env
           echo MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}" >> .env
           echo MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}" >> .env
           echo MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}" >> .env

@@ -136,6 +136,7 @@ export class SendgridTransporter extends Transporter implements ITransporter {
    * @param error Error from Sendgrid API
    */
   error(error: ISendgridError): SendingError {
+    console.log('ERR', error)
     return new SendingError(error.code || error.statusCode, error.name || error.message, error.hasOwnProperty('response') ? error.response.body.errors : [error.message]);
   }
 }

@@ -76,6 +76,13 @@ const Debug = ( transporter: string ): any => {
                 }
               });
               break;
+            case PROVIDER.mailersend:
+              Object.assign(output, {
+                headers: {
+                  'X-Sib-Sandbox': 'drop'
+                }
+              });
+              break;
             case PROVIDER.sendinblue:
               Object.assign(output, {
                 headers: {

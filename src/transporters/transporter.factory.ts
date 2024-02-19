@@ -4,6 +4,7 @@ import * as mandrillTransport from 'nodemailer-mandrill-transport';
 import * as PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
 import * as mailjetTransport from 'node-mailjet';
+import { MailerSend } from 'mailersend';
 import * as brevoTransport from 'nodemailer-brevo-transport';
 import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
 
@@ -18,6 +19,7 @@ import { SmtpTransporter } from './smtp/smtp.class';
 import { SparkpostTransporter } from './sparkpost/sparkpost.class';
 import { SendgridTransporter } from './sendgrid/sendgrid.class';
 import { BrevoTransporter } from './brevo/brevo.class';
+import { MailersendTransporter } from './mailersend/mailersend.class';
 import { MandrillTransporter } from './mandrill/mandrill.class';
 import { MailgunTransporter } from './mailgun/mailgun.class';
 import { MailjetTransporter } from './mailjet/mailjet.class';
@@ -62,6 +64,24 @@ export class TransporterFactory {
         return new BrevoTransporter( createTransport( new TransporterFactory.engine({
           apiKey: args.auth.apiKey
         }) ) );
+
+      case PROVIDER.mailersend:
+        
+        let mailersendEngine = new MailerSend({
+          apiKey: args.auth.apiKey
+        });
+
+        mailersendEngine['sendMail'] = async (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<void> => {
+          return mailersendEngine.email.send(payload)
+            .then((result) => {
+              callback(null, result as any)
+            })
+            .catch((e) => {
+              callback(e);
+            })
+        }
+
+        return new MailersendTransporter( mailersendEngine as any );
 
       case PROVIDER.mailgun:
         
