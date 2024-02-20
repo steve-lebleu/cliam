@@ -5,17 +5,17 @@ import * as Color from 'color';
 
 import { htmlToText } from 'html-to-text';
 
-import { Container } from './../services/container.service';
+import { Container } from './container.service';
 
 /**
- * On the fly hbs compilation middleware
+ * Light render engine embedding on the fly an hbs compilation middleware
  */
-class Compiler {
+class RenderEngine {
 
   /**
    * @description
    */
-  private static instance: Compiler = null;
+  private static instance: RenderEngine = null;
 
   /**
    * @description
@@ -99,11 +99,11 @@ class Compiler {
   /**
    * @description
    */
-  static get(): Compiler {
-    if(!Compiler.instance) {
-      Compiler.instance = new Compiler();
+  static get(): RenderEngine {
+    if(!RenderEngine.instance) {
+      RenderEngine.instance = new RenderEngine();
     }
-    return Compiler.instance;
+    return RenderEngine.instance;
   }
 
   /**
@@ -175,6 +175,6 @@ class Compiler {
   }
 }
 
-const service = Compiler.get();
+const service = RenderEngine.get();
 
-export { service as Compiler }
+export { service as RenderEngine }

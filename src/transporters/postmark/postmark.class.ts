@@ -9,7 +9,7 @@ import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { IPostmarkBody } from './IPostmarkBody.interface';
 
 import { Debug } from './../../types/decorators/debug.decorator';
@@ -51,15 +51,15 @@ export class PostmarkTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           templateModel: payload.data,
           templateId: parseInt(templateId, 10),
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html

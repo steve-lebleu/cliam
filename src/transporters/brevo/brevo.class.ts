@@ -1,5 +1,3 @@
-import { Container } from './../../services/container.service';
-
 import { Transporter } from './../transporter.class';
 
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
@@ -12,7 +10,7 @@ import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Brevo transporter for mail sending.
@@ -56,15 +54,15 @@ export class BrevoTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,
           templateId: parseInt(templateId, 10)
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html

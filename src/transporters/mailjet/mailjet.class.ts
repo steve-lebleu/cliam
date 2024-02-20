@@ -13,7 +13,7 @@ import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 import { getMailjetErrorMessages } from './../../utils/error.util';
 
@@ -57,14 +57,14 @@ export class MailjetTransporter extends Transporter implements ITransporter {
       }]
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output.Messages[0], { Variables: payload.data });
         Object.assign(output.Messages[0], { TemplateLanguage: true });
         Object.assign(output.Messages[0], { TemplateID: parseInt(templateId, 10) });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output.Messages[0], {
           TextPart: body.text,
           HTMLPart: body.html

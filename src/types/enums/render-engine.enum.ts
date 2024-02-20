@@ -1,7 +1,7 @@
 /**
  * @description Define supported rendering modes
  */
-export enum COMPILER {
+export enum RENDER_ENGINE {
   provider = 'provider',
   default = 'default',
   self = 'self'

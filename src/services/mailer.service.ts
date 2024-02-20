@@ -3,8 +3,8 @@ import { SendingError } from './../classes/sending-error.class';
 import { IPayload } from './../types/interfaces/IPayload.interface';
 import { Transporter } from './../transporters/transporter.class';
 import { Container } from './../services/container.service';
-import { Compiler } from './../services/compiler.service';
-import { COMPILER } from './../types/enums/compiler.enum';
+import { RenderEngine } from './render-engine.service';
+import { RENDER_ENGINE } from '../types/enums/render-engine.enum';
 import { IBuildable } from './../types/interfaces/IBuildable.interface';
 import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
@@ -36,7 +36,7 @@ class Mailer {
    * @description Send email
    */
   send = async (event: string, payload: IPayload): Promise<SendingResponse|SendingError> => {
-    this.setCompiler(event, payload);
+    this.setRenderEngine(event, payload);
     this.setAddresses(payload);
     const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
     if (error) {
@@ -62,12 +62,12 @@ class Mailer {
    * @param event
    * @param payload
    */
-   private setCompiler(event: string, payload: IPayload): void {
+   private setRenderEngine(event: string, payload: IPayload): void {
     if (this.configuration.mode === MODE.smtp) {
-      payload.compiler = payload.content ? COMPILER.self : COMPILER.default;
+      payload.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
     if (this.configuration.mode === MODE.api) {
-      payload.compiler =  this.getTemplateId(event) ? COMPILER.provider : payload.content ? COMPILER.self : COMPILER.default;
+      payload.renderEngine =  this.getTemplateId(event) ? RENDER_ENGINE.provider : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
   }
 
@@ -80,8 +80,8 @@ class Mailer {
   private getBuildable(event: string, payload: IPayload): IBuildable {
     return {
       payload,
-      templateId: payload.compiler === COMPILER.provider ? this.getTemplateId(event) : null,
-      body: [ COMPILER.self, COMPILER.default ].includes(payload.compiler as COMPILER) ? this.getCompilated(event, payload) : null,
+      templateId: payload.renderEngine === RENDER_ENGINE.provider ? this.getTemplateId(event) : null,
+      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(payload.renderEngine as RENDER_ENGINE) ? this.getCompilated(event, payload) : null,
       origin: this.getOrigin()
     }
   }
@@ -112,21 +112,21 @@ class Mailer {
    */
   private getCompilated(event: string, payload: IPayload): { html: string, text: string } {
 
-    if (payload.compiler === COMPILER.self && this.hasPlainText(payload.content)) {
+    if (payload.renderEngine === RENDER_ENGINE.self && this.hasPlainText(payload.content)) {
       return {
         html: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value,
         text: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/plain']).value,
       }
     }
 
-    if (payload.compiler === COMPILER.self && !this.hasPlainText(payload.content)) {
+    if (payload.renderEngine === RENDER_ENGINE.self && !this.hasPlainText(payload.content)) {
       return {
         html: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value,
-        text: Compiler.textify(payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value),
+        text: RenderEngine.textify(payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value),
       }
     }
 
-    return Compiler.compile(event, Object.assign({ subject: payload.meta.subject }, payload.data));
+    return RenderEngine.compile(event, Object.assign({ subject: payload.meta.subject }, payload.data));
   }
 
 }

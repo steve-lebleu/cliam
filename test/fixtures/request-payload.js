@@ -1,6 +1,6 @@
 const { base64Encode } = require( process.cwd() + '/dist/utils/string.util' );
 
-module.exports = (compiler = 'provider', transporter = 'unique-id-transporter') => {
+module.exports = (renderEngine = 'provider', transporter = 'unique-id-transporter') => {
   return {
     transporter,
     meta: {

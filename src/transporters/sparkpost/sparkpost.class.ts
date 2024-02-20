@@ -12,7 +12,7 @@ import { ISendMail } from '../../types/interfaces/ISendMail.interface';
 import { SendingError } from '../../classes/sending-error.class';
 import { SendingResponse } from '../../classes/sending-response.class';
 
-import { COMPILER } from '../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Sparkpost transporter for mail sending.
@@ -56,8 +56,8 @@ export class SparkpostTransporter extends Transporter implements ITransporter {
       }
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           substitution_data: payload.data,
         });
@@ -66,8 +66,8 @@ export class SparkpostTransporter extends Transporter implements ITransporter {
           use_draft_template: false
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html

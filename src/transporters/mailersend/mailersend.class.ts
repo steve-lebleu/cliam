@@ -14,7 +14,7 @@ import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Mailersend transporter for mail sending.
@@ -51,14 +51,14 @@ export class MailersendTransporter extends Transporter {
       .setReplyTo(from)
       .setSubject(payload.meta.subject);
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         params
           .setPersonalization([{ email: this.address(payload.meta.to[0]).email, data: [ payload.data as any ] }])
           .setTemplateId(templateId);
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         params
           .setText(body.text)
           .setHtml(body.html);

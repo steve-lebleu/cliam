@@ -10,7 +10,7 @@ import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * This class set a Mailgun transporter for mail sending.
@@ -71,15 +71,15 @@ export class MailgunTransporter extends Transporter implements ITransporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           'h:X-Mailgun-Variables': JSON.stringify(payload.data),
           template: templateId
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html

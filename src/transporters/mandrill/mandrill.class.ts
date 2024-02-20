@@ -11,7 +11,7 @@ import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Mandrill transporter for mail sending.
@@ -58,15 +58,15 @@ export class MandrillTransporter extends Transporter implements ITransporter {
       }
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(payload.renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           template_content: [payload.data],
           template_name: payload.meta.templateId || templateId
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
