@@ -17,7 +17,7 @@ import { MODE } from '../types/enums/mode.enum';
 class Mailer {
 
   /**
-   * @description
+   * @description Transporter instance
    */
   transporter: Transporter = null;
 
@@ -26,7 +26,12 @@ class Mailer {
   }
 
   /**
-   * @description Send email
+   * @description Send an email by calling concrete transporter instance send method.
+   * 
+   * @param event Event name
+   * @param payload payload
+   * 
+   * @returns Promise<SendingResponse|SendingError>
    */
   send = async (event: string, payload: IPayload): Promise<SendingResponse|SendingError> => {
     this.setRenderEngine(event, payload);
@@ -39,9 +44,8 @@ class Mailer {
   }
 
   /**
-   * @description
+   * @description Set the from and reply-to addresses using current payload or fallback on cliamrc configuration.
    *
-   * @param event
    * @param payload
    */
   private setAddresses(payload: IPayload): void {
@@ -50,10 +54,10 @@ class Mailer {
   }
 
   /**
-   * @description
+   * @description Set the render engine to use for the current mailer instance according to the setup.
    *
-   * @param event
-   * @param payload
+   * @param event Event name
+   * @param payload payload
    */
    private setRenderEngine(event: string, payload: IPayload): void {
     if (this.transporter.configuration.mode === MODE.smtp) {
@@ -65,10 +69,10 @@ class Mailer {
   }
 
   /**
-   * @description
+   * @description Get the informations needed to send the email (data, teamplate, body of the mail, ...).
    *
-   * @param event
-   * @param payload
+   * @param event Event name
+   * @param payload payload
    */
   private getBuildable(event: string, payload: IPayload): IBuildable {
     return {
@@ -80,28 +84,35 @@ class Mailer {
   }
 
   /**
-   * @description
+   * @description Get the origin domain to use in the setup of the current mailer instance. This is used by some web API providers.
    */
   private getOrigin(): string {
     return Container.configuration.variables.domain;
   }
 
   /**
-   * @description
+   * @description Get the templateID to use in the setup of the current mail sending.
+   * 
+   * @param event Event name
    */
   private getTemplateId(event: string): string {
     return this.transporter.configuration.options.templates[event] as string;
   }
 
   /**
-   * @description
+   * @description Say if the current request has his own plain text content already compiled.
+   * 
+   * @param content The buffer value of the request
    */
   private hasPlainText(content: IBuffer[]): boolean {
     return content.some( (buffer: IBuffer) => buffer.type === BUFFER_MIME_TYPE['text/plain'] && buffer.value );
   }
 
   /**
-   * @description
+   * @description Get the final result of the compilation in html and plain text.
+   * 
+   * @param event Event name
+   * @param payload payload
    */
   private getCompiled(event: string, payload: IPayload): { html: string, text: string } {
 
