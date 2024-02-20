@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { requestPayload } = require(process.cwd() + '/test/utils/fixtures');
+const { requestPayload } = require(process.cwd() + '/test/fixtures');
 const { mailSchema } = require(process.cwd() + '/dist/validations/mail.validation');
 
 const chance = require('chance').Chance();

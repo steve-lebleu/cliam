@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { cliamrc, api, apis } = require(process.cwd() + '/test/utils/fixtures');
+const { cliamrc } = require(process.cwd() + '/test/fixtures');
 const { configurationSchema } = require(process.cwd() + '/dist/validations/configuration.validation');
 
 const chance = require('chance').Chance();
@@ -35,7 +35,7 @@ describe('Client configuration', () => {
 
     describe('.domain', () => {
 
-      it(`error - is required`, (done) => {
+      it(`should give an error when domain is required`, (done) => {
         payload.variables.domain = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
         expect(error.details[0].message).to.be.eqls(`"variables.domain" is required`);
@@ -265,7 +265,7 @@ describe('Client configuration', () => {
         done();
       });
 
-      ['mailgun', 'mailjet', 'postmark', 'brevo', 'sendgrid', 'sparkpost'].forEach(provider => {
+      ['mailgun', 'mailjet', 'postmark', 'brevo', 'sendgrid', 'sparkpost', 'mailersend'].forEach(provider => {
 
         describe(`[${provider}]`, () => {
 

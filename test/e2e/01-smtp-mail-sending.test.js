@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { writeFileSync } = require('fs');
 
-const { cliamrc, requestPayload } = require(process.cwd() + '/test/utils/fixtures');
+const { cliamrc, requestPayload } = require(process.cwd() + '/test/fixtures');
 
 const internal =  {
   transporter: 'hosting-smtp',

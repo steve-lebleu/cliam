@@ -1,9 +1,11 @@
 const { expect } = require('chai');
 const { writeFileSync } = require('fs');
 
-const { cliamrc, requestPayload } = require(process.cwd() + '/test/utils/fixtures');
+const { cliamrc, requestPayload } = require(process.cwd() + '/test/fixtures');
 
-module.exports = (provider) => {
+console.log(requestPayload)
+
+exports.E2ETransporterBlock = (provider) => {
 
   let Cliam, mockery, nodemailerMock;
 
@@ -11,12 +13,14 @@ module.exports = (provider) => {
 
     beforeEach( () => {
 
-      //mockery = require('mockery');
-      //nodemailerMock = require('nodemailer-mock');
       /*
+      mockery = require('mockery');
+      nodemailerMock = require('nodemailer-mock');
+      
       mockery.enable({
         warnOnUnregistered: false,
-      });*/
+      });
+      */
       
       /* Once mocked, any code that calls require('nodemailer') will get our nodemailerMock */
       // mockery.registerMock('nodemailer', nodemailerMock)
@@ -29,8 +33,8 @@ module.exports = (provider) => {
 
     afterEach( () => {
       // nodemailerMock.mock.reset();
-      //mockery.deregisterAll();
-      //mockery.disable()
+      // mockery.deregisterAll();
+      // mockery.disable()
     });
 
     describe('Default transactions', () => {
