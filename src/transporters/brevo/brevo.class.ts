@@ -142,7 +142,6 @@ export class BrevoTransporter extends Transporter {
    * @param error Error from Brevo API
    */
   error(error: Error): SendingError {
-    console.log(error)
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
     return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);

@@ -91,8 +91,8 @@ describe('Services', () => {
       });
     });
 
-    describe('::getBuildable', () => {
-      xit('should return an IBuildable object', (done) => {
+    describe('::getMail', () => {
+      xit('should return an IMail object', (done) => {
 
       });
 
@@ -106,6 +106,47 @@ describe('Services', () => {
 
       xit('should set reply-to address with the current payload one', (done) => {
 
+      });
+    });
+    
+    describe('::getOrigin', () => {
+      xit('should return the origin value from Container.configuration.variables.domain', (done) => {
+
+      });
+    });
+
+    describe('::getTemplateId', () => {
+      xit('should returns null', (done) => {
+
+      });
+
+      xit('should returns the mappad value from the transporter configuration', (done) => {
+
+      });
+    });
+
+    describe('::hasPlainText', () => {
+      xit('should returns false when payload does no contains a buffer with a value and a type text/plain', (done) => {
+
+      });
+
+      xit('should returns true when payload contains a buffer with a value and a type text/plain', (done) => {
+
+      });
+    });
+
+    describe('::getCompiled', () => {
+
+      xit('should returns text and html from the current payload when the template is rendered by the client (self) and has text and html defined', (done) => {
+
+      });
+
+      xit('should returns html from the current payload and generates text part from render engine when the template is rendered by the client (self) and expose only HTML buffer', (done) => {
+        // call textify
+      });
+
+      xit('should compile and returns templates when the template is rendered by the client (provider)', (done) => {
+        //call compile
       });
     });
 
@@ -130,6 +171,10 @@ describe('Services', () => {
   
       });
 
+      xit('should call the transporter.build method', (done) => {
+  
+      });
+
       xit('should call the transporter.send method', (done) => {
   
       });
@@ -146,8 +191,46 @@ describe('Services', () => {
   
   describe('RenderEngine', () => {
 
-    xit('should get an error when the cliamrc file content is not found', (done) => {
+    describe('::getBanner', () => {
 
+      xit('should give the banner related to the current event', (done) => {
+
+      });
+
+      xit('should give the default banner vhen current event has no related template', (done) => {
+
+      });
+
+    });
+
+    describe('::getSegment', () => {
+      xit('should give the segment related to the current event', (done) => {
+
+      });
+    });
+
+    describe('::customize', () => {
+      xit('should replace colors values in current templates', (done) => {
+
+      });
+    });
+
+    describe('::textify', () => {
+      xit('should returns sanitized string', (done) => {
+
+      });
+    });
+
+    describe('::compile', () => {
+      xit('should returns an object with text and html properties', (done) => {
+
+      });
+      xit('should returns plain text on text property', (done) => {
+
+      });
+      xit('should returns html on html property', (done) => {
+
+      });
     });
   });
 });

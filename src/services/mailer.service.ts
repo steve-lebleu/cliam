@@ -45,7 +45,7 @@ class Mailer {
     if (error) {
       return new SendingError(400, 'Validation error', [ error.details.shift().message ]);
     }
-    return await this.transporter.send( this.transporter.build( this.getBuildable(event, payload) ) )
+    return await this.transporter.send( this.transporter.build( this.getMail(event, payload) ) )
   }
 
   /**
@@ -79,7 +79,7 @@ class Mailer {
    * @param event Event name
    * @param payload payload
    */
-  private getBuildable(event: string, payload: IPayload): IMail {
+  private getMail(event: string, payload: IPayload): IMail {
     return {
       payload,
       templateId: this.getTemplateId(event),

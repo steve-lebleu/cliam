@@ -3,8 +3,6 @@ const { writeFileSync } = require('fs');
 
 const { cliamrc, requestPayload } = require(process.cwd() + '/test/fixtures');
 
-console.log(requestPayload)
-
 exports.E2ETransporterBlock = (provider) => {
 
   let Cliam, mockery, nodemailerMock;
@@ -12,18 +10,15 @@ exports.E2ETransporterBlock = (provider) => {
   describe(`[${provider}]`, () => {
 
     beforeEach( () => {
-
-      /*
       mockery = require('mockery');
       nodemailerMock = require('nodemailer-mock');
       
       mockery.enable({
         warnOnUnregistered: false,
       });
-      */
       
       /* Once mocked, any code that calls require('nodemailer') will get our nodemailerMock */
-      // mockery.registerMock('nodemailer', nodemailerMock)
+      mockery.registerMock('nodemailer', nodemailerMock)
 
       writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
 
@@ -32,9 +27,9 @@ exports.E2ETransporterBlock = (provider) => {
     });
 
     afterEach( () => {
-      // nodemailerMock.mock.reset();
-      // mockery.deregisterAll();
-      // mockery.disable()
+      nodemailerMock.mock.reset();
+      mockery.deregisterAll();
+      mockery.disable()
     });
 
     describe('Default transactions', () => {

@@ -39,9 +39,11 @@ export class TransporterFactory {
   /**
    * @description Get a concrete transporter instance
    *
-   * @param key
+   * @param vars
+   * @param args
    */
   static get({...vars}: { domain: string, addresses: { from: IAddressable, replyTo: IAddressable } }, { ...args }: ITransporterConfiguration): Transporter {
+    
     if(args.mode === MODE.smtp) {
       return new SmtpTransporter(createTransport( {
         host: args.options.host,
