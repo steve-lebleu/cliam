@@ -267,7 +267,6 @@ module.exports = {
     {
       "id": "hosting-smtp",
       "mode": "smtp",
-      "provider": "sparkpost", 
       "auth": {
         "username": process.env.SMTP_USERNAME,
         "password": process.env.SMTP_PASSWORD,

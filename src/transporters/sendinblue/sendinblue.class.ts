@@ -4,7 +4,7 @@ import { ITransporterConfiguration } from './../ITransporterConfiguration.interf
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISendinblueResponse } from './ISendinblueResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import { ITransporterMailer } from './../ITransporterMailer.interface';
 
@@ -41,9 +41,9 @@ export class SendinblueTransporter extends Transporter {
   /**
    * @description Build body request according to Mailjet requirements
    */
-  build({...args }: IBuildable): Record<string,unknown> {
+  build({...args }: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       headers: {
@@ -56,7 +56,7 @@ export class SendinblueTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,

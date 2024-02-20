@@ -4,7 +4,7 @@ import { ITransporterConfiguration } from './../ITransporterConfiguration.interf
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISMTPResponse } from './ISMTPResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IGmailError } from './IGmailError.interface';
 import { IInfomaniakError } from './IInformaniakError.interface';
 import { ISMTPError } from './ISMTPError.interface';
@@ -39,7 +39,7 @@ export class SmtpTransporter extends Transporter {
    * @description Build body request according to Mailjet requirements
    */
   @Debug('smtp')
-  build({...args }: IBuildable): Record<string,unknown> {
+  build({...args }: IMail): Record<string,unknown> {
 
     const { payload, body } = args;
 

@@ -4,7 +4,7 @@ import { ITransporterConfiguration } from './../ITransporterConfiguration.interf
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IMailjetResponse } from './IMailjetResponse.interface';
 import { IMailjetError } from './IMailjetError.interface';
 import { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
@@ -44,9 +44,9 @@ export class MailjetTransporter extends Transporter {
    * @description Build body request according to Mailjet requirements
    */
   @Debug('mailjet')
-  build({...args}: IBuildable): Record<string,unknown> {
+  build({...args}: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       Messages: [{
@@ -57,7 +57,7 @@ export class MailjetTransporter extends Transporter {
       }]
     };
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output.Messages[0], { Variables: payload.data });
         Object.assign(output.Messages[0], { TemplateLanguage: true });

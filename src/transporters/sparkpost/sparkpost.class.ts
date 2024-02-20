@@ -3,7 +3,7 @@ import { Transporter } from '../transporter.class';
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAttachment } from '../../types/interfaces/IAttachment.interface';
 import { ISparkpostError } from './ISparkpostError.interface';
-import { IBuildable } from '../../types/interfaces/IBuildable.interface';
+import { IMail } from '../../types/interfaces/IMail.interface';
 import { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
 import { ISparkpostBody } from './ISparkpostBody.interface';
 import { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
@@ -40,9 +40,9 @@ export class SparkpostTransporter extends Transporter {
   /**
    * @description Build body request according to Sparkpost requirements
    */
-  build({...args }: IBuildable): ISparkpostBody {
+  build({...args }: IMail): ISparkpostBody {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     let cc: IAddressD[] = [];
     let bcc: IAddressD[] = [];
@@ -56,7 +56,7 @@ export class SparkpostTransporter extends Transporter {
       }
     };
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           substitution_data: payload.data,

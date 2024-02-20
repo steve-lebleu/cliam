@@ -6,7 +6,7 @@ import { ITransporterConfiguration } from './../ITransporterConfiguration.interf
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IMailersendResponse } from './IMailersendResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import { ITransporterMailer } from './../ITransporterMailer.interface';
 
@@ -37,9 +37,9 @@ export class MailersendTransporter extends Transporter {
   /**
    * @description Build body request according to Mailersend requirements
    */
-  build({...args }: IBuildable): Record<string,unknown> {
+  build({...args }: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const from = new Sender(this.address(payload.meta.from).email, this.address(payload.meta.from)?.name);
     const recipients = payload.meta.to.map(to => new Recipient(to.email, to.name));
@@ -50,7 +50,7 @@ export class MailersendTransporter extends Transporter {
       .setReplyTo(from)
       .setSubject(payload.meta.subject);
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         params
           .setPersonalization([{ email: this.address(payload.meta.to[0]).email, data: [ payload.data as any ] }])

@@ -1,7 +1,7 @@
 import { Transporter } from './../transporter.class';
 
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
@@ -39,9 +39,9 @@ export class MandrillTransporter extends Transporter {
   /**
    * @description Build body request according to Mailgun requirements
    */
-  build({...args}: IBuildable): Record<string,unknown> {
+  build({...args}: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       message: {
@@ -58,7 +58,7 @@ export class MandrillTransporter extends Transporter {
       }
     };
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           template_content: [payload.data],

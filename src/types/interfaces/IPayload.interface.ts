@@ -9,11 +9,6 @@ import { RenderEngine } from '../types/render-engine.type';
 export interface IPayload {
 
   /**
-   * @description This property is set dynamically by the mailer service and used by concrete transporter classes
-   */
-  renderEngine?: RenderEngine;
-
-  /**
    * @description Unique transporter id reference
    */
   transporterId?: string;

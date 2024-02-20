@@ -2,7 +2,7 @@ import { Transporter } from './../transporter.class';
 
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IPostmarkError } from 'transporters/postmark/IPostmarkError.interface';
 import { ITransporterMailer } from './../ITransporterMailer.interface';
@@ -41,9 +41,9 @@ export class PostmarkTransporter extends Transporter {
    * @description Build body request according to Mailjet requirements
    */
   @Debug('postmark')
-  build({...args}: IBuildable): IPostmarkBody {
+  build({...args}: IMail): IPostmarkBody {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output: IPostmarkBody = {
       from: this.address(payload.meta.from),
@@ -52,7 +52,7 @@ export class PostmarkTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           templateModel: payload.data,

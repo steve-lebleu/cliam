@@ -8,21 +8,6 @@ describe('Request payload', () => {
 
   let payload;
 
-  describe('.renderEngine', () => {
-
-    beforeEach(() => {
-      payload = JSON.parse( JSON.stringify( requestPayload() ) );
-    });
-
-    it(`error - should be provider|self|default`, (done) => {
-      payload.renderEngine = 'Yoda';
-      const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-      expect(error.details[0].message).to.be.eqls(`"renderEngine" must be one of [provider, default, self]`);
-      done();
-    });
-
-  });
-
   describe('.meta', () => {
 
     beforeEach(() => {

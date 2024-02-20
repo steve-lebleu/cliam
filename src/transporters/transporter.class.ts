@@ -1,7 +1,7 @@
 import { SendingResponse } from './../classes/sending-response.class';
 import { SendingError } from './../classes/sending-error.class';
 import { ITransporterMailer } from './ITransporterMailer.interface';
-import { IBuildable } from './../types/interfaces/IBuildable.interface';
+import { IMail } from './../types/interfaces/IMail.interface';
 import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 
 /**
@@ -43,7 +43,7 @@ export abstract class Transporter {
    *
    * @param err
    */
-  public build({...args }: IBuildable): any {}
+  public build({...args }: IMail): any {}
 
   /**
    * @description Send email

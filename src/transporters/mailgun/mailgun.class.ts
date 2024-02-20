@@ -1,7 +1,7 @@
 import { Transporter } from './../transporter.class';
 
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IMailgunError } from './IMailgunError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
@@ -37,32 +37,11 @@ export class MailgunTransporter extends Transporter {
   }
 
   /**
-   * @description Format email address according to Mailgun requirements
-   *
-   * @param recipient
-   */
-  address(recipient: string|IAddressable): string {
-    if (typeof recipient === 'string') {
-      return recipient;
-    }
-    return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : recipient.email;
-  }
-
-  /**
-   * @description Format email addresses according to Mailgun requirements
-   *
-   * @param recipients Entries to format as email address
-   */
-  addresses(recipients: Array<string|IAddressable>): Array<string> {
-    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient) );
-  }
-
-  /**
    * @description Build body request according to Mailgun requirements
    */
-  build({...args}: IBuildable): Record<string,unknown> {
+  build({...args}: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       from: this.address(payload.meta.from),
@@ -71,7 +50,7 @@ export class MailgunTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.renderEngine.valueOf()) {
+    switch(renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           'h:X-Mailgun-Variables': JSON.stringify(payload.data),
@@ -108,6 +87,27 @@ export class MailgunTransporter extends Transporter {
     }
 
     return output;
+  }
+
+  /**
+   * @description Format email address according to Mailgun requirements
+   *
+   * @param recipient
+   */
+  address(recipient: string|IAddressable): string {
+    if (typeof recipient === 'string') {
+      return recipient;
+    }
+    return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : recipient.email;
+  }
+
+  /**
+   * @description Format email addresses according to Mailgun requirements
+   *
+   * @param recipients Entries to format as email address
+   */
+  addresses(recipients: Array<string|IAddressable>): Array<string> {
+    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient) );
   }
 
   /**

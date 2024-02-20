@@ -5,7 +5,7 @@ import { Transporter } from './../transporters/transporter.class';
 import { Container } from './../services/container.service';
 import { RenderEngine } from './render-engine.service';
 import { RENDER_ENGINE } from '../types/enums/render-engine.enum';
-import { IBuildable } from './../types/interfaces/IBuildable.interface';
+import { IMail } from './../types/interfaces/IMail.interface';
 import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
 import { mailSchema } from './../validations/mail.validation';
@@ -15,6 +15,11 @@ import { MODE } from '../types/enums/mode.enum';
  * @description Manage incoming mail requests
  */
 class Mailer {
+
+  /**
+   * @description Render engine to use for the current sending
+   */
+  renderEngine: RENDER_ENGINE = null;
 
   /**
    * @description Transporter instance
@@ -54,17 +59,17 @@ class Mailer {
   }
 
   /**
-   * @description Set the render engine to use for the current mailer instance according to the setup.
+   * @description Get the render engine to use for the current mailer instance according to the setup.
    *
    * @param event Event name
    * @param payload payload
    */
    private setRenderEngine(event: string, payload: IPayload): void {
     if (this.transporter.configuration.mode === MODE.smtp) {
-      payload.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
+      this.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
     if (this.transporter.configuration.mode === MODE.api) {
-      payload.renderEngine =  this.getTemplateId(event) ? RENDER_ENGINE.provider : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
+      this.renderEngine = this.getTemplateId(event) ? RENDER_ENGINE.provider : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
   }
 
@@ -74,11 +79,12 @@ class Mailer {
    * @param event Event name
    * @param payload payload
    */
-  private getBuildable(event: string, payload: IPayload): IBuildable {
+  private getBuildable(event: string, payload: IPayload): IMail {
     return {
       payload,
-      templateId: payload.renderEngine === RENDER_ENGINE.provider ? this.getTemplateId(event) : null,
-      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(payload.renderEngine as RENDER_ENGINE) ? this.getCompiled(event, payload) : null,
+      templateId: this.getTemplateId(event),
+      renderEngine: this.renderEngine,
+      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(this.renderEngine) ? this.getCompiled(event, payload) : null,
       origin: this.getOrigin()
     }
   }
@@ -96,7 +102,10 @@ class Mailer {
    * @param event Event name
    */
   private getTemplateId(event: string): string {
-    return this.transporter.configuration.options.templates[event] as string;
+    if (!this.transporter.configuration?.options?.templates?.hasOwnProperty(event)) {
+      return null;
+    }
+    return this.transporter.configuration?.options?.templates[event];
   }
 
   /**
@@ -116,14 +125,14 @@ class Mailer {
    */
   private getCompiled(event: string, payload: IPayload): { html: string, text: string } {
 
-    if (payload.renderEngine === RENDER_ENGINE.self && this.hasPlainText(payload.content)) {
+    if (this.renderEngine === RENDER_ENGINE.self && this.hasPlainText(payload.content)) {
       return {
         html: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value,
         text: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/plain']).value,
       }
     }
 
-    if (payload.renderEngine === RENDER_ENGINE.self && !this.hasPlainText(payload.content)) {
+    if (this.renderEngine === RENDER_ENGINE.self && !this.hasPlainText(payload.content)) {
       return {
         html: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value,
         text: RenderEngine.textify(payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value),
