@@ -1,7 +1,6 @@
-import { Container } from './../../services/container.service';
-
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISendinblueResponse } from './ISendinblueResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
@@ -32,11 +31,11 @@ export class SendinblueTransporter extends Transporter {
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**

@@ -2,6 +2,7 @@ import { SendingResponse } from './../classes/sending-response.class';
 import { SendingError } from './../classes/sending-error.class';
 import { ISendMail } from './../types/interfaces/ISendMail.interface';
 import { IBuildable } from './../types/interfaces/IBuildable.interface';
+import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 
 /**
  * Main Transporter class
@@ -9,12 +10,18 @@ import { IBuildable } from './../types/interfaces/IBuildable.interface';
 export abstract class Transporter {
 
   /**
+   * @description Initial transporter configuration options defined in cliamrc
+   */
+  public configuration: ITransporterConfiguration = null;
+
+  /**
    * @description Wrapped concrete transporter instance
    */
-  public transporter: ISendMail;
+  public transporter: ISendMail = null;
 
-  constructor(transporterEngine: ISendMail) {
+  constructor(transporterEngine: ISendMail, configuration: ITransporterConfiguration) {
     this.transporter = transporterEngine;
+    this.configuration = configuration;
   }
 
   /**

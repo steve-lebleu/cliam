@@ -54,8 +54,8 @@ class Container {
 
     this.configuration = new ClientConfiguration( this.validates( this.read(this.PATH) ) );
 
-    this.transporters = this.configuration.transporters.reduce((result, transporter) => {
-      result[transporter.id] = TransporterFactory.get(this.configuration.variables, transporter);
+    this.transporters = this.configuration.transporters.reduce((result, transporterDefinition) => {
+      result[transporterDefinition.id] = TransporterFactory.get(this.configuration.variables, transporterDefinition);
       return result;
     }, {});
 

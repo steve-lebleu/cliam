@@ -1,6 +1,6 @@
 import { Transporter } from '../transporter.class';
 
-import { ITransporter } from '../ITransporter.interface';
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAttachment } from '../../types/interfaces/IAttachment.interface';
 import { ISparkpostError } from './ISparkpostError.interface';
 import { IBuildable } from '../../types/interfaces/IBuildable.interface';
@@ -25,16 +25,16 @@ import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
  * @see https://app.sparkpost.com
  * @see https://developers.sparkpost.com/api/
  */
-export class SparkpostTransporter extends Transporter implements ITransporter {
+export class SparkpostTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**

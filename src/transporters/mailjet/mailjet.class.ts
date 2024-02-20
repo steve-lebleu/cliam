@@ -1,5 +1,6 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
@@ -7,7 +8,6 @@ import { IBuildable } from './../../types/interfaces/IBuildable.interface';
 import { IMailjetResponse } from './IMailjetResponse.interface';
 import { IMailjetError } from './IMailjetError.interface';
 import { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
-import { ITransporter } from './../ITransporter.interface';
 import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
@@ -28,16 +28,16 @@ import { Debug } from './../../types/decorators/debug.decorator';
  * @see https://github.com/mailjet/mailjet-apiv3-nodejs
  * @see https://dev.mailjet.com/guides/
  */
-export class MailjetTransporter extends Transporter implements ITransporter {
+export class MailjetTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-   constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**

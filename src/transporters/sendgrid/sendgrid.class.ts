@@ -1,8 +1,8 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IBuildable } from './../../types/interfaces/IBuildable.interface';
 import { ISendgridResponse } from './ISendgridResponse.interface';
-import { ITransporter } from './../ITransporter.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import { ISendgridError } from './ISendgridError.interface';
@@ -26,17 +26,18 @@ import { Debug } from './../../types/decorators/debug.decorator';
  * @see https://sendgrid.com/
  * @see https://sendgrid.com/docs/API_Reference/api_v3.html
  */
-export class SendgridTransporter extends Transporter implements ITransporter {
+export class SendgridTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
+
   /**
    * @description Build body request according to Mailjet requirements
    */

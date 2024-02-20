@@ -3,7 +3,6 @@ import { Event } from './../types/types/event.type';
 import { IPayload } from './../types/interfaces/IPayload.interface';
 import { SendingResponse } from './sending-response.class';
 import { SendingError } from './sending-error.class';
-import { ClientConfiguration } from './client-configuration.class';
 import { Mailer } from './../services/mailer.service';
 
 /**
@@ -63,7 +62,7 @@ class Cliam {
    */
   async emit(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
     if (!this.mailers[payload.transporter]) {
-      this.mailers[payload.transporter] = new Mailer(Container.transporters[payload.transporter], Container.configuration.transporters.find(transporter => transporter.id === payload.transporter));
+      this.mailers[payload.transporter] = new Mailer(Container.transporters[payload.transporter]);
     }
     return this.mailers[payload.transporter].send(event, payload)
   }

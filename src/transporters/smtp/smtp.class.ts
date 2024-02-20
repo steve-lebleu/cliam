@@ -1,5 +1,6 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISMTPResponse } from './ISMTPResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
@@ -7,7 +8,6 @@ import { IBuildable } from './../../types/interfaces/IBuildable.interface';
 import { IGmailError } from './IGmailError.interface';
 import { IInfomaniakError } from './IInformaniakError.interface';
 import { ISMTPError } from './ISMTPError.interface';
-import { ITransporter } from './../ITransporter.interface';
 import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
@@ -23,16 +23,16 @@ import { Debug } from './../../types/decorators/debug.decorator';
  *
  * @see https://nodemailer.com/smtp/
  */
-export class SmtpTransporter extends Transporter implements ITransporter {
+export class SmtpTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**

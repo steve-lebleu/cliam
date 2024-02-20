@@ -1,10 +1,10 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IBuildable } from './../../types/interfaces/IBuildable.interface';
 import { IMailgunError } from './IMailgunError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { ITransporter } from './../ITransporter.interface';
 import { ISendMail } from './../../types/interfaces/ISendMail.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
@@ -24,16 +24,16 @@ import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
  * @see https://documentation.mailgun.com/en/latest/user_manual.html#introduction
  *
  */
-export class MailgunTransporter extends Transporter implements ITransporter {
+export class MailgunTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**

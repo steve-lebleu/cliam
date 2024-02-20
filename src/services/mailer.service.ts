@@ -9,7 +9,6 @@ import { IBuildable } from './../types/interfaces/IBuildable.interface';
 import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
 import { mailSchema } from './../validations/mail.validation';
-import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
 import { MODE } from '../types/enums/mode.enum';
 
 /**
@@ -20,16 +19,10 @@ class Mailer {
   /**
    * @description
    */
-  configuration: ITransporterDefinition = null;
-
-  /**
-   * @description
-   */
   transporter: Transporter = null;
 
-  constructor(transporter: Transporter, configuration: ITransporterDefinition) {
+  constructor(transporter: Transporter) {
     this.transporter = transporter;
-    this.configuration = configuration;
   }
 
   /**
@@ -63,10 +56,10 @@ class Mailer {
    * @param payload
    */
    private setRenderEngine(event: string, payload: IPayload): void {
-    if (this.configuration.mode === MODE.smtp) {
+    if (this.transporter.configuration.mode === MODE.smtp) {
       payload.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
-    if (this.configuration.mode === MODE.api) {
+    if (this.transporter.configuration.mode === MODE.api) {
       payload.renderEngine =  this.getTemplateId(event) ? RENDER_ENGINE.provider : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
   }
@@ -97,7 +90,7 @@ class Mailer {
    * @description
    */
   private getTemplateId(event: string): string {
-    return this.configuration.options.templates[event] as string;
+    return this.transporter.configuration.options.templates[event] as string;
   }
 
   /**
