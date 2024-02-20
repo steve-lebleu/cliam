@@ -24,12 +24,10 @@ class Container {
    */
   public configuration: ClientConfiguration = null;
 
+
   /**
    * @description
    */
-  //public transporters: Transporter[] = null;
-
-  /** */
   public transporters: { [id:string]: Transporter } = null;
 
   /**

@@ -81,7 +81,7 @@ class Mailer {
     return {
       payload,
       templateId: payload.renderEngine === RENDER_ENGINE.provider ? this.getTemplateId(event) : null,
-      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(payload.renderEngine as RENDER_ENGINE) ? this.getCompilated(event, payload) : null,
+      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(payload.renderEngine as RENDER_ENGINE) ? this.getCompiled(event, payload) : null,
       origin: this.getOrigin()
     }
   }
@@ -110,7 +110,7 @@ class Mailer {
   /**
    * @description
    */
-  private getCompilated(event: string, payload: IPayload): { html: string, text: string } {
+  private getCompiled(event: string, payload: IPayload): { html: string, text: string } {
 
     if (payload.renderEngine === RENDER_ENGINE.self && this.hasPlainText(payload.content)) {
       return {
