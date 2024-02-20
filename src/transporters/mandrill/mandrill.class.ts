@@ -5,13 +5,16 @@ import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { IMandrillResponse } from 'transporters/mandrill/IMandrillResponse.interface';
+import { IMandrillResponse } from './IMandrillResponse.interface';
+import { IMandrillError } from './IMandrillError.interface';
 import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Mandrill transporter for mail sending.
@@ -46,11 +49,11 @@ export class MandrillTransporter extends Transporter {
     const output = {
       message: {
         subject: payload.meta.subject,
-        from_email: this.address(payload.meta.from.email, 'single'),
+        from_email: this.address(payload.meta.from, 'string'), // TODO This must be dynamic -> if not -> bug
         from_name: payload.meta.from.name,
         to: this.addresses(payload.meta.to, 'to'),
         headers: {
-          'Reply-To': this.address(payload.meta.replyTo, 'single')
+          'Reply-To': this.address(payload.meta.replyTo.email, 'string') // TODO This must be dynamic -> if not -> bug
         },
         track_opens: true,
         track_click: true,
@@ -125,14 +128,18 @@ export class MandrillTransporter extends Transporter {
   response(response: IMandrillResponse[]): SendingResponse {
 
     const incoming = response.shift();
-
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.mandrill)
+      .set('server', null)
+      .set('uri', null)
       .set('uri', incoming.request.uri)
       .set('httpVersion', incoming.httpVersion)
       .set('headers', incoming.headers)
-      .set('method', incoming.request.method)
+      .set('timestamp', Date.now())
+      .set('messageId', null)
       .set('body', incoming.request.body)
       .set('statusCode', 202)
       .set('statusMessage', incoming.statusMessage);
@@ -145,7 +152,7 @@ export class MandrillTransporter extends Transporter {
    *
    * @param error Error from Mandrill API
    */
-  error(error: Error): SendingError {
-    return new SendingError(500, '', ['']);
+  error(error: IMandrillError): SendingError {
+    return new SendingError(error.code, error.name, [error.message]);
   }
 }

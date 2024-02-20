@@ -1,4 +1,5 @@
-import { HTTP_METHOD } from '../enums/http-method.enum';
+import { MODE } from 'types/enums/mode.enum';
+import { PROVIDER } from 'types/enums/provider.enum';
 
 /**
  * Define mail sending uniform response properties.
@@ -6,29 +7,44 @@ import { HTTP_METHOD } from '../enums/http-method.enum';
 export interface ISendingResponse {
 
   /**
-   * @description URI of the request
+   * @description Request mode api|smtp
+   */
+  mode: MODE;
+
+  /**
+   * @description Request web API provider if mode is API
+   */
+  provider: PROVIDER;
+  
+  /**
+   * @description Timestamp returned by Cliam wrapper
+   */
+  timestamp: string;
+  
+  /**
+   * @description Request server
+   */
+  server: string;
+
+  /**
+   * @description Request uri
    */
   uri: string;
 
   /**
-   * @description HTTP protocol version used by the requested server
+   * @description
    */
-  httpVersion: string;
+  messageId?: string;
 
   /**
-   * @description HTTP method of the request
+   * @description Request headers
    */
-  method: HTTP_METHOD;
+  headers: object;
 
   /**
-   * @description HTTP headers of the response
+   * @description Response body
    */
-  headers: Object;
-
-  /**
-   * @description Content returned by the requested API
-   */
-  body: Object;
+  body: Record<string,unknown>;
 
   /**
    * @description HTTP status code

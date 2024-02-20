@@ -1,5 +1,7 @@
+import { MODE } from 'types/enums/mode.enum';
 import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
 import { HTTP_METHOD } from './../types/enums/http-method.enum';
+import { PROVIDER } from 'types/enums/provider.enum';
 
 /**
  * Sending response wrapper
@@ -7,9 +9,24 @@ import { HTTP_METHOD } from './../types/enums/http-method.enum';
 export class SendingResponse implements ISendingResponse {
 
   /**
-   * @description
+   * @description Request mode api|smtp
    */
-  accepted?: string|string[];
+  mode: MODE;
+
+  /**
+   * @description Request web API provider if mode is API
+   */
+  provider: PROVIDER;
+  
+  /**
+   * @description Timestamp returned by Cliam wrapper
+   */
+  timestamp: string;
+  
+  /**
+   * @description Request server
+   */
+  server: string;
 
   /**
    * @description Request uri
@@ -17,19 +34,9 @@ export class SendingResponse implements ISendingResponse {
   uri: string;
 
   /**
-   * @description HTTP protocol version
-   */
-  httpVersion: string;
-
-  /**
    * @description
    */
   messageId?: string;
-
-  /**
-   * @description Request method
-   */
-  method: HTTP_METHOD;
 
   /**
    * @description Request headers

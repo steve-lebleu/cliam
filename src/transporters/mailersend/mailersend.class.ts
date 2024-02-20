@@ -5,6 +5,7 @@ import { Transporter } from './../transporter.class';
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IMailersendResponse } from './IMailersendResponse.interface';
+import { IMailersendError } from './IMailersendError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
@@ -13,7 +14,11 @@ import { ITransporterMailer } from './../ITransporterMailer.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
+import { Debug } from '../../types/decorators/debug.decorator';
+
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Mailersend transporter for mail sending.
@@ -37,6 +42,7 @@ export class MailersendTransporter extends Transporter {
   /**
    * @description Build body request according to Mailersend requirements
    */
+  @Debug('mailersend')
   build({...args }: IMail): Record<string,unknown> {
 
     const { payload, templateId, body, renderEngine } = args;
@@ -110,14 +116,16 @@ export class MailersendTransporter extends Transporter {
    */
   response(response: IMailersendResponse): SendingResponse {
 
-    console.log(response);
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.mailersend)
+      .set('server', response.headers['server'])
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', JSON.stringify(response.headers))
-      .set('method', null)
+      .set('timestamp', Date.now())
+      .set('messageId', response.headers['x-message-id'])
       .set('body', response.body)
       .set('statusCode', 202)
       .set('statusMessage', null);
@@ -130,7 +138,7 @@ export class MailersendTransporter extends Transporter {
    *
    * @param error Error from Mailersend API
    */
-  error(error: any): SendingError {
-    return new SendingError(parseInt(error.statusCode, 10), error.body.message, [error.body.errors]);
+  error(error: IMailersendError): SendingError {
+    return new SendingError(error.statusCode, error.body.message, [error.body.errors]);
   }
 }

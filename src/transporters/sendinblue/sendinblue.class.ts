@@ -12,6 +12,8 @@ import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Sendinblue transporter for mail sending.
@@ -126,13 +128,16 @@ export class SendinblueTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('uri', null)
-      .set('httpVersion', response.res.httpVersion)
-      .set('headers', response.res.headers)
-      .set('method', response.res.method)
-      .set('body', response.body)
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.sendinblue)
+      .set('server', null)
+      .set('uri', response.res.req.protocol + '//' + response.res.req.host + response.res.req.path)
+      .set('headers', null)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
+      .set('body', null)
       .set('statusCode', 202)
-      .set('statusMessage', response.res.statusMessage);
+      .set('statusMessage', null);
 
     return res;
   }

@@ -3,9 +3,10 @@ import { Transporter } from '../transporter.class';
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAttachment } from '../../types/interfaces/IAttachment.interface';
 import { ISparkpostError } from './ISparkpostError.interface';
+import { ISparkpostResponse } from './ISparkpostResponse.interface';
+import { ISparkpostBody } from './ISparkpostBody.interface';
 import { IMail } from '../../types/interfaces/IMail.interface';
 import { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
-import { ISparkpostBody } from './ISparkpostBody.interface';
 import { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
 import { ITransporterMailer } from '../ITransporterMailer.interface';
 
@@ -13,6 +14,8 @@ import { SendingError } from '../../classes/sending-error.class';
 import { SendingResponse } from '../../classes/sending-response.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Sparkpost transporter for mail sending.
@@ -141,16 +144,19 @@ export class SparkpostTransporter extends Transporter {
    *
    * @param response Response from Sparkpost API
    */
-  response(response: Record<string,unknown>): SendingResponse {
+  response(response: ISparkpostResponse): SendingResponse {
 
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.sparkpost)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', 'POST')
-      .set('body', response)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
+      .set('body', null)
       .set('statusCode', 202)
       .set('statusMessage', null);
 

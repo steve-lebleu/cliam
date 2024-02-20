@@ -4,13 +4,17 @@ import { ITransporterConfiguration } from './../ITransporterConfiguration.interf
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IPostmarkError } from 'transporters/postmark/IPostmarkError.interface';
+import { IPostmarkError } from './IPostmarkError.interface';
+import { IPostmarkResponse } from './IPostmarkResponse.interface';
 import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
+
 import { IPostmarkBody } from './IPostmarkBody.interface';
 
 import { Debug } from './../../types/decorators/debug.decorator';
@@ -118,16 +122,19 @@ export class PostmarkTransporter extends Transporter {
    *
    * @param response Response from Postmark API
    */
-  response(response: Record<string,unknown>): SendingResponse {
+  response(response: IPostmarkResponse): SendingResponse {
 
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.postmark)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', 'POST')
-      .set('body', response)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
+      .set('body', JSON.stringify(response.accepted))
       .set('statusCode', 202)
       .set('statusMessage', null);
 

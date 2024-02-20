@@ -12,8 +12,11 @@ import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 import { Debug } from './../../types/decorators/debug.decorator';
+
 
 /**
  * Set a Sendgrid transporter for mail sending.
@@ -120,10 +123,13 @@ export class SendgridTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('uri', incoming.request.uri)
-      .set('httpVersion', incoming.httpVersion)
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.sendgrid)
+      .set('server', incoming.headers['server'] as string)
+      .set('uri', incoming.request.uri.href)
       .set('headers', incoming.headers)
-      .set('method', incoming.request.method)
+      .set('timestamp', Date.now())
+      .set('messageId', incoming.headers['x-message-id'] as string)
       .set('body', incoming.request.body)
       .set('statusCode', 202)
       .set('statusMessage', incoming.statusMessage);
@@ -137,7 +143,6 @@ export class SendgridTransporter extends Transporter {
    * @param error Error from Sendgrid API
    */
   error(error: ISendgridError): SendingError {
-    console.log('ERR', error)
     return new SendingError(error.code || error.statusCode, error.name || error.message, error.hasOwnProperty('response') ? error.response.body.errors : [error.message]);
   }
 }

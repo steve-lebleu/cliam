@@ -10,7 +10,11 @@ import { ITransporterMailer } from './../ITransporterMailer.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
+import { Debug } from '../../types/decorators/debug.decorator';
+
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * This class set a Mailgun transporter for mail sending.
@@ -39,6 +43,7 @@ export class MailgunTransporter extends Transporter {
   /**
    * @description Build body request according to Mailgun requirements
    */
+  @Debug('mailgun')
   build({...args}: IMail): Record<string,unknown> {
 
     const { payload, templateId, body, renderEngine } = args;
@@ -116,12 +121,17 @@ export class MailgunTransporter extends Transporter {
    * @param response Response from Mailgun API
    */
   response(response: Record<string,unknown>): SendingResponse {
+  
     const res = new SendingResponse();
+    
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.mailgun)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', 'POST')
+      .set('timestamp', Date.now())
+      .set('messageId', null)
       .set('body', response)
       .set('statusCode', 202)
       .set('statusMessage', response.message as string);
@@ -134,6 +144,6 @@ export class MailgunTransporter extends Transporter {
    * @param error Error from Mailgun API
    */
   error(error: IMailgunError): SendingError {
-    return new SendingError(error.statusCode, error.name || error.message, [error.message]);
+    return new SendingError(error.status, error.type, [error.details]);
   }
 }

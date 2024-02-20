@@ -11,7 +11,11 @@ import { ITransporterMailer } from './../ITransporterMailer.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
+import { Debug } from './../../types/decorators/debug.decorator';
+
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Brevo transporter for mail sending.
@@ -40,6 +44,7 @@ export class BrevoTransporter extends Transporter {
   /**
    * @description Build body request according to Brevo requirements
    */
+  @Debug('brevo')
   build({...args }: IMail): Record<string,unknown> {
 
     const { payload, templateId, body, renderEngine } = args;
@@ -125,10 +130,13 @@ export class BrevoTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.brevo)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', null)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
       .set('body', response.messageId)
       .set('statusCode', 202)
       .set('statusMessage', null);

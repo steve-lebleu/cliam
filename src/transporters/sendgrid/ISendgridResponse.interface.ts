@@ -1,6 +1,8 @@
+import { Url } from "url";
+
 export interface ISendgridResponse {
   request: {
-    uri: string,
+    uri: Url,
     method: string,
     body: Record<string,unknown>
   },

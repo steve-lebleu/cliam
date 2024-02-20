@@ -6,6 +6,7 @@ export interface IMailjetResponse {
       headers: Record<string,unknown>,
       data: string,
     },
+    headers: Record<string,string>
     request: {
       res: {
         httpVersion: string

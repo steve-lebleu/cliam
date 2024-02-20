@@ -14,6 +14,9 @@ import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { HTTP_METHOD } from './../../types/enums/http-method.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
+
 import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
@@ -110,11 +113,13 @@ export class SmtpTransporter extends Transporter {
     const res = new SendingResponse();
 
     return res
-      .set('accepted', incoming.accepted)
+      .set('mode', MODE.smtp)
+      .set('provider', null)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', HTTP_METHOD.POST)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
       .set('body', incoming.envelope)
       .set('statusCode', 202)
       .set('statusMessage', incoming.response)
@@ -149,7 +154,7 @@ export class SmtpTransporter extends Transporter {
 
     if (this.transporter.options.host === 'mail.infomaniak.com') {
       error = error as IInfomaniakError;
-      return new SendingError(403, error.errno.toString(), [ error.errno.toString() ]);
+      return new SendingError(error.responseCode, error.code, [ error.response ]);
     }
 
     error = error as ISMTPError;
