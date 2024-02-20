@@ -40,7 +40,7 @@ class RenderEngine {
   /**
    * @description
    */
-   private readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
+   public readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
     { event: 'default', banner: '', default: true },
     { event: 'event.subscribe', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },
     { event: 'event.unsubscribe', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },

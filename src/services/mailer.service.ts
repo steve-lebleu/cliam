@@ -80,6 +80,9 @@ class Mailer {
    * @param payload payload
    */
   private getMail(event: string, payload: IPayload): IMail {
+    if (this.renderEngine === RENDER_ENGINE.default && !RenderEngine.TEMPLATES.find(template => template.event === event)) {
+      throw new Error(`No default template available for this custom event (${event}). Please provide your own compilation or push a new merge request ;-)`);
+    }
     return {
       payload,
       templateId: this.getTemplateId(event),
