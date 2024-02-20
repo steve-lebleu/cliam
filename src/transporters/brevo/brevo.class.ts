@@ -3,6 +3,7 @@ import { Transporter } from './../transporter.class';
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IBrevoResponse } from './IBrevoResponse.interface';
+import { IBrevoError } from './IBrevoError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
@@ -22,7 +23,6 @@ import { MODE } from '../../types/enums/mode.enum';
  *
  * @dependency nodemailer
  * @dependency nodemailer-brevo-transport
- * @dependency Fork of nodemailer-sendinblue-transport https://github.com/konfer-be/nodemailer-sendinblue-transport.git
  *
  * @see https://nodemailer.com/smtp/
  * @see https://www.npmjs.com/package/nodemailer-brevo-transport
@@ -149,7 +149,7 @@ export class BrevoTransporter extends Transporter {
    *
    * @param error Error from Brevo API
    */
-  error(error: Error): SendingError {
+  error(error: IBrevoError): SendingError {
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
     return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);

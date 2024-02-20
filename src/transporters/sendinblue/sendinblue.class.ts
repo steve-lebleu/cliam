@@ -3,6 +3,7 @@ import { Transporter } from './../transporter.class';
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISendinblueResponse } from './ISendinblueResponse.interface';
+import { ISendinblueError } from './ISendinblueError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
@@ -145,9 +146,9 @@ export class SendinblueTransporter extends Transporter {
   /**
    * @description Format error output
    *
-   * @param error Error from Sendgrid API
+   * @param error Error from Sendinblue API
    */
-  error(error: Error): SendingError {
+  error(error: ISendinblueError): SendingError {
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
     return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);
