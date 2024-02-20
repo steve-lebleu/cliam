@@ -4,7 +4,7 @@ const { writeFileSync } = require('fs');
 const { cliamrc, requestPayload } = require(process.cwd() + '/test/fixtures');
 
 const internal =  {
-  transporter: 'hosting-smtp',
+  transporterId: 'hosting-smtp',
 	meta: {
 		subject: 'Compiled by consumer and sended by SMTP',
 		to: [
@@ -90,7 +90,7 @@ describe('SMTP', function() {
 
           it(`202 - ${event}`, async() => {
     
-            const response = await Cliam.emit(event, internal);
+            const response = await Cliam.mail(event, internal);
             const sentMail = nodemailerMock.mock.getSentMail();
             expect(response.statusCode).to.be.eqls(202);
             expect(response.statusMessage).to.be.eqls('nodemailer-mock success');
@@ -108,7 +108,7 @@ describe('SMTP', function() {
           const params = requestPayload('default', 'hosting-smtp');
           delete params.content;
           
-          await Cliam.emit(event, params).catch(err => {
+          await Cliam.mail(event, params).catch(err => {
             expect(err).to.be.an('object');
             expect(err).to.haveOwnProperty('statusCode');
             expect(err).to.haveOwnProperty('statusText');
@@ -122,7 +122,7 @@ describe('SMTP', function() {
       it(`202 - ${event}`, async() => {
         const params = JSON.parse( JSON.stringify( requestPayload('provider', 'hosting-smtp') ) );
         delete params.content;
-        const response = await Cliam.emit(event, params);
+        const response = await Cliam.mail(event, params);
         const sentMail = nodemailerMock.mock.getSentMail();
         expect(response.statusCode).to.be.eqls(202);
         expect(response.statusMessage).to.be.eqls('nodemailer-mock success');

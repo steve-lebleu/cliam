@@ -14,9 +14,9 @@ export interface IPayload {
   renderEngine?: RenderEngine;
 
   /**
-   * @description
+   * @description Unique transporter id reference
    */
-  transporter: string;
+  transporterId?: string;
 
   /**
    * @description Meta data for email sending

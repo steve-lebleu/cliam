@@ -1,8 +1,8 @@
 const { base64Encode } = require( process.cwd() + '/dist/utils/string.util' );
 
-module.exports = (renderEngine = 'provider', transporter = 'unique-id-transporter') => {
+module.exports = (renderEngine = 'provider', transporterId = 'unique-id-transporter') => {
   return {
-    transporter,
+    transporterId,
     meta: {
       subject: 'Hello, I\'m an email',
       to: [

@@ -66,7 +66,7 @@ exports.E2ETransporterBlock = (provider) => {
               const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
               delete params.content;
 
-              const response = await Cliam.emit(event, params);
+              const response = await Cliam.mail(event, params);
 
               expect(response.statusCode).to.be.eqls(202);
             });
@@ -80,7 +80,7 @@ exports.E2ETransporterBlock = (provider) => {
               const params = JSON.parse( JSON.stringify( requestPayload('self', `${provider}-api`) ) );
               delete params.data;
 
-              const response = await Cliam.emit(event, params);
+              const response = await Cliam.mail(event, params);
 
               expect(response.statusCode).to.be.eqls(202);
             });
@@ -98,7 +98,7 @@ exports.E2ETransporterBlock = (provider) => {
           const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
           delete params.content;
 
-          const response = await Cliam.emit(event, params);
+          const response = await Cliam.mail(event, params);
 
           expect(response.statusCode).to.be.eqls(202);
         });

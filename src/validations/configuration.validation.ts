@@ -55,7 +55,8 @@ const configurationSchema = Joi.object({
       quaternaryColor: Joi.string().hex().required(),
     }).required()
   }).optional(),
-  transporters: Joi.array().items(
+  transporters: Joi.array()
+    .items(
     Joi.object({
       id: Joi.string().required(),
       mode: Joi.any().valid( ...list(MODE) ).required(),
@@ -184,7 +185,9 @@ const configurationSchema = Joi.object({
         ]
       })
     })
-  ).unique((a, b) => a.id === b.id).required(),
+    )
+    .min(1).required()
+    .unique((a, b) => a.id === b.id).required(),
 });
 
 export { configurationSchema }
