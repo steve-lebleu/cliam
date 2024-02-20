@@ -8,7 +8,7 @@ import { IBuildable } from './../../types/interfaces/IBuildable.interface';
 import { IMailjetResponse } from './IMailjetResponse.interface';
 import { IMailjetError } from './IMailjetError.interface';
 import { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
@@ -36,7 +36,7 @@ export class MailjetTransporter extends Transporter {
    * @param transporterEngine Transporter instance
    * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
     super(transporterEngine, configuration);
   }
 

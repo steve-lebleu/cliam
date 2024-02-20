@@ -1,6 +1,6 @@
 import { SendingResponse } from './../classes/sending-response.class';
 import { SendingError } from './../classes/sending-error.class';
-import { ISendMail } from './../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './ITransporterMailer.interface';
 import { IBuildable } from './../types/interfaces/IBuildable.interface';
 import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 
@@ -17,9 +17,9 @@ export abstract class Transporter {
   /**
    * @description Wrapped concrete transporter instance
    */
-  public transporter: ISendMail = null;
+  public transporter: ITransporterMailer = null;
 
-  constructor(transporterEngine: ISendMail, configuration: ITransporterConfiguration) {
+  constructor(transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration) {
     this.transporter = transporterEngine;
     this.configuration = configuration;
   }

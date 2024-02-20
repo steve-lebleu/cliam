@@ -6,7 +6,7 @@ import { ISendgridResponse } from './ISendgridResponse.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import { ISendgridError } from './ISendgridError.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
@@ -34,7 +34,7 @@ export class SendgridTransporter extends Transporter {
    * @param transporterEngine Transporter instance
    * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
     super(transporterEngine, configuration);
   }
 

@@ -1,7 +1,7 @@
 /**
  * Define error output format
  */
-export interface IError {
+export interface ISendingError {
 
   /**
    * @description HTTP response status code

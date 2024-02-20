@@ -1,10 +1,10 @@
-import { ISending } from './../types/interfaces/ISending.interface';
+import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
 import { HTTP_METHOD } from './../types/enums/http-method.enum';
 
 /**
  * Sending response wrapper
  */
-export class SendingResponse implements ISending {
+export class SendingResponse implements ISendingResponse {
 
   /**
    * @description

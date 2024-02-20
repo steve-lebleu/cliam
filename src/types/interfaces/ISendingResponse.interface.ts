@@ -3,7 +3,7 @@ import { HTTP_METHOD } from '../enums/http-method.enum';
 /**
  * Define mail sending uniform response properties.
  */
-export interface ISending {
+export interface ISendingResponse {
 
   /**
    * @description URI of the request

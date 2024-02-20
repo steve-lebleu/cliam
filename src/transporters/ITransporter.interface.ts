@@ -1,6 +1,6 @@
 import { SendingResponse } from '../classes/sending-response.class';
 import { SendingError } from '../classes/sending-error.class';
-import { ISendMail } from '../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './ITransporterMailer.interface';
 import { IBuildable } from '../types/interfaces/IBuildable.interface';
 import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 
@@ -9,7 +9,7 @@ import { ITransporterConfiguration } from './ITransporterConfiguration.interface
  */
 export interface ITransporter {
   configuration: ITransporterConfiguration;
-  transporter: ISendMail;
+  transporter: ITransporterMailer;
   address: (recipient: any, type?: string) => any;
   addresses: (recipients: any, type?: string) => any;
   build: ({ ...args }: IBuildable) => any;

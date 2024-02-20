@@ -6,7 +6,7 @@ import { IBrevoResponse } from './IBrevoResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IBuildable } from './../../types/interfaces/IBuildable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
@@ -33,7 +33,7 @@ export class BrevoTransporter extends Transporter {
    * @param transporterEngine Transporter instance
    * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
     super(transporterEngine, configuration);
   }
 

@@ -7,7 +7,7 @@ import { IBuildable } from '../../types/interfaces/IBuildable.interface';
 import { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
 import { ISparkpostBody } from './ISparkpostBody.interface';
 import { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
-import { ISendMail } from '../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from '../ITransporterMailer.interface';
 
 import { SendingError } from '../../classes/sending-error.class';
 import { SendingResponse } from '../../classes/sending-response.class';
@@ -33,7 +33,7 @@ export class SparkpostTransporter extends Transporter {
    * @param transporterEngine Transporter instance
    * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail, configuration: ITransporterConfiguration ) {
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
     super(transporterEngine, configuration);
   }
 
