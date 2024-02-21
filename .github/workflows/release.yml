@@ -37,6 +37,7 @@ jobs:
           echo MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}" >> .env
           echo MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}" >> .env
           echo MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}" >> .env
+          echo MANDRILL_API_KEY = "${{ secrets.MANDRILL_API_KEY }}" >> .env
           echo POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}" >> .env
           echo SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}" >> .env
           echo SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}" >> .env

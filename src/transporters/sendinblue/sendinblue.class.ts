@@ -1,18 +1,20 @@
-import { Container } from './../../services/container.service';
-
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISendinblueResponse } from './ISendinblueResponse.interface';
+import { ISendinblueError } from './ISendinblueError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Sendinblue transporter for mail sending.
@@ -32,19 +34,19 @@ export class SendinblueTransporter extends Transporter {
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Mailjet requirements
    */
-  build({...args }: IBuildable): Record<string,unknown> {
+  build({...args }: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       headers: {
@@ -57,15 +59,15 @@ export class SendinblueTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,
           templateId: parseInt(templateId, 10)
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
@@ -127,13 +129,16 @@ export class SendinblueTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('uri', null)
-      .set('httpVersion', response.res.httpVersion)
-      .set('headers', response.res.headers)
-      .set('method', response.res.method)
-      .set('body', response.body)
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.sendinblue)
+      .set('server', null)
+      .set('uri', response.res.req.protocol + '//' + response.res.req.host + response.res.req.path)
+      .set('headers', null)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
+      .set('body', null)
       .set('statusCode', 202)
-      .set('statusMessage', response.res.statusMessage);
+      .set('statusMessage', null);
 
     return res;
   }
@@ -141,9 +146,9 @@ export class SendinblueTransporter extends Transporter {
   /**
    * @description Format error output
    *
-   * @param error Error from Sendgrid API
+   * @param error Error from Sendinblue API
    */
-  error(error: Error): SendingError {
+  error(error: ISendinblueError): SendingError {
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
     return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);

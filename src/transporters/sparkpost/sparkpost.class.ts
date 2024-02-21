@@ -1,18 +1,21 @@
 import { Transporter } from '../transporter.class';
 
-import { ITransporter } from '../ITransporter.interface';
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAttachment } from '../../types/interfaces/IAttachment.interface';
 import { ISparkpostError } from './ISparkpostError.interface';
-import { IBuildable } from '../../types/interfaces/IBuildable.interface';
-import { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
+import { ISparkpostResponse } from './ISparkpostResponse.interface';
 import { ISparkpostBody } from './ISparkpostBody.interface';
+import { IMail } from '../../types/interfaces/IMail.interface';
+import { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
-import { ISendMail } from '../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from '../ITransporterMailer.interface';
 
 import { SendingError } from '../../classes/sending-error.class';
 import { SendingResponse } from '../../classes/sending-response.class';
 
-import { COMPILER } from '../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Sparkpost transporter for mail sending.
@@ -25,24 +28,24 @@ import { COMPILER } from '../../types/enums/compiler.enum';
  * @see https://app.sparkpost.com
  * @see https://developers.sparkpost.com/api/
  */
-export class SparkpostTransporter extends Transporter implements ITransporter {
+export class SparkpostTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Sparkpost requirements
    */
-  build({...args }: IBuildable): ISparkpostBody {
+  build({...args }: IMail): ISparkpostBody {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     let cc: IAddressD[] = [];
     let bcc: IAddressD[] = [];
@@ -56,8 +59,8 @@ export class SparkpostTransporter extends Transporter implements ITransporter {
       }
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           substitution_data: payload.data,
         });
@@ -66,8 +69,8 @@ export class SparkpostTransporter extends Transporter implements ITransporter {
           use_draft_template: false
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
@@ -141,16 +144,19 @@ export class SparkpostTransporter extends Transporter implements ITransporter {
    *
    * @param response Response from Sparkpost API
    */
-  response(response: Record<string,unknown>): SendingResponse {
+  response(response: ISparkpostResponse): SendingResponse {
 
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.sparkpost)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', 'POST')
-      .set('body', response)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
+      .set('body', null)
       .set('statusCode', 202)
       .set('statusMessage', null);
 

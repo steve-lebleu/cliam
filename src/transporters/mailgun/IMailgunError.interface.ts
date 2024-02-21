@@ -1,6 +1,8 @@
 export interface IMailgunError extends Error {
   name: string;
-  statusCode: number;
+  status: number;
+  type: string;
+  details: string;
   statusText: string;
   message: string;
 }

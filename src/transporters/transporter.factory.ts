@@ -4,10 +4,10 @@ import * as mandrillTransport from 'nodemailer-mandrill-transport';
 import * as PostmarkTransport from 'nodemailer-postmark-transport';
 import * as sendgridTransport from 'nodemailer-sendgrid';
 import * as mailjetTransport from 'node-mailjet';
-import { MailerSend } from 'mailersend';
 import * as brevoTransport from 'nodemailer-brevo-transport';
 import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
 
+import { MailerSend } from 'mailersend';
 import { createTransport } from 'nodemailer';
 
 import { PROVIDER } from '../types/enums/provider.enum';
@@ -25,7 +25,7 @@ import { MailgunTransporter } from './mailgun/mailgun.class';
 import { MailjetTransporter } from './mailjet/mailjet.class';
 import { PostmarkTransporter } from './postmark/postmark.class';
 import { SendinblueTransporter } from './sendinblue/sendinblue.class';
-import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
+import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 
 /**
  * @description
@@ -34,14 +34,16 @@ export class TransporterFactory {
 
   private static engine = null;
 
-  constructor() {}
+  private constructor() {}
 
   /**
    * @description Get a concrete transporter instance
    *
-   * @param key
+   * @param vars
+   * @param args
    */
-  static get({...vars}: { domain: string, addresses: { from: IAddressable, replyTo: IAddressable } }, { ...args }: ITransporterDefinition): Transporter {
+  static get({...vars}: { domain: string, addresses: { from: IAddressable, replyTo: IAddressable } }, { ...args }: ITransporterConfiguration): Transporter {
+    
     if(args.mode === MODE.smtp) {
       return new SmtpTransporter(createTransport( {
         host: args.options.host,
@@ -53,7 +55,7 @@ export class TransporterFactory {
         },
         greetingTimeout: 5000,
         socketTimeout: 5000
-      } ))
+      } ), args)
     }
 
     switch(args.provider) {
@@ -63,7 +65,7 @@ export class TransporterFactory {
         TransporterFactory.engine = brevoTransport;
         return new BrevoTransporter( createTransport( new TransporterFactory.engine({
           apiKey: args.auth.apiKey
-        }) ) );
+        }) ), args );
 
       case PROVIDER.mailersend:
         
@@ -81,7 +83,7 @@ export class TransporterFactory {
             })
         }
 
-        return new MailersendTransporter( mailersendEngine as any );
+        return new MailersendTransporter( mailersendEngine as any, args );
 
       case PROVIDER.mailgun:
         
@@ -90,7 +92,7 @@ export class TransporterFactory {
             api_key: args.auth.apiKey,
             domain: vars.domain
           }
-        }) ) );
+        }) ), args );
 
       case PROVIDER.mailjet:
 
@@ -109,7 +111,7 @@ export class TransporterFactory {
           }
         }
 
-        return new MailjetTransporter( engine );
+        return new MailjetTransporter( engine, args );
 
       case PROVIDER.mandrill:
 
@@ -117,19 +119,19 @@ export class TransporterFactory {
           auth : {
             apiKey: args.auth.apiKey
           }
-        }) ) );
+        }) ), args );
 
       case PROVIDER.postmark:
         TransporterFactory.engine = PostmarkTransport.PostmarkTransport;
         return new PostmarkTransporter( createTransport( new TransporterFactory.engine({
           auth: { apiKey: args.auth.apiKey }
-        }) ) );
+        }) ), args );
 
       case PROVIDER.sendgrid :
 
         return new SendgridTransporter( createTransport( sendgridTransport({
           apiKey: args.auth.apiKey
-        }) ) );
+        }) ), args );
       
       case PROVIDER.sendinblue :
 
@@ -137,7 +139,7 @@ export class TransporterFactory {
           apiKey: args.auth.apiKey,
           apiUrl: 'https://api.sendinblue.com/v3/smtp'
         });
-        return new SendinblueTransporter( createTransport( TransporterFactory.engine ) );
+        return new SendinblueTransporter( createTransport( TransporterFactory.engine ), args );
 
       case PROVIDER.sparkpost :
 
@@ -148,7 +150,7 @@ export class TransporterFactory {
             click_tracking: true,
             transactional: true
           }
-        }) ) );
+        }) ), args );
     }
   }
 }

@@ -1,8 +1,8 @@
 const { base64Encode } = require( process.cwd() + '/dist/utils/string.util' );
 
-module.exports = (compiler = 'provider', transporter = 'unique-id-transporter') => {
+module.exports = (renderEngine = 'provider', transporterId = 'unique-id-transporter') => {
   return {
-    transporter,
+    transporterId,
     meta: {
       subject: 'Hello, I\'m an email',
       to: [
@@ -33,7 +33,7 @@ module.exports = (compiler = 'provider', transporter = 'unique-id-transporter') 
       ],
       attachments: [
         {
-          content: base64Encode( process.cwd() + '/test/utils/fixtures/files/javascript.jpg' ),
+          content: base64Encode( process.cwd() + '/test/fixtures/files/javascript.jpg' ),
           type: 'image/jpg',
           filename: 'javascript.jpg',
           disposition: 'attachment'

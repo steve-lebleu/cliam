@@ -265,9 +265,19 @@ module.exports = {
       }
     },
     {
+      "id": "mandrill-api",
+      "mode": "api",
+      "provider": "mandrill",
+      "auth": {
+        "apiKey": process.env.MANDRILL_API_KEY,
+      },
+      "options": {
+        "templates": {}
+      }
+    },
+    {
       "id": "hosting-smtp",
       "mode": "smtp",
-      "provider": "sparkpost", 
       "auth": {
         "username": process.env.SMTP_USERNAME,
         "password": process.env.SMTP_PASSWORD,

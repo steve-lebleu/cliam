@@ -5,17 +5,17 @@ import * as Color from 'color';
 
 import { htmlToText } from 'html-to-text';
 
-import { Container } from './../services/container.service';
+import { Container } from './container.service';
 
 /**
- * On the fly hbs compilation middleware
+ * Light render engine embedding on the fly an hbs compilation middleware
  */
-class Compiler {
+class RenderEngine {
 
   /**
    * @description
    */
-  private static instance: Compiler = null;
+  private static instance: RenderEngine = null;
 
   /**
    * @description
@@ -38,9 +38,9 @@ class Compiler {
   private readonly BLOCKS: string = '/../../src/views/blocks';
 
   /**
-   * @description
+   * @description TODO: find / remember what this fucking default property is
    */
-   private readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
+   public readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
     { event: 'default', banner: '', default: true },
     { event: 'event.subscribe', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },
     { event: 'event.unsubscribe', banner: 'https://cdn.konfer.be/images/cliam/banners/event.png', default: true },
@@ -99,11 +99,11 @@ class Compiler {
   /**
    * @description
    */
-  static get(): Compiler {
-    if(!Compiler.instance) {
-      Compiler.instance = new Compiler();
+  static get(): RenderEngine {
+    if(!RenderEngine.instance) {
+      RenderEngine.instance = new RenderEngine();
     }
-    return Compiler.instance;
+    return RenderEngine.instance;
   }
 
   /**
@@ -151,7 +151,7 @@ class Compiler {
    * @param event
    */
    private getBanner(event: string) {
-    return this.TEMPLATES.find(template => template.event === event).banner || 'https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg'; // 600x300
+    return this.TEMPLATES.find(template => template.event === event)?.banner || 'https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg'; // 600x300
   }
 
   /**
@@ -160,7 +160,7 @@ class Compiler {
    * @param event
    */
   private getSegment(event: string) {
-    return this.TEMPLATES.find(template => template.event === event).default ? 'default' : event;
+    return this.TEMPLATES.find(template => template.event === event)?.default ? 'default' : event;
   }
 
   /**
@@ -175,6 +175,6 @@ class Compiler {
   }
 }
 
-const service = Compiler.get();
+const service = RenderEngine.get();
 
-export { service as Compiler }
+export { service as RenderEngine }

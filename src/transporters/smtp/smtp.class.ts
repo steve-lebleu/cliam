@@ -1,19 +1,22 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { ISMTPResponse } from './ISMTPResponse.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IGmailError } from './IGmailError.interface';
 import { IInfomaniakError } from './IInformaniakError.interface';
 import { ISMTPError } from './ISMTPError.interface';
-import { ITransporter } from './../ITransporter.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { HTTP_METHOD } from './../../types/enums/http-method.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
+
 import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
@@ -23,23 +26,23 @@ import { Debug } from './../../types/decorators/debug.decorator';
  *
  * @see https://nodemailer.com/smtp/
  */
-export class SmtpTransporter extends Transporter implements ITransporter {
+export class SmtpTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Mailjet requirements
    */
   @Debug('smtp')
-  build({...args }: IBuildable): Record<string,unknown> {
+  build({...args }: IMail): Record<string,unknown> {
 
     const { payload, body } = args;
 
@@ -110,11 +113,13 @@ export class SmtpTransporter extends Transporter implements ITransporter {
     const res = new SendingResponse();
 
     return res
-      .set('accepted', incoming.accepted)
+      .set('mode', MODE.smtp)
+      .set('provider', null)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', HTTP_METHOD.POST)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
       .set('body', incoming.envelope)
       .set('statusCode', 202)
       .set('statusMessage', incoming.response)
@@ -149,7 +154,7 @@ export class SmtpTransporter extends Transporter implements ITransporter {
 
     if (this.transporter.options.host === 'mail.infomaniak.com') {
       error = error as IInfomaniakError;
-      return new SendingError(403, error.errno.toString(), [ error.errno.toString() ]);
+      return new SendingError(error.responseCode, error.code, [ error.response ]);
     }
 
     error = error as ISMTPError;

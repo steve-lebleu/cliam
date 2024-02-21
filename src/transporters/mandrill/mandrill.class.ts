@@ -1,17 +1,20 @@
 import { Transporter } from './../transporter.class';
 
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { IMandrillResponse } from 'transporters/mandrill/IMandrillResponse.interface';
-import { ITransporter } from './../ITransporter.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { IMandrillResponse } from './IMandrillResponse.interface';
+import { IMandrillError } from './IMandrillError.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Mandrill transporter for mail sending.
@@ -24,49 +27,48 @@ import { COMPILER } from './../../types/enums/compiler.enum';
  * @see https://mandrillapp.com/api/docs/
  * @see https://bitbucket.org/mailchimp/mandrill-api-node/src
  */
-export class MandrillTransporter extends Transporter implements ITransporter {
+export class MandrillTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Mailgun requirements
    */
-  build({...args}: IBuildable): Record<string,unknown> {
+  build({...args}: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
-      message: {
-        subject: payload.meta.subject,
-        from_email: this.address(payload.meta.from.email, 'single'),
-        from_name: payload.meta.from.name,
-        to: this.addresses(payload.meta.to, 'to'),
-        headers: {
-          'Reply-To': this.address(payload.meta.replyTo, 'single')
-        },
-        track_opens: true,
-        track_click: true,
-        preserve_recipients: true
-      }
+      subject: payload.meta.subject,
+      from_email: this.address(payload.meta.from, 'string'), // TODO This must be dynamic -> if not -> bug
+      from_name: payload.meta.from.name,
+      from: this.address(payload.meta.from, 'string'),
+      to: this.addresses(payload.meta.to, 'to'),
+      headers: {
+        'Reply-To': this.address(payload.meta.replyTo.email, 'string') // TODO This must be dynamic -> if not -> bug
+      },
+      track_opens: true,
+      track_click: true,
+      preserve_recipients: true
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           template_content: [payload.data],
           template_name: payload.meta.templateId || templateId
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
@@ -75,15 +77,15 @@ export class MandrillTransporter extends Transporter implements ITransporter {
     }
 
     if (typeof(payload.meta.cc) !== 'undefined') {
-      output.message.to = [].concat(output.message.to).concat(this.addresses(payload.meta.cc, 'cc')) as Array<string|IAddressB>
+      output.to = [].concat(output.to).concat(this.addresses(payload.meta.cc, 'cc')) as Array<string|IAddressB>
     }
 
     if (typeof(payload.meta.bcc) !== 'undefined') {
-      output.message.to = [].concat(output.message.to).concat(this.addresses(payload.meta.bcc, 'bcc')) as Array<string|IAddressB>
+      output.to = [].concat(output.to).concat(this.addresses(payload.meta.bcc, 'bcc')) as Array<string|IAddressB>
     }
 
     if (typeof(payload.meta.attachments) !== 'undefined') {
-      Object.assign(output.message, { attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
+      Object.assign(output, { attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
         return { type: attachment.type, name: attachment.filename, content: attachment.content };
       } ) });
     }
@@ -104,7 +106,7 @@ export class MandrillTransporter extends Transporter implements ITransporter {
     if (type === 'single') {
       return recipient.email;
     }
-    return typeof recipient.name !== 'undefined' ? { email: recipient.email, name: recipient.name, type } : { email: recipient.email };
+    return typeof recipient.email !== 'undefined' ? recipient.email : recipient;
   }
 
   /**
@@ -122,20 +124,25 @@ export class MandrillTransporter extends Transporter implements ITransporter {
    *
    * @param response Response from Mandrill API
    */
-  response(response: IMandrillResponse[]): SendingResponse {
-
-    const incoming = response.shift();
+  response(response: IMandrillResponse): SendingResponse {
 
     const res = new SendingResponse();
 
+    if (response.rejected.length) {
+      throw { statusCode: 400, statusText: response.rejected[0].status, message: `${response.rejected[0].reject_reason} (email: ${response.rejected[0].email})` };
+    }
+
     res
-      .set('uri', incoming.request.uri)
-      .set('httpVersion', incoming.httpVersion)
-      .set('headers', incoming.headers)
-      .set('method', incoming.request.method)
-      .set('body', incoming.request.body)
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.mandrill)
+      .set('server', null)
+      .set('uri', null)
+      .set('headers', null)
+      .set('timestamp', Date.now())
+      .set('messageId', response.accepted[0]._id)
+      .set('body', response.accepted[0].status)
       .set('statusCode', 202)
-      .set('statusMessage', incoming.statusMessage);
+      .set('statusMessage', null);
 
     return res;
   }
@@ -145,7 +152,7 @@ export class MandrillTransporter extends Transporter implements ITransporter {
    *
    * @param error Error from Mandrill API
    */
-  error(error: Error): SendingError {
-    return new SendingError(500, '', ['']);
+  error(error: IMandrillError): SendingError {
+    return new SendingError(error.code, error.name, [error.message]);
   }
 }

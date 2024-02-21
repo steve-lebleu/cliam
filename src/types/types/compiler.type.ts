@@ -1,1 +1,0 @@
-export type Compiler = 'provider' | 'default' | 'self';

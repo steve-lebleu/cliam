@@ -1,9 +1,9 @@
-import { IError } from './../types/interfaces/IError.interface';
+import { ISendingError } from '../types/interfaces/ISendingError.interface';
 
 /**
  * Type sending error
  */
-export class SendingError implements IError {
+export class SendingError implements ISendingError {
 
   /**
    * @description HTTP response status code

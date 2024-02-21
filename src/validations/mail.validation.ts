@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
 
-import { COMPILER } from '../types/enums/compiler.enum';
 import { ATTACHMENT_MIME_TYPE } from '../types/enums/attachment-mime-type.enum';
 import { ATTACHMENT_DISPOSITION } from '../types/enums/attachment-disposition.enum';
 import { BUFFER_MIME_TYPE } from '../types/enums/buffer-mime-type.enum';
@@ -10,8 +9,7 @@ import { recipient } from '../types/schemas/recipient.schema';
 import { list } from '../utils/enum.util';
 
 const mailSchema = Joi.object({
-  compiler: Joi.any().valid(...list(COMPILER)),
-  transporter: Joi.string().required(),
+  transporterId: Joi.string().optional(),
   meta: Joi.object({
     subject: Joi.string().max(128).required(),
     from: recipient(),

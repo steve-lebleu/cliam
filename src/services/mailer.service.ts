@@ -3,52 +3,57 @@ import { SendingError } from './../classes/sending-error.class';
 import { IPayload } from './../types/interfaces/IPayload.interface';
 import { Transporter } from './../transporters/transporter.class';
 import { Container } from './../services/container.service';
-import { Compiler } from './../services/compiler.service';
-import { COMPILER } from './../types/enums/compiler.enum';
-import { IBuildable } from './../types/interfaces/IBuildable.interface';
+import { RenderEngine } from './render-engine.service';
+import { RENDER_ENGINE } from '../types/enums/render-engine.enum';
+import { IMail } from './../types/interfaces/IMail.interface';
 import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
 import { mailSchema } from './../validations/mail.validation';
-import { ITransporterDefinition } from '../types/interfaces/ITransporter.interface';
 import { MODE } from '../types/enums/mode.enum';
 
 /**
- * @description Manage incoming mail requests
+ * @description Main class to manage incoming mail requests. Mostly, this class is responsible of:
+ *
+ * - Build the meta / data / content of an email using concrete transporter instance methods
+ * - Send an email using a concrete transporter instance method
  */
 class Mailer {
 
   /**
-   * @description
+   * @description Render engine to use for the current sending
    */
-  configuration: ITransporterDefinition = null;
+  renderEngine: RENDER_ENGINE = null;
 
   /**
-   * @description
+   * @description Transporter instance
    */
   transporter: Transporter = null;
 
-  constructor(transporter: Transporter, configuration: ITransporterDefinition) {
+  constructor(transporter: Transporter) {
     this.transporter = transporter;
-    this.configuration = configuration;
   }
 
   /**
-   * @description Send email
+   * @description Send an email by calling concrete transporter instance send method.
+   * 
+   * @param event Event name
+   * @param payload payload
+   * 
+   * @returns {Promise<SendingResponse|SendingError>} Result of mail sending
    */
   send = async (event: string, payload: IPayload): Promise<SendingResponse|SendingError> => {
-    this.setCompiler(event, payload);
+    this.setRenderEngine(event, payload);
     this.setAddresses(payload);
     const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
     if (error) {
       return new SendingError(400, 'Validation error', [ error.details.shift().message ]);
     }
-    return await this.transporter.send( this.transporter.build( this.getBuildable(event, payload) ) )
+    return await this.transporter.send( this.transporter.build( this.getMail(event, payload) ) )
   }
 
   /**
-   * @description
+   * @description Set the from and reply-to addresses using current payload or fallback on cliamrc configuration.
    *
-   * @param event
    * @param payload
    */
   private setAddresses(payload: IPayload): void {
@@ -57,76 +62,90 @@ class Mailer {
   }
 
   /**
-   * @description
+   * @description Get the render engine to use for the current mailer instance according to the setup.
    *
-   * @param event
-   * @param payload
+   * @param event Event name
+   * @param payload payload
    */
-   private setCompiler(event: string, payload: IPayload): void {
-    if (this.configuration.mode === MODE.smtp) {
-      payload.compiler = payload.content ? COMPILER.self : COMPILER.default;
+   private setRenderEngine(event: string, payload: IPayload): void {
+    if (this.transporter.configuration.mode === MODE.smtp) {
+      this.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
-    if (this.configuration.mode === MODE.api) {
-      payload.compiler =  this.getTemplateId(event) ? COMPILER.provider : payload.content ? COMPILER.self : COMPILER.default;
+    if (this.transporter.configuration.mode === MODE.api) {
+      this.renderEngine = this.getTemplateId(event) ? RENDER_ENGINE.provider : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
   }
 
   /**
-   * @description
+   * @description Get the informations needed to send the email (data, teamplate, body of the mail, ...).
    *
-   * @param event
-   * @param payload
+   * @param event Event name
+   * @param payload payload
    */
-  private getBuildable(event: string, payload: IPayload): IBuildable {
+  private getMail(event: string, payload: IPayload): IMail {
+    if (this.renderEngine === RENDER_ENGINE.default && !RenderEngine.TEMPLATES.find(template => template.event === event)) {
+      throw new Error(`No default template available for this custom event (${event}). Please provide your own compilation or push a new merge request ;-)`);
+    }
     return {
       payload,
-      templateId: payload.compiler === COMPILER.provider ? this.getTemplateId(event) : null,
-      body: [ COMPILER.self, COMPILER.default ].includes(payload.compiler as COMPILER) ? this.getCompilated(event, payload) : null,
+      templateId: this.getTemplateId(event),
+      renderEngine: this.renderEngine,
+      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(this.renderEngine) ? this.getCompiled(event, payload) : null,
       origin: this.getOrigin()
     }
   }
 
   /**
-   * @description
+   * @description Get the origin domain to use in the setup of the current mailer instance. This is used by some web API providers.
    */
   private getOrigin(): string {
     return Container.configuration.variables.domain;
   }
 
   /**
-   * @description
+   * @description Get the templateID to use in the setup of the current mail sending.
+   * 
+   * @param event Event name
    */
   private getTemplateId(event: string): string {
-    return this.configuration.options.templates[event] as string;
+    if (!this.transporter.configuration?.options?.templates?.hasOwnProperty(event)) {
+      return null;
+    }
+    return this.transporter.configuration?.options?.templates[event];
   }
 
   /**
-   * @description
+   * @description Say if the current request has his own plain text content already compiled.
+   * 
+   * @param content The buffer value of the request
    */
   private hasPlainText(content: IBuffer[]): boolean {
     return content.some( (buffer: IBuffer) => buffer.type === BUFFER_MIME_TYPE['text/plain'] && buffer.value );
   }
 
   /**
-   * @description
+   * @description Get the final result of the compilation in html and plain text.
+   * 
+   * @param event Event name
+   * @param payload payload
    */
-  private getCompilated(event: string, payload: IPayload): { html: string, text: string } {
+  private getCompiled(event: string, payload: IPayload): { html: string, text: string } {
 
-    if (payload.compiler === COMPILER.self && this.hasPlainText(payload.content)) {
+    if (this.renderEngine === RENDER_ENGINE.self && this.hasPlainText(payload.content)) {
       return {
         html: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value,
         text: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/plain']).value,
       }
     }
 
-    if (payload.compiler === COMPILER.self && !this.hasPlainText(payload.content)) {
+    if (this.renderEngine === RENDER_ENGINE.self && !this.hasPlainText(payload.content)) {
       return {
         html: payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value,
-        text: Compiler.textify(payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value),
+        text: RenderEngine.textify(payload.content.find(b => b.type === BUFFER_MIME_TYPE['text/html']).value),
       }
     }
 
-    return Compiler.compile(event, Object.assign({ subject: payload.meta.subject }, payload.data));
+    return RenderEngine.compile(event, Object.assign({ subject: payload.meta.subject }, payload.data));
   }
 
 }

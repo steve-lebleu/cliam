@@ -1,7 +1,7 @@
 import { IAttachment } from './IAttachment.interface';
 import { IAddressable } from './addresses/IAddressable.interface';
 import { IBuffer } from './IBuffer.interface';
-import { Compiler } from '../types/compiler.type';
+import { RenderEngine } from '../types/render-engine.type';
 
 /**
  * Define a payload schema type
@@ -9,15 +9,9 @@ import { Compiler } from '../types/compiler.type';
 export interface IPayload {
 
   /**
-   * @description
-   * @deprecated The property shouldn't be because she's can be inferred
+   * @description Unique transporter id reference
    */
-  compiler?: Compiler;
-
-  /**
-   * @description
-   */
-  transporter: string;
+  transporterId?: string;
 
   /**
    * @description Meta data for email sending

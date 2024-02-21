@@ -1,19 +1,22 @@
 import { Transporter } from './../transporter.class';
 
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { ISendgridResponse } from './ISendgridResponse.interface';
-import { ITransporter } from './../ITransporter.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import { ISendgridError } from './ISendgridError.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 import { Debug } from './../../types/decorators/debug.decorator';
+
 
 /**
  * Set a Sendgrid transporter for mail sending.
@@ -26,24 +29,25 @@ import { Debug } from './../../types/decorators/debug.decorator';
  * @see https://sendgrid.com/
  * @see https://sendgrid.com/docs/API_Reference/api_v3.html
  */
-export class SendgridTransporter extends Transporter implements ITransporter {
+export class SendgridTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
+
   /**
    * @description Build body request according to Mailjet requirements
    */
   @Debug('sendgrid')
-  build({...args}: IBuildable): Record<string,unknown> {
+  build({...args}: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       from: this.address(payload.meta.from, 'from'),
@@ -55,15 +59,15 @@ export class SendgridTransporter extends Transporter implements ITransporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           dynamic_template_data: payload.data,
           templateId: payload.meta.templateId || templateId
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
@@ -119,10 +123,13 @@ export class SendgridTransporter extends Transporter implements ITransporter {
     const res = new SendingResponse();
 
     res
-      .set('uri', incoming.request.uri)
-      .set('httpVersion', incoming.httpVersion)
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.sendgrid)
+      .set('server', incoming.headers['server'] as string)
+      .set('uri', incoming.request.uri.href)
       .set('headers', incoming.headers)
-      .set('method', incoming.request.method)
+      .set('timestamp', Date.now())
+      .set('messageId', incoming.headers['x-message-id'] as string)
       .set('body', incoming.request.body)
       .set('statusCode', 202)
       .set('statusMessage', incoming.statusMessage);
@@ -136,7 +143,6 @@ export class SendgridTransporter extends Transporter implements ITransporter {
    * @param error Error from Sendgrid API
    */
   error(error: ISendgridError): SendingError {
-    console.log('ERR', error)
     return new SendingError(error.code || error.statusCode, error.name || error.message, error.hasOwnProperty('response') ? error.response.body.errors : [error.message]);
   }
 }

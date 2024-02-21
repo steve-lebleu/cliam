@@ -1,15 +1,20 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IPostmarkError } from 'transporters/postmark/IPostmarkError.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { IPostmarkError } from './IPostmarkError.interface';
+import { IPostmarkResponse } from './IPostmarkResponse.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
+
 import { IPostmarkBody } from './IPostmarkBody.interface';
 
 import { Debug } from './../../types/decorators/debug.decorator';
@@ -29,20 +34,20 @@ export class PostmarkTransporter extends Transporter {
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Mailjet requirements
    */
   @Debug('postmark')
-  build({...args}: IBuildable): IPostmarkBody {
+  build({...args}: IMail): IPostmarkBody {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output: IPostmarkBody = {
       from: this.address(payload.meta.from),
@@ -51,15 +56,15 @@ export class PostmarkTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           templateModel: payload.data,
           templateId: parseInt(templateId, 10),
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
@@ -117,16 +122,19 @@ export class PostmarkTransporter extends Transporter {
    *
    * @param response Response from Postmark API
    */
-  response(response: Record<string,unknown>): SendingResponse {
+  response(response: IPostmarkResponse): SendingResponse {
 
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.postmark)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', 'POST')
-      .set('body', response)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
+      .set('body', JSON.stringify(response.accepted))
       .set('statusCode', 202)
       .set('statusMessage', null);
 

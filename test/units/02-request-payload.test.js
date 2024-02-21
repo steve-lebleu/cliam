@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { requestPayload } = require(process.cwd() + '/test/utils/fixtures');
+const { requestPayload } = require(process.cwd() + '/test/fixtures');
 const { mailSchema } = require(process.cwd() + '/dist/validations/mail.validation');
 
 const chance = require('chance').Chance();
@@ -7,21 +7,6 @@ const chance = require('chance').Chance();
 describe('Request payload', () => {
 
   let payload;
-
-  describe('.compiler', () => {
-
-    beforeEach(() => {
-      payload = JSON.parse( JSON.stringify( requestPayload() ) );
-    });
-
-    it(`error - should be provider|self|default`, (done) => {
-      payload.compiler = 'Yoda';
-      const error = mailSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-      expect(error.details[0].message).to.be.eqls(`"compiler" must be one of [provider, default, self]`);
-      done();
-    });
-
-  });
 
   describe('.meta', () => {
 

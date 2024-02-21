@@ -7,7 +7,7 @@ import { PROVIDER } from './../enums/provider.enum';
  * @param transporter
  */
 const Debug = ( transporter: string ): any => {
-  return ( target: Record<string,({...args}: any)=>any>, key: string ) => {
+  return ( target: Record<string,({...args}: any) => any>, key: string ) => {
     const method = target[key] as ({...args}: any) => any;
     target[key] = function (...args: any[]): any {
       const output = method.apply(this, args) as {
@@ -70,13 +70,6 @@ const Debug = ( transporter: string ): any => {
               });
               break;
             case PROVIDER.brevo:
-              Object.assign(output, {
-                headers: {
-                  'X-Sib-Sandbox': 'drop'
-                }
-              });
-              break;
-            case PROVIDER.mailersend:
               Object.assign(output, {
                 headers: {
                   'X-Sib-Sandbox': 'drop'

@@ -3,7 +3,6 @@ import { Event } from './../types/types/event.type';
 import { IPayload } from './../types/interfaces/IPayload.interface';
 import { SendingResponse } from './sending-response.class';
 import { SendingError } from './sending-error.class';
-import { ClientConfiguration } from './client-configuration.class';
 import { Mailer } from './../services/mailer.service';
 
 /**
@@ -61,14 +60,15 @@ class Cliam {
   /**
    * @description
    */
-  async emit(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
-    if (!this.mailers[payload.transporter]) {
-      this.mailers[payload.transporter] = new Mailer(Container.transporters[payload.transporter], Container.configuration.transporters.find(transporter => transporter.id === payload.transporter));
+  async mail(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
+    const key = payload.transporterId || Object.keys(Container.transporters).shift();
+    if (!this.mailers[key]) {
+      this.mailers[key] = new Mailer(Container.transporters[key]);
     }
-    return this.mailers[payload.transporter].send(event, payload)
+    return this.mailers[key].send(event, payload)
   }
 }
 
-const cliam = Cliam.get() as { emit: (event: Event|string, payload: IPayload) => Promise<SendingResponse | SendingError> };
+const cliam = Cliam.get() as { mail: (event: Event|string, payload: IPayload) => Promise<SendingResponse | SendingError> };
 
 export { cliam as Cliam }

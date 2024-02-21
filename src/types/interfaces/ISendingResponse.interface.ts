@@ -1,12 +1,10 @@
 import { MODE } from 'types/enums/mode.enum';
-import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
-import { HTTP_METHOD } from './../types/enums/http-method.enum';
 import { PROVIDER } from 'types/enums/provider.enum';
 
 /**
- * Sending response wrapper
+ * Define mail sending uniform response properties.
  */
-export class SendingResponse implements ISendingResponse {
+export interface ISendingResponse {
 
   /**
    * @description Request mode api|smtp
@@ -57,27 +55,4 @@ export class SendingResponse implements ISendingResponse {
    * @description HTTP status message
    */
   statusMessage: string;
-
-  constructor() {}
-
-  /**
-   * @description Property setter
-   *
-   * @param property
-   * @param value
-   */
-  set(property: string, value: number|string|string[]|Record<string,unknown>|HTTP_METHOD): SendingResponse {
-    this[property] = value;
-    return this;
-  }
-
-  /**
-   * @description Property getter
-   *
-   * @param property
-   */
-  get(property: string): number|string|string[]|Record<string,unknown>|HTTP_METHOD {
-    return this[property];
-  }
-
-};
+}

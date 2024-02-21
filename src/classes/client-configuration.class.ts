@@ -1,14 +1,20 @@
 import { IPlaceholder } from './../types/interfaces/IPlaceholder.interface';
 import { IAddressable } from './../types/interfaces/addresses/IAddressable.interface';
-import { ITransporterDefinition } from './../types/interfaces/ITransporter.interface';
+import { ITransporterConfiguration } from '../transporters/ITransporterConfiguration.interface';
 
 /**
- * @description
+ * @description Representation of cliamrc file
  */
 class ClientConfiguration {
 
+  /**
+   * @description Enable / disable sandbox mode
+   */
   sandbox: boolean
 
+  /**
+   * @description Values used by Cliam to send emails
+   */
   variables: {
     domain: string
     addresses: {
@@ -17,9 +23,15 @@ class ClientConfiguration {
     };
   }
 
+  /**
+   * @description Values used by render engine as placeholder values in templates
+   */
   placeholders?: IPlaceholder;
 
-  transporters: ITransporterDefinition[]
+  /**
+   * @description Array of Transporters instances defined in cliamrc
+   */
+  transporters: ITransporterConfiguration[]
 
   constructor(payload: Record<string,unknown>) {
     Object.assign(this, payload);

@@ -1,23 +1,25 @@
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
 import { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IMailjetResponse } from './IMailjetResponse.interface';
 import { IMailjetError } from './IMailjetError.interface';
 import { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
-import { ITransporter } from './../ITransporter.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { Debug } from './../../types/decorators/debug.decorator';
+
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 import { getMailjetErrorMessages } from './../../utils/error.util';
-
-import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
  * Set a Mailjet transporter for mail sending.
@@ -28,25 +30,25 @@ import { Debug } from './../../types/decorators/debug.decorator';
  * @see https://github.com/mailjet/mailjet-apiv3-nodejs
  * @see https://dev.mailjet.com/guides/
  */
-export class MailjetTransporter extends Transporter implements ITransporter {
+export class MailjetTransporter extends Transporter {
 
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-   constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Mailjet requirements
    */
   @Debug('mailjet')
-  build({...args}: IBuildable): Record<string,unknown> {
+  build({...args}: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       Messages: [{
@@ -57,14 +59,14 @@ export class MailjetTransporter extends Transporter implements ITransporter {
       }]
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output.Messages[0], { Variables: payload.data });
         Object.assign(output.Messages[0], { TemplateLanguage: true });
         Object.assign(output.Messages[0], { TemplateID: parseInt(templateId, 10) });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output.Messages[0], {
           TextPart: body.text,
           HTMLPart: body.html
@@ -123,14 +125,16 @@ export class MailjetTransporter extends Transporter implements ITransporter {
   response(response: IMailjetResponse): SendingResponse {
 
     const incoming = response.response;
-
     const res = new SendingResponse();
 
     res
-      .set('uri', `${incoming.config.url}`)
-      .set('httpVersion', incoming.request.res.httpVersion)
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.mailjet)
+      .set('server', null)
+      .set('uri', incoming.config.url)
       .set('headers', incoming.config.headers)
-      .set('method', incoming.config.method)
+      .set('timestamp', Date.now())
+      .set('messageId', incoming.headers['x-mj-request-guid'])
       .set('body', incoming.config.data)
       .set('statusCode', incoming.status === 200 ? 202 : incoming.status)
       .set('statusMessage', incoming.statusText);

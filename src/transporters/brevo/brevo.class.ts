@@ -1,25 +1,29 @@
-import { Container } from './../../services/container.service';
-
 import { Transporter } from './../transporter.class';
 
+import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { IBrevoBody } from './IBrevoBody.interface';
 import { IBrevoResponse } from './IBrevoResponse.interface';
+import { IBrevoError } from './IBrevoError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IBuildable } from './../../types/interfaces/IBuildable.interface';
+import { IMail } from './../../types/interfaces/IMail.interface';
 import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ISendMail } from './../../types/interfaces/ISendMail.interface';
+import { ITransporterMailer } from './../ITransporterMailer.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { COMPILER } from './../../types/enums/compiler.enum';
+import { Debug } from './../../types/decorators/debug.decorator';
+
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '../../types/enums/provider.enum';
+import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Brevo transporter for mail sending.
  *
  * @dependency nodemailer
  * @dependency nodemailer-brevo-transport
- * @dependency Fork of nodemailer-sendinblue-transport https://github.com/konfer-be/nodemailer-sendinblue-transport.git
  *
  * @see https://nodemailer.com/smtp/
  * @see https://www.npmjs.com/package/nodemailer-brevo-transport
@@ -31,19 +35,20 @@ export class BrevoTransporter extends Transporter {
   /**
    * @description
    *
-   * @param transporterEngine
-   * @param domain Domain which do the request
+   * @param transporterEngine Transporter instance
+   * @param configuration Transporter configuration
    */
-  constructor( transporterEngine: ISendMail ) {
-    super(transporterEngine);
+  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
+    super(transporterEngine, configuration);
   }
 
   /**
    * @description Build body request according to Brevo requirements
    */
-  build({...args }: IBuildable): Record<string,unknown> {
+  @Debug('brevo')
+  build({...args }: IMail): Record<string,unknown> {
 
-    const { payload, templateId, body } = args;
+    const { payload, templateId, body, renderEngine } = args;
 
     const output = {
       headers: {
@@ -56,15 +61,15 @@ export class BrevoTransporter extends Transporter {
       subject: payload.meta.subject
     };
 
-    switch(payload.compiler.valueOf()) {
-      case COMPILER.provider:
+    switch(renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,
           templateId: parseInt(templateId, 10)
         });
         break;
-      case COMPILER.default:
-      case COMPILER.self:
+      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
           html: body.html
@@ -126,10 +131,13 @@ export class BrevoTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
+      .set('mode', MODE.api)
+      .set('provider', PROVIDER.brevo)
+      .set('server', null)
       .set('uri', null)
-      .set('httpVersion', null)
       .set('headers', null)
-      .set('method', null)
+      .set('timestamp', Date.now())
+      .set('messageId', response.messageId)
       .set('body', response.messageId)
       .set('statusCode', 202)
       .set('statusMessage', null);
@@ -142,8 +150,7 @@ export class BrevoTransporter extends Transporter {
    *
    * @param error Error from Brevo API
    */
-  error(error: Error): SendingError {
-    console.log(error)
+  error(error: IBrevoError): SendingError {
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
     return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);
