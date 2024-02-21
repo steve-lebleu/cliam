@@ -5,7 +5,7 @@ const { writeFileSync } = require('fs');
 const { cliamrc } = require(process.cwd() + '/test/fixtures');
 
 describe('Units tests', () => {
-  before(() => {
+  beforeEach(() => {
     writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
   });
   require('./01-client-configuration.test');
