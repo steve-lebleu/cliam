@@ -135,19 +135,19 @@ This is to be forgotten with Cliam. No more worries about polymorphics inputs / 
 
 **:white_check_mark: I wish change from supplier, but I'm in panic about the implementation ?**
 
-Piece of cake, your implementation does not move, you just have to adapt a configuration file, remove your legacy code and implement some other lines of code. 
+Your implementation does not move, you just have to adapt a configuration file, remove your legacy code and implement some lines of code. 
 
 **:white_check_mark: I don't have a subscription to a supplier, and no templates**
 
-No problem, we have all been poor once. Start with a simple SMTP server and use default customisable templates. When your business is up, you can use a paid web api.
+No problem, we have all been poor once. Start with a simple SMTP server and use default templates. When your business is up, you can use a paid web api.
 
 **:white_check_mark: I did not have time to prepare the template for an important email that should be send today !**
 
-[**Coming soon**] No more, you can fallback easily with an one shot default template in two minutes, watch in hand.
+No more, you can fallback easily with a one shot default template.
 
 **:white_check_mark: I have a big problem with a provider, and my emails stay blocked in the pipe !**
 
-[**Coming soon**] The same: fallback on a SMTP server. In two minutes you're ready and your mailing is back in operation.
+The same: fallback on a SMTP server. In two minutes you're ready and your mailing is back in operation.
 
 <h2 id="supported-web-api-providers">> Supported web API providers</h2>
 
