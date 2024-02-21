@@ -72,7 +72,7 @@ class Mailer {
       this.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
     }
     if (this.transporter.configuration.mode === MODE.api) {
-      this.renderEngine = this.getTemplateId(event) ? RENDER_ENGINE.provider : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
+      this.renderEngine = payload.content ? RENDER_ENGINE.self : this.getTemplateId(event) ? RENDER_ENGINE.provider : RENDER_ENGINE.default;
     }
   }
 

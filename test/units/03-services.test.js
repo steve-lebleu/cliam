@@ -69,6 +69,7 @@ describe('Services', () => {
       it('should set the renderEngine as \'provider\' when mode is API and a template mapping can be found in the options', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
+        delete payload.content;
         mailer.setRenderEngine('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('provider');
         done();
@@ -95,9 +96,10 @@ describe('Services', () => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const spy = sinon.spy(mailer, 'getTemplateId');
         const payload = requestPayload();
+        delete payload.content;
         mailer.setRenderEngine('user.welcome', payload);
-        spy.restore();
         sinon.assert.callCount(spy, 1);
+        spy.restore();
         done();
       });
     });
@@ -192,6 +194,7 @@ describe('Services', () => {
       it('should set null as body when the render engine is \'provider\'', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
+        delete payload.content;
         mailer.setRenderEngine('user.welcome', payload);
         const result = mailer.getMail('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('provider');

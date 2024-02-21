@@ -272,7 +272,9 @@ module.exports = {
         "apiKey": process.env.MANDRILL_API_KEY,
       },
       "options": {
-        "templates": {}
+        "templates": {
+          "user.welcome": "10453289"
+        }
       }
     },
     {

@@ -29,15 +29,60 @@ describe('Transporters', () => {
         done();
       });
 
-      it(`${transporter}::build should returns an object`, () => {
+
+      it(`${transporter}::build should give the output using self render engine`, () => {
         const mailer = new Mailer(Container.transporters[transporter]);
+
         const event = 'user.welcome';
         const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+
         mailer.setAddresses(payload);
         mailer.setRenderEngine(event, payload);
-        const result = mailer.transporter.build( mailer.getMail('user.welcome', requestPayload() ))
+
+        const result = mailer.transporter.build( mailer.getMail('user.welcome', payload ) );
+
         expect(result).to.be.an('object');
+        expect(mailer.renderEngine).to.be.equals('self');
       });
+
+      it(`${transporter}::build should give the output using default render engine`, () => {
+        const mailer = new Mailer(Container.transporters[transporter]);
+
+        const stub = sinon.stub(mailer, 'getTemplateId').callsFake(() => null);
+
+        const event = 'user.welcome';
+        const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+        delete payload.content;
+
+        mailer.setAddresses(payload);
+        mailer.setRenderEngine(event, payload);
+
+        const result = mailer.transporter.build( mailer.getMail('user.welcome', payload ) );
+
+        expect(result).to.be.an('object');
+        expect(mailer.renderEngine).to.be.equals('default');
+
+        stub.restore();
+      });
+
+      if (!['hosting-smtp'].includes(transporter)) {
+        it(`${transporter}::build should give the output using provider render engine`, () => {
+          const mailer = new Mailer(Container.transporters[transporter]);
+  
+          const event = 'user.welcome';
+          const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+          
+          delete payload.content;
+  
+          mailer.setAddresses(payload);
+          mailer.setRenderEngine(event, payload);
+  
+          const result = mailer.transporter.build( mailer.getMail('user.welcome', payload ) );
+
+          expect(result).to.be.an('object');
+          expect(mailer.renderEngine).to.be.equals('provider');
+        });
+      }
 
       if (['mailgun-api', 'postmark-api', 'mandrill-api', 'hosting-smtp'].includes(transporter)) {
         it(`${transporter}::address should returns a string`, () => {
