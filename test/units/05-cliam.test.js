@@ -1,8 +1,7 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
-const { writeFileSync } = require('fs');
 
-const { cliamrc, requestPayload, transporters } = require(process.cwd() + '/test/fixtures');
+const { requestPayload, transporters } = require(process.cwd() + '/test/fixtures');
 
 const { EVENT } = require(process.cwd() + '/dist/types/enums/event.enum');
 
@@ -14,7 +13,6 @@ describe('Cliam', () => {
   let stubs = {};
 
   before(() => {
-    writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
     transporters.forEach(transporterId => {
       stubs[transporterId] = sinon.stub(Cliam.mailers[transporterId].transporter, 'send').returns(Promise.resolve(new SendingResponse().set('statusCode', 202)));
     });
