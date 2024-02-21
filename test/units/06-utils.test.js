@@ -74,9 +74,6 @@ describe('Utils', () => {
         const string = 'totowasaheroes';
         expect(encrypt(string)).to.be.not.eqls(string)
       });
-
     });
-
   });
-
 });
