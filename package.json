@@ -43,7 +43,7 @@
     "ci:test": "nyc --reporter=lcov --report-dir=./reports/coverage npm-run-all -s test:*",
     "test": "nyc --reporter=html --report-dir=./reports/nyc-coverage npm-run-all -s test:*",
     "test:unit": "./node_modules/.bin/mocha ./test/units/00-bootstrap.test.js --exit --reporter spec --timeout 5000 --env test",
-    "test:e2e": "./node_modules/.bin/mocha ./test/e2e/00-bootstrap.test.js --exit --reporter spec --timeout 5000 --env test",
+    
     "doc:typedoc": "typedoc --name 'Cliam documentation' --defaultCategory 'Test' --categorizeByGroup true --out ./docs/typedoc ./src"
   },
   "dependencies": {

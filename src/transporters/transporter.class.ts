@@ -56,7 +56,6 @@ export abstract class Transporter {
         if (err) {
           reject(this.error(err));
         } else {
-          console.log(info)
           resolve(this.response(info));
         }
       });

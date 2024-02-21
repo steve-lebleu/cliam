@@ -4,7 +4,7 @@ import { PROVIDER } from './../enums/provider.enum';
 /**
  * @description
  *
- * @param transporter
+ * @param transporter Name of the transporter
  */
 const Debug = ( transporter: string ): any => {
   return ( target: Record<string,({...args}: any) => any>, key: string ) => {

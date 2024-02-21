@@ -6,6 +6,7 @@ const { transporters } = require(process.cwd() + '/test/fixtures/');
 
 const { Container } = require(process.cwd() + '/dist/services/container.service');
 const { Mailer } = require(process.cwd() + '/dist/services/mailer.service');
+const { TransporterFactory } = require(process.cwd() + '/dist/transporters/transporter.factory');
 
 const { SendingError } = require(process.cwd() + '/dist/classes/sending-error.class');
 const { SendingResponse } = require(process.cwd() + '/dist/classes/sending-response.class');
@@ -15,6 +16,15 @@ describe('Transporters', () => {
   transporters.forEach((transporter) => {
 
     describe(transporter, () => {
+
+      it('transporterFactory can\'t be instanciated', () => {
+        try {
+          new TransporterFactory();
+        } catch (e) {
+          expect(e instanceof TypeError).to.be.true;
+          expect(e.message).to.be.equals('TransporterFactory is not a constructor');
+        }
+      });
 
       it(`${transporter} should exposes ITransporter interface members`, (done) => {
         const mailer = new Mailer(Container.transporters[transporter]);
@@ -26,7 +36,6 @@ describe('Transporters', () => {
         expect(mailer.transporter.send).to.be.a('function');
         done();
       });
-
 
       it(`${transporter}::build should give the output using self render engine`, () => {
         const mailer = new Mailer(Container.transporters[transporter]);

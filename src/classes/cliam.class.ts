@@ -22,28 +22,6 @@ class Cliam {
    */
   private mailers: { [id:string]: Mailer } = {};
 
-  /**
-   * @description
-   */
-  private events: string[] = [
-    'default',
-    'event.subscribe',
-    'event.unsubscribe',
-    'event.updated',
-    'user.bye',
-    'user.confirm',
-    'user.contact',
-    'user.invite',
-    'user.progress',
-    'user.survey',
-    'user.welcome',
-    'order.invoice',
-    'order.progress',
-    'order.shipped',
-    'password.request',
-    'password.updated',
-  ];
-
   private constructor() {}
 
   /**
@@ -54,6 +32,11 @@ class Cliam {
   static get(): Cliam {
     if (!Cliam.instance) {
       Cliam.instance = new Cliam();
+      Object.keys(Container.transporters).forEach(key => {
+        if (!Cliam.instance.mailers[key]) {
+          Cliam.instance.mailers[key] = new Mailer(Container.transporters[key]);
+        }
+      });
     }
     return Cliam.instance;
   }
@@ -61,10 +44,10 @@ class Cliam {
   /**
    * @description Send an email
    * 
-   * @param event
-   * @param payload
+   * @param event Transactional event as string or EVENT
+   * @param payload Email payload
    * 
-   * @returns {Promise<SendingResponse|SendingError>}
+   * @returns {Promise<SendingResponse|SendingError>} Agnostic result of mail sending
    */
   async mail(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
     const key = payload.transporterId || Object.keys(Container.transporters).shift();

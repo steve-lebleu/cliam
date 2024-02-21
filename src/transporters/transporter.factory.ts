@@ -73,7 +73,7 @@ export class TransporterFactory {
           apiKey: args.auth.apiKey
         });
 
-        mailersendEngine['sendMail'] = async (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<void> => {
+        mailersendEngine['sendMail'] = (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<void> => {
           return mailersendEngine.email.send(payload)
             .then((result) => {
               callback(null, result as any)
@@ -98,7 +98,7 @@ export class TransporterFactory {
 
         let mailjetEngine = mailjetTransport.Client.apiConnect(args.auth.apiKey, args.auth.apiSecret);
         let engine = {
-          sendMail: async (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<void> => {
+          sendMail: (payload: any, callback: (err?: Error, result?: Record<string,unknown>) => void): Promise<void> => {
             return mailjetEngine
               .post('send', { version : 'v3.1' })
               .request(payload)
