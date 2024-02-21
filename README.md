@@ -17,7 +17,7 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 ## > Features
 
 - Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Inputs), one [output](https://github.com/steve-lebleu/cliam/wiki/Outputs).
-- Multiple transporters.
+- Multiple simultaneous transporters.
 - [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) based, not implementation based : easy switch between different modes.
 - Normalized [transactions events](https://github.com/steve-lebleu/cliam/wiki/Transactions).
 - Securized payloads.
