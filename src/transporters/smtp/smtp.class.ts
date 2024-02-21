@@ -13,8 +13,6 @@ import { ITransporterMailer } from './../ITransporterMailer.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { HTTP_METHOD } from './../../types/enums/http-method.enum';
-import { PROVIDER } from '../../types/enums/provider.enum';
 import { MODE } from '../../types/enums/mode.enum';
 
 import { Debug } from './../../types/decorators/debug.decorator';

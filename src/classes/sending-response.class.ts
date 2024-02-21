@@ -1,6 +1,5 @@
 import { MODE } from 'types/enums/mode.enum';
 import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
-import { HTTP_METHOD } from './../types/enums/http-method.enum';
 import { PROVIDER } from 'types/enums/provider.enum';
 
 /**
@@ -66,7 +65,7 @@ export class SendingResponse implements ISendingResponse {
    * @param property
    * @param value
    */
-  set(property: string, value: number|string|string[]|Record<string,unknown>|HTTP_METHOD): SendingResponse {
+  set(property: string, value: number|string|string[]|Record<string,unknown>): SendingResponse {
     this[property] = value;
     return this;
   }
@@ -76,7 +75,7 @@ export class SendingResponse implements ISendingResponse {
    *
    * @param property
    */
-  get(property: string): number|string|string[]|Record<string,unknown>|HTTP_METHOD {
+  get(property: string): number|string|string[]|Record<string,unknown> {
     return this[property];
   }
 

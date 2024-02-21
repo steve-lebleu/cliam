@@ -10,8 +10,6 @@ const { Mailer } = require(process.cwd() + '/dist/services/mailer.service');
 const { SendingError } = require(process.cwd() + '/dist/classes/sending-error.class');
 const { SendingResponse } = require(process.cwd() + '/dist/classes/sending-response.class');
 
-// TODO: Globally, go with more fine regarding each transporter
-
 describe('Transporters', () => {
 
   transporters.forEach((transporter) => {

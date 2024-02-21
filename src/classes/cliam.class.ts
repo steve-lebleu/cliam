@@ -6,7 +6,7 @@ import { SendingError } from './sending-error.class';
 import { Mailer } from './../services/mailer.service';
 
 /**
- * @summary Main class of cliam project. The Cliam class act as entry point and open wrapped methods such subscribe and emit.
+ * @summary Main class of cliam project. The Cliam class act as entry point and open wrapped method via mail.
  *
  * @public
  */
@@ -47,8 +47,9 @@ class Cliam {
   private constructor() {}
 
   /**
-   *
-   * @param emitter
+   * @description Cliam instance getter
+   * 
+   * @return {Cliam} Cliam instance
    */
   static get(): Cliam {
     if (!Cliam.instance) {
@@ -58,7 +59,12 @@ class Cliam {
   }
 
   /**
-   * @description
+   * @description Send an email
+   * 
+   * @param event
+   * @param payload
+   * 
+   * @returns {Promise<SendingResponse|SendingError>}
    */
   async mail(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
     const key = payload.transporterId || Object.keys(Container.transporters).shift();

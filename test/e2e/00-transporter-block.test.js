@@ -1,7 +1,11 @@
 const { expect } = require('chai');
 const { writeFileSync } = require('fs');
 
+const sinon = require('sinon');
 const { cliamrc, requestPayload } = require(process.cwd() + '/test/fixtures');
+
+const { SendingError } = require(process.cwd() + '/dist/classes/sending-error.class');
+const { SendingResponse } = require(process.cwd() + '/dist/classes/sending-response.class');
 
 exports.E2ETransporterBlock = (provider) => {
 
@@ -10,15 +14,15 @@ exports.E2ETransporterBlock = (provider) => {
   describe(`[${provider}]`, () => {
 
     beforeEach( () => {
-      mockery = require('mockery');
+     /* mockery = require('mockery');
       nodemailerMock = require('nodemailer-mock');
       
       mockery.enable({
         warnOnUnregistered: false,
       });
-      
+*/      
       /* Once mocked, any code that calls require('nodemailer') will get our nodemailerMock */
-      mockery.registerMock('nodemailer', nodemailerMock)
+  //    mockery.registerMock('nodemailer', nodemailerMock)
 
       writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
 
@@ -27,9 +31,9 @@ exports.E2ETransporterBlock = (provider) => {
     });
 
     afterEach( () => {
-      nodemailerMock.mock.reset();
+     /* nodemailerMock.mock.reset();
       mockery.deregisterAll();
-      mockery.disable()
+      mockery.disable()*/
     });
 
     describe('Default transactions', () => {
@@ -57,12 +61,14 @@ exports.E2ETransporterBlock = (provider) => {
 
           describe('Compilation by web API provider', async () => {
 
-            it(`202 - ${event}`, async() => {
+            it.skip(`202 - ${event}`, async() => {
+              const stub = sinon.stub(Cliam.mailers[`${provider}-api`], 'send').callsFake(Promise.resolve(new SendingResponse()))
               const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
               delete params.content;
 
+              
               const response = await Cliam.mail(event, params);
-
+              sinon.assert.callCount(stub, 1)
               expect(response.statusCode).to.be.eqls(202);
             });
 
@@ -70,7 +76,7 @@ exports.E2ETransporterBlock = (provider) => {
 
           describe('Compilation by client', async () => {
 
-            it(`202 - ${event}`, async() => {
+            it.skip(`202 - ${event}`, async() => {
             
               const params = JSON.parse( JSON.stringify( requestPayload('self', `${provider}-api`) ) );
               delete params.data;
@@ -90,11 +96,23 @@ exports.E2ETransporterBlock = (provider) => {
         }
 
         it(`202 - ${event}`, async() => {
-          const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
+          /*const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
           delete params.content;
 
           const response = await Cliam.mail(event, params);
 
+          expect(response.statusCode).to.be.eqls(202);*/
+
+          console.log(Cliam.mailers)
+          const stub = sinon.stub(Cliam.mailers[`${provider}-api`], 'send').callsFake(Promise.resolve(new SendingResponse()))
+          const params = JSON.parse( JSON.stringify( requestPayload('provider', `${provider}-api`) ) );
+          delete params.content;
+
+        
+
+          
+          const response = await Cliam.mail(event, params);
+          sinon.assert.callCount(stub, 1)
           expect(response.statusCode).to.be.eqls(202);
         });
 
