@@ -47,18 +47,17 @@ export class MandrillTransporter extends Transporter {
     const { payload, templateId, body, renderEngine } = args;
 
     const output = {
-      message: {
-        subject: payload.meta.subject,
-        from_email: this.address(payload.meta.from, 'string'), // TODO This must be dynamic -> if not -> bug
-        from_name: payload.meta.from.name,
-        to: this.addresses(payload.meta.to, 'to'),
-        headers: {
-          'Reply-To': this.address(payload.meta.replyTo.email, 'string') // TODO This must be dynamic -> if not -> bug
-        },
-        track_opens: true,
-        track_click: true,
-        preserve_recipients: true
-      }
+      subject: payload.meta.subject,
+      from_email: this.address(payload.meta.from, 'string'), // TODO This must be dynamic -> if not -> bug
+      from_name: payload.meta.from.name,
+      from: this.address(payload.meta.from, 'string'),
+      to: this.addresses(payload.meta.to, 'to'),
+      headers: {
+        'Reply-To': this.address(payload.meta.replyTo.email, 'string') // TODO This must be dynamic -> if not -> bug
+      },
+      track_opens: true,
+      track_click: true,
+      preserve_recipients: true
     };
 
     switch(renderEngine.valueOf()) {
@@ -78,15 +77,15 @@ export class MandrillTransporter extends Transporter {
     }
 
     if (typeof(payload.meta.cc) !== 'undefined') {
-      output.message.to = [].concat(output.message.to).concat(this.addresses(payload.meta.cc, 'cc')) as Array<string|IAddressB>
+      output.to = [].concat(output.to).concat(this.addresses(payload.meta.cc, 'cc')) as Array<string|IAddressB>
     }
 
     if (typeof(payload.meta.bcc) !== 'undefined') {
-      output.message.to = [].concat(output.message.to).concat(this.addresses(payload.meta.bcc, 'bcc')) as Array<string|IAddressB>
+      output.to = [].concat(output.to).concat(this.addresses(payload.meta.bcc, 'bcc')) as Array<string|IAddressB>
     }
 
     if (typeof(payload.meta.attachments) !== 'undefined') {
-      Object.assign(output.message, { attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
+      Object.assign(output, { attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
         return { type: attachment.type, name: attachment.filename, content: attachment.content };
       } ) });
     }
@@ -107,7 +106,7 @@ export class MandrillTransporter extends Transporter {
     if (type === 'single') {
       return recipient.email;
     }
-    return typeof recipient.name !== 'undefined' ? { email: recipient.email, name: recipient.name, type } : { email: recipient.email };
+    return typeof recipient.email !== 'undefined' ? recipient.email : recipient;
   }
 
   /**
@@ -125,24 +124,25 @@ export class MandrillTransporter extends Transporter {
    *
    * @param response Response from Mandrill API
    */
-  response(response: IMandrillResponse[]): SendingResponse {
+  response(response: IMandrillResponse): SendingResponse {
 
-    const incoming = response.shift();
     const res = new SendingResponse();
+
+    if (response.rejected.length) {
+      throw { statusCode: 400, statusText: response.rejected[0].status, message: `${response.rejected[0].reject_reason} (email: ${response.rejected[0].email})` };
+    }
 
     res
       .set('mode', MODE.api)
       .set('provider', PROVIDER.mandrill)
       .set('server', null)
       .set('uri', null)
-      .set('uri', incoming.request.uri)
-      .set('httpVersion', incoming.httpVersion)
-      .set('headers', incoming.headers)
+      .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', null)
-      .set('body', incoming.request.body)
+      .set('messageId', response.accepted[0]._id)
+      .set('body', response.accepted[0].status)
       .set('statusCode', 202)
-      .set('statusMessage', incoming.statusMessage);
+      .set('statusMessage', null);
 
     return res;
   }

@@ -17,6 +17,7 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 ## > Features
 
 - Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Inputs), one [output](https://github.com/steve-lebleu/cliam/wiki/Outputs).
+- Multiple transporters.
 - [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) based, not implementation based : easy switch between different modes.
 - Normalized [transactions events](https://github.com/steve-lebleu/cliam/wiki/Transactions).
 - Securized payloads.
@@ -73,7 +74,6 @@ Define a minimalist configuration in *.cliamrc.json* newly created:
     {
       "id": "unique-key-for-my-transporter",
       "mode": "smtp",
-      "provider": "",
       "auth": {
         "username": "USERNAME",
         "password": "PASSWORD"
@@ -97,7 +97,7 @@ import { Cliam } from 'cliam';
 
 // Do some stuffs ...
   
-Cliam.emit('user.confirm', payload)
+Cliam.mail('user.confirm', payload)
   .then(res => {
     console.log('Email has been delivered: ', res);
   })
@@ -147,13 +147,12 @@ No problem, we have all been poor once. Start with a simple SMTP server and use 
 <p>
   <a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="240px" hspace="15" /></a>
   <a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15" /></a>
+  <a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="240px" hspace="15" /></a>
 </p>
 
 <!--
 <p>
   <a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="240px" hspace="15" /></a>
-  <a href="https://www.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15"/></a>
-  <a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="240px" hspace="15" /></a>
 </p>
 -->
 

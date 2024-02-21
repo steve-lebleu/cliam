@@ -34,7 +34,7 @@ export class TransporterFactory {
 
   private static engine = null;
 
-  constructor() {}
+  private constructor() {}
 
   /**
    * @description Get a concrete transporter instance
