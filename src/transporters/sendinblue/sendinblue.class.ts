@@ -48,6 +48,7 @@ export class SendinblueTransporter extends Transporter {
 
     const { payload, templateId, body, renderEngine } = args;
 
+    console.log('renderEngine', renderEngine)
     const output = {
       headers: {
         'content-type': 'application/json',
@@ -68,6 +69,7 @@ export class SendinblueTransporter extends Transporter {
         break;
       case RENDER_ENGINE.default:
       case RENDER_ENGINE.self:
+        console.log('hereis')
         Object.assign(output, {
           text: body.text,
           html: body.html
