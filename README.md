@@ -57,22 +57,9 @@ Define a minimalist configuration in *.cliamrc.json* newly created:
 ```json
 {
   "sandbox": true,
-  "variables": {
-    "domain": "https://www.my-website.com",
-    "addresses": {
-      "from": {
-        "name": "John Doe",
-        "email": "info@john.doe.com"
-      },
-      "replyTo": {
-        "name": "John Doe",
-        "email": "info@john.doe.com"
-      }
-    }
-  },
   "transporters": [
     {
-      "id": "unique-key-for-my-transporter",
+      "id": "unique-transporter-key",
       "mode": "smtp",
       "auth": {
         "username": "USERNAME",
@@ -82,6 +69,19 @@ Define a minimalist configuration in *.cliamrc.json* newly created:
         "host": "HOST",
         "port": 587,
         "secure": false
+      }
+    },
+    {
+      "id": "other-unique-transporter-key",
+      "mode": "api",
+      "provider": "sendgrid",
+      "auth": {
+        "apiKey": "APIKEY",
+      },
+      "options": {
+        "templates": {
+          "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc"
+        }
       }
     }
   ]
@@ -97,7 +97,24 @@ import { Cliam } from 'cliam';
 
 // Do some stuffs ...
   
-Cliam.mail('user.confirm', payload)
+const payload = {
+  meta: {
+    from: { email: 'john.doe@hotmail.com' },
+    to: [
+      { email: 'john.allan.poe@hotmail.com' }
+    ],
+    replyTo: { email: 'john.doe@hotmail.com' },
+    subject: 'Welcome John'
+  }
+  content: [
+    {
+      type: 'text/html',
+      value: '<h1>Hello Yoda</h1><p>I use Cliam to send my emails !</p>'
+    }
+  ]
+};
+
+Cliam.mail('user.welcome', payload)
   .then(res => {
     console.log('Email has been delivered: ', res);
   })
@@ -105,6 +122,8 @@ Cliam.mail('user.confirm', payload)
     console.log('Error while mail sending: ', err)
   });
 ```
+
+By default, Cliam will use the first transporter found in the cliamrc file, except if you precise wich transporterId you want to use on the fly.
 
 See [request payload](https://github.com/steve-lebleu/cliam/wiki/Inputs) wiki section for more information about availables options and configurations.
 
