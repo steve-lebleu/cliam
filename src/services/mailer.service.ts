@@ -96,7 +96,7 @@ class Mailer {
   }
 
   /**
-   * @description Get the origin domain to use in the setup of the current mailer instance. This is used by some web API providers.
+   * @description Get the origin domain to use in the setup of the current mailer instance. This is used by some web API providers such mailgun.
    */
   private getOrigin(): string {
     return Container.configuration.variables.domain;
