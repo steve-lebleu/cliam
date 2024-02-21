@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 exports.cliamrc = require('./cliamrc');
 exports.providers = [
   'brevo',

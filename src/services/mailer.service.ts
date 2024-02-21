@@ -12,7 +12,10 @@ import { mailSchema } from './../validations/mail.validation';
 import { MODE } from '../types/enums/mode.enum';
 
 /**
- * @description Manage incoming mail requests
+ * @description Main class to manage incoming mail requests. Mostly, this class is responsible of:
+ *
+ * - Build the meta / data / content of an email using concrete transporter instance methods
+ * - Send an email using a concrete transporter instance method
  */
 class Mailer {
 
@@ -36,7 +39,7 @@ class Mailer {
    * @param event Event name
    * @param payload payload
    * 
-   * @returns Promise<SendingResponse|SendingError>
+   * @returns {Promise<SendingResponse|SendingError>} Result of mail sending
    */
   send = async (event: string, payload: IPayload): Promise<SendingResponse|SendingError> => {
     this.setRenderEngine(event, payload);

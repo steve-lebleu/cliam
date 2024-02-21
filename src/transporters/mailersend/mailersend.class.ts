@@ -4,6 +4,7 @@ import { Transporter } from './../transporter.class';
 
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { IMailersendBody } from './IMailersendBody.interface';
 import { IMailersendResponse } from './IMailersendResponse.interface';
 import { IMailersendError } from './IMailersendError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';
@@ -85,7 +86,7 @@ export class MailersendTransporter extends Transporter {
       params.setAttachments(attachments);
     }
 
-    return params as any;
+    return params as any; // TODO as any is not acceptable
   }
 
   /**

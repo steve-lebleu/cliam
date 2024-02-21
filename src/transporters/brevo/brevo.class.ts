@@ -2,6 +2,7 @@ import { Transporter } from './../transporter.class';
 
 import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
 import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import { IBrevoBody } from './IBrevoBody.interface';
 import { IBrevoResponse } from './IBrevoResponse.interface';
 import { IBrevoError } from './IBrevoError.interface';
 import { IAttachment } from './../../types/interfaces/IAttachment.interface';

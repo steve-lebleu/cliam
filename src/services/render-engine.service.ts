@@ -38,7 +38,7 @@ class RenderEngine {
   private readonly BLOCKS: string = '/../../src/views/blocks';
 
   /**
-   * @description
+   * @description TODO: find / remember what this fucking default property is
    */
    public readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
     { event: 'default', banner: '', default: true },
@@ -151,7 +151,7 @@ class RenderEngine {
    * @param event
    */
    private getBanner(event: string) {
-    return this.TEMPLATES.find(template => template.event === event).banner || 'https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg'; // 600x300
+    return this.TEMPLATES.find(template => template.event === event)?.banner || 'https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg'; // 600x300
   }
 
   /**
@@ -160,7 +160,7 @@ class RenderEngine {
    * @param event
    */
   private getSegment(event: string) {
-    return this.TEMPLATES.find(template => template.event === event).default ? 'default' : event;
+    return this.TEMPLATES.find(template => template.event === event)?.default ? 'default' : event;
   }
 
   /**

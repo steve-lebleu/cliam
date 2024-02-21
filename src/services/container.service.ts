@@ -8,37 +8,43 @@ import { ClientConfiguration } from './../classes/client-configuration.class';
 import { configurationSchema } from './../validations/configuration.validation';
 
 /**
- * @description
- *
- * @todo LOW :: Refactoring : should be simplified / cleaned : reading should not be here, this.transporter & this.configuration should be in a slot
+ * @description This class act like ... a container. She's a singleton, instanciated only one time when the application is ran. Mostly, she's responsible of:
+ * 
+ * - Reading, validation and expostion of the client configuration
+ * - Instanciation and exposition of the transporters
  */
 class Container {
 
   /**
-   * @description
+   * @description Container instance
    */
   private static instance: Container = null;
 
   /**
-   * @description
+   * @description ClientConfiguration instance
    */
   public configuration: ClientConfiguration = null;
 
 
   /**
-   * @description
+   * @description Transporter instances stored by key / value pairs
    */
   public transporters: { [id:string]: Transporter } = null;
 
   /**
-   * @description
+   * @description Path of the cliamrc configuration. Always at root of the project.
    */
   private readonly PATH: string = `${process.cwd()}/.cliamrc.json`;
 
+  /**
+   * @description Don't come here motherfucker
+   */
   private constructor() {}
 
   /**
-   * @description
+   * @description Get current container instance. Instanciate it if not present.
+   * 
+   * @returns {Container} Container instance
    */
   static get(): Container {
     if (!Container.instance) {
@@ -48,7 +54,9 @@ class Container {
   }
 
   /**
-   * @description
+   * @description Set configuration and transporters properties
+   * 
+   * @returns {Container} Container instance
    */
   private set(): Container {
 
@@ -63,9 +71,11 @@ class Container {
   }
 
   /**
-   * @description
+   * @description Read the cliamrc configuration file and return it
    *
-   * @param path
+   * @param path Path of the cliamrc file
+   * 
+   * @returns {Record<string,unknown>} Object containing client configuration values
    */
   private read(path: string): Record<string,unknown> {
     if (!existsSync(path)) {
@@ -81,9 +91,11 @@ class Container {
   }
 
   /**
-   * @description
+   * @description Validates the client configuration setup
    *
    * @param configuration
+   * 
+   * @returns {Record<string,unknown>}
    */
   private validates(configuration: Record<string,unknown>): Record<string,unknown> {
     const error = configurationSchema.validate(configuration, { abortEarly: true, allowUnknown: false })?.error;
