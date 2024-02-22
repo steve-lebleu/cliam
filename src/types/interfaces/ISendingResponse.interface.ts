@@ -1,5 +1,5 @@
-import { MODE } from 'types/enums/mode.enum';
-import { PROVIDER } from 'types/enums/provider.enum';
+import { MODE } from './../enums/mode.enum';
+import { PROVIDER } from './../enums/provider.enum';
 
 /**
  * Define mail sending uniform response properties.
