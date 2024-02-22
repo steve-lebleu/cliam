@@ -84,5 +84,5 @@ dist/
 
 # Test configuration
 .cliamrc.json
-.cliamrc-bk.json
-.test.js
+.cliamrc.js
+.cliam-test.js

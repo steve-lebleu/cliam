@@ -30,6 +30,7 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 - [Beneficiary use cases](#beneficiary-use-cases)
 - [Supported web API providers](#supported-web-api-providers)
 - [Licence](#licence)
+- [Documentation](https://github.com/steve-lebleu/cliam/wiki)
 
 <h2 id="requirements">> Requirements</h2>
 
@@ -46,16 +47,16 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 ### Configure
 
-Create a *.cliamrc.json* file on the root of your project.
+Create a *.cliamrc.js* module on the root of your project.
 
 ```shell
-> touch .cliamrc.json
+> touch .cliamrc.js
 ```
 
-Define a minimalist configuration in *.cliamrc.json* newly created:
+Define a minimalist configuration in *.cliamrc.js* newly created:
 
-```json
-{
+```javascript
+module.exports = {
   "sandbox": true,
   "transporters": [
     {
