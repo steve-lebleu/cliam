@@ -52,9 +52,9 @@ class Cliam {
   async mail(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
     const key = payload.transporterId || Object.keys(Container.transporters).shift();
     if (!this.mailers[key]) {
-      this.mailers[key] = new Mailer(Container.transporters[key]);
+      throw new Error('transporterId not found in cliamrc configuration');
     }
-    return this.mailers[key].send(event, payload)
+    return this.mailers[key].send(event, payload);
   }
 }
 

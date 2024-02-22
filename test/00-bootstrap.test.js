@@ -1,10 +1,6 @@
 require('dotenv').config();
 
-const { writeFileSync } = require('fs');
-
-const { cliamrc } = require(process.cwd() + '/test/fixtures');
-
-writeFileSync(`${process.cwd()}/.cliamrc.json`, JSON.stringify(cliamrc, null, 2), { encoding: 'utf-8' });
+copyFileSync(`${process.cwd()}/test/fixtures/.cliamrc.js`, `${process.cwd()}/.cliamrc.js`);
 
 describe('Units tests', () => {
   require('./01-client-configuration.test');

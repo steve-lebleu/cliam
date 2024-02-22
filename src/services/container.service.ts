@@ -2,6 +2,8 @@ import * as Chalk from 'chalk';
 
 import { existsSync, readFileSync } from 'fs';
 
+import * as CliamCfg from './../../.cliamrc.js'
+
 import { Transporter } from './../transporters/transporter.class';
 import { TransporterFactory } from './../transporters/transporter.factory';
 import { ClientConfiguration } from './../classes/client-configuration.class';
@@ -34,7 +36,7 @@ class Container {
   /**
    * @description Path of the cliamrc configuration. Always at root of the project.
    */
-  private readonly PATH: string = `${process.cwd()}/.cliamrc.json`;
+  private readonly PATH: string = `${process.cwd()}/.cliamrc.js`;
 
   /**
    * @description Don't come here motherfucker
@@ -59,8 +61,11 @@ class Container {
    * @returns {Container} Container instance
    */
   private set(): Container {
-
-    this.configuration = new ClientConfiguration( this.validates( this.read(this.PATH) ) );
+    if (!existsSync(this.PATH)) {
+      process.stdout.write( Chalk.bold.red('.cliamrc.js file cannot be found\n') );
+      process.exit(0);
+    }
+    this.configuration = new ClientConfiguration( this.validates( CliamCfg ) );
 
     this.transporters = this.configuration.transporters.reduce((result, transporterDefinition) => {
       result[transporterDefinition.id] = TransporterFactory.get(this.configuration.variables, transporterDefinition);
@@ -68,26 +73,6 @@ class Container {
     }, {});
 
     return this;
-  }
-
-  /**
-   * @description Read the cliamrc configuration file and return it
-   *
-   * @param path Path of the cliamrc file
-   * 
-   * @returns {Record<string,unknown>} Object containing client configuration values
-   */
-  private read(path: string): Record<string,unknown> {
-    if (!existsSync(path)) {
-     process.stdout.write( Chalk.bold.red('.cliamrc.json file cannot be found\n') );
-     process.exit(0);
-    }
-    const content = readFileSync(path, { encoding: 'utf-8' });
-    if (!content) {
-      process.stdout.write( Chalk.bold.red('.cliamrc.json content not found\n') );
-      process.exit(0);
-    }
-    return JSON.parse(content) as Record<string,unknown>;
   }
 
   /**
