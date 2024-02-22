@@ -1,6 +1,6 @@
-import { MODE } from 'types/enums/mode.enum';
+import { MODE } from '../types/enums/mode.enum';
 import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
-import { PROVIDER } from 'types/enums/provider.enum';
+import { PROVIDER } from '../types/enums/provider.enum';
 
 /**
  * Sending response wrapper
