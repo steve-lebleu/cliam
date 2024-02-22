@@ -53,6 +53,10 @@ Create a *.cliamrc.js* module on the root of your project.
 > touch .cliamrc.js
 ```
 
+:warning: It's strongly advised to:
+- Add .cliamrc.js in your .gitignore file
+- Use environment secrets to fill in sensible values like api keys. In this case, just npm i dotenv in your project, and require('doten').config() on the top of your .cliamrc.js file.
+
 Define a minimalist configuration in *.cliamrc.js* newly created:
 
 ```javascript
