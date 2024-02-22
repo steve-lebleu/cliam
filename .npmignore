@@ -80,4 +80,5 @@ credentials.js
 
 # Test configuration
 .cliamrc.json
-.test.js
+.cliamrc.js
+.cliam-test.js

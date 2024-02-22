@@ -119,7 +119,7 @@ jobs:
       - name: Compile Typescript files with declarations
         run: tsc --declaration
       - name: Delete unpackaged files
-        run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f tsconfig.json && rm -f .env && rm -f ROADMAP.md
+        run: rm -rf ./.github && rm -rf ./src && rm -rf ./test && rm -f ./tsconfig.json && rm -f ./.env && rm -f ./.cliamrc.js
       - name: Publish package on NPM registery
         run: npm ci & npm publish
         env:
