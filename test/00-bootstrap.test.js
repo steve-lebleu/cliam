@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const { copyFileSync } = require('fs');
+
 copyFileSync(`${process.cwd()}/test/fixtures/.cliamrc.js`, `${process.cwd()}/.cliamrc.js`);
 
 describe('Units tests', () => {
