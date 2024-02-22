@@ -53,13 +53,10 @@ Create a *.cliamrc.js* module on the root of your project.
 > touch .cliamrc.js
 ```
 
-:warning: It's strongly advised to:
-- Add .cliamrc.js in your .gitignore file
-- Use environment secrets to fill in sensible values like api keys. In this case, just npm i dotenv in your project, and require('doten').config() on the top of your .cliamrc.js file.
-
 Define a minimalist configuration in *.cliamrc.js* newly created:
 
 ```javascript
+require('dotenv').config();
 module.exports = {
   "sandbox": true,
   "transporters": [
@@ -67,11 +64,11 @@ module.exports = {
       "id": "unique-transporter-key",
       "mode": "smtp",
       "auth": {
-        "username": "USERNAME",
-        "password": "PASSWORD"
+        "username": process.env.SMTP_USERNAME,
+        "password": process.env.SMTP_PWD
       },
       "options": {
-        "host": "HOST",
+        "host": process.env.SMTP_HOST,
         "port": 587,
         "secure": false
       }
@@ -81,17 +78,20 @@ module.exports = {
       "mode": "api",
       "provider": "sendgrid",
       "auth": {
-        "apiKey": "APIKEY",
+        "apiKey": process.env.WEB_API_SENDGRID_API_KEY,
       },
       "options": {
         "templates": {
-          "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc"
+          "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc",
+          ...
         }
       }
     }
   ]
 }
 ```
+
+:warning: It's strongly advised to use environment secrets to fill in sensible values like api keys. Dotenv is embedded in Cliam, so you can just write an .env file and put Dotenv on the top of your .cliamrc.js.
 
 See [configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) wiki section for more information about availables options and configurations.
 
