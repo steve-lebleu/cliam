@@ -24,8 +24,6 @@ jobs:
           node-version: '18.19.0'
       - name: Install NPM dependencies
         run: npm i typescript@5.3.3 -g && npm i
-      - name: Compile Typescript files
-        run: tsc
       - name: Create .env file
         run: |
           touch .env
@@ -45,6 +43,10 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
+      - name: Create .cliamrc.js file
+        run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
+      - name: Compile Typescript files
+        run: tsc
       - name: Execute units tests
         run: npm run ci:test
       - name: Publish to coveralls.io
