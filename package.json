@@ -1,6 +1,6 @@
 {
   "name": "cliam",
-  "version": "2.2.9",
+  "version": "2.2.10",
   "engines": {
     "node": ">=16.6.2",
     "npm": ">=7.20.3"
