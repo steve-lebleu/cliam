@@ -16,9 +16,9 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 ## > Features
 
-- Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Inputs), one [output](https://github.com/steve-lebleu/cliam/wiki/Outputs).
+- Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Email-payload), one [output](https://github.com/steve-lebleu/cliam/wiki/Email-response).
 - Multiple simultaneous transporters.
-- [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) based, not implementation based : easy switch between different modes.
+- [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) based, not implementation based : easy switch between different modes.
 - Normalized [transactions events](https://github.com/steve-lebleu/cliam/wiki/Transactions).
 - Securized payloads.
 - Customisable default templates.
@@ -93,7 +93,7 @@ module.exports = {
 
 :warning: It's strongly advised to use environment secrets to fill in sensible values like api keys. Dotenv is embedded in Cliam, so you can just write an .env file and put Dotenv on the top of your .cliamrc.js.
 
-See [configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration) wiki section for more information about availables options and configurations.
+See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for more information about availables options and configurations.
 
 ### Implement
 
@@ -130,7 +130,7 @@ Cliam.mail('user.welcome', payload)
 
 By default, Cliam will use the first transporter found in the cliamrc file, except if you precise wich transporterId you want to use on the fly.
 
-See [request payload](https://github.com/steve-lebleu/cliam/wiki/Inputs) wiki section for more information about availables options and configurations.
+See [email payload](https://github.com/steve-lebleu/cliam/wiki/Email-payload) wiki section for more information about availables options and configurations.
 
 <h2 id="beneficiary-use-cases">> Beneficiary use cases</h2>
 
