@@ -9,7 +9,6 @@ import { IMail } from './../types/interfaces/IMail.interface';
 import { IBuffer } from './../types/interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from './../types/enums/buffer-mime-type.enum';
 import { mailSchema } from './../validations/mail.validation';
-import { MODE } from '../types/enums/mode.enum';
 
 /**
  * @description Main class to manage incoming mail requests. Mostly, this class is responsible of:
@@ -68,11 +67,14 @@ class Mailer {
    * @param payload payload
    */
    private setRenderEngine(event: string, payload: IPayload): void {
-    if (this.transporter.configuration.mode === MODE.smtp) {
-      this.renderEngine = payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.default;
+    if(!this.transporter.configuration.provider) {
+      if (payload.renderEngine === RENDER_ENGINE.provider) {
+        throw new Error(`Render engine cannot be 'provider' with a SMTP email sending. Please use 'self' or 'cliam'`);
+      }
+      this.renderEngine = payload.renderEngine ? payload.renderEngine : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.cliam;
     }
-    if (this.transporter.configuration.mode === MODE.api) {
-      this.renderEngine = payload.content ? RENDER_ENGINE.self : this.getTemplateId(event) ? RENDER_ENGINE.provider : RENDER_ENGINE.default;
+    if (this.transporter.configuration.provider) {
+      this.renderEngine = payload.renderEngine ? payload.renderEngine : payload.content ? RENDER_ENGINE.self : this.getTemplateId(event) ? RENDER_ENGINE.provider : RENDER_ENGINE.cliam;
     }
   }
 
@@ -83,14 +85,14 @@ class Mailer {
    * @param payload payload
    */
   private getMail(event: string, payload: IPayload): IMail {
-    if (this.renderEngine === RENDER_ENGINE.default && !RenderEngine.TEMPLATES.find(template => template.event === event)) {
+    if (this.renderEngine === RENDER_ENGINE.cliam && !RenderEngine.TEMPLATES.find(template => template.event === event)) {
       throw new Error(`No default template available for this custom event (${event}). Please provide your own compilation or push a new merge request ;-)`);
     }
     return {
       payload,
       templateId: this.getTemplateId(event),
       renderEngine: this.renderEngine,
-      body: [ RENDER_ENGINE.self, RENDER_ENGINE.default ].includes(this.renderEngine) ? this.getCompiled(event, payload) : null,
+      body: [ RENDER_ENGINE.self, RENDER_ENGINE.cliam ].includes(this.renderEngine) ? this.getCompiled(event, payload) : null,
       origin: this.getOrigin()
     }
   }
@@ -108,10 +110,10 @@ class Mailer {
    * @param event Event name
    */
   private getTemplateId(event: string): string {
-    if (!this.transporter.configuration?.options?.templates?.hasOwnProperty(event)) {
+    if (!this.transporter.configuration?.templates?.hasOwnProperty(event)) {
       return null;
     }
-    return this.transporter.configuration?.options?.templates[event];
+    return this.transporter.configuration?.templates[event];
   }
 
   /**

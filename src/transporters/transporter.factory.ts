@@ -1,31 +1,10 @@
-import * as sparkpostTransport from 'nodemailer-sparkpost-transport';
-import * as mailgunTransport from 'nodemailer-mailgun-transport';
-import * as mandrillTransport from 'nodemailer-mandrill-transport';
-import * as PostmarkTransport from 'nodemailer-postmark-transport';
-import * as sendgridTransport from 'nodemailer-sendgrid';
-import * as mailjetTransport from 'node-mailjet';
-import * as brevoTransport from 'nodemailer-brevo-transport';
-import * as sendinblueTransport from 'nodemailer-sendinblue-v3-transport';
-
-import { MailerSend } from 'mailersend';
 import { createTransport } from 'nodemailer';
 
-import { PROVIDER } from '../types/enums/provider.enum';
-import { MODE } from '../types/enums/mode.enum';
-import { IAddressable } from '../types/interfaces/addresses/IAddressable.interface';
-
 import { Transporter } from './transporter.class';
-import { SmtpTransporter } from './smtp/smtp.class';
-import { SparkpostTransporter } from './sparkpost/sparkpost.class';
-import { SendgridTransporter } from './sendgrid/sendgrid.class';
-import { BrevoTransporter } from './brevo/brevo.class';
-import { MailersendTransporter } from './mailersend/mailersend.class';
-import { MandrillTransporter } from './mandrill/mandrill.class';
-import { MailgunTransporter } from './mailgun/mailgun.class';
-import { MailjetTransporter } from './mailjet/mailjet.class';
-import { PostmarkTransporter } from './postmark/postmark.class';
-import { SendinblueTransporter } from './sendinblue/sendinblue.class';
 import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
+
+import { PROVIDER } from '../types/enums/provider.enum';
+import { IAddressable } from '../types/interfaces/addresses/IAddressable.interface';
 
 /**
  * @description
@@ -44,7 +23,8 @@ export class TransporterFactory {
    */
   static get({...vars}: { domain: string, addresses: { from: IAddressable, replyTo: IAddressable } }, { ...args }: ITransporterConfiguration): Transporter {
     
-    if(args.mode === MODE.smtp) {
+    if(!args.provider) {
+      const { SmtpTransporter } = require('./smtp/smtp.class');
       return new SmtpTransporter(createTransport( {
         host: args.options.host,
         port: args.options.port,
@@ -62,6 +42,9 @@ export class TransporterFactory {
 
       case PROVIDER.brevo:
 
+        const brevoTransport = require('nodemailer-brevo-transport');
+        const { BrevoTransporter } = require('./brevo/brevo.class');
+
         TransporterFactory.engine = brevoTransport;
         return new BrevoTransporter( createTransport( new TransporterFactory.engine({
           apiKey: args.auth.apiKey
@@ -69,6 +52,9 @@ export class TransporterFactory {
 
       case PROVIDER.mailersend:
         
+        const { MailerSend } = require('mailersend');
+        const { MailersendTransporter } = require('./mailersend/mailersend.class');
+
         let mailersendEngine = new MailerSend({
           apiKey: args.auth.apiKey
         });
@@ -87,6 +73,9 @@ export class TransporterFactory {
 
       case PROVIDER.mailgun:
         
+        const mailgunTransport = require('nodemailer-mailgun-transport');
+        const { MailgunTransporter } = require('./mailgun/mailgun.class');
+
         return new MailgunTransporter( createTransport( mailgunTransport({
           auth: {
             api_key: args.auth.apiKey,
@@ -95,6 +84,9 @@ export class TransporterFactory {
         }) ), args );
 
       case PROVIDER.mailjet:
+
+        const mailjetTransport = require('node-mailjet');
+        const { MailjetTransporter } = require('./mailjet/mailjet.class');
 
         let mailjetEngine = mailjetTransport.Client.apiConnect(args.auth.apiKey, args.auth.apiSecret);
         let engine = {
@@ -114,6 +106,9 @@ export class TransporterFactory {
         return new MailjetTransporter( engine, args );
 
       case PROVIDER.mandrill:
+        
+        const mandrillTransport = require('nodemailer-mandrill-transport');
+        const { MandrillTransporter } = require('./mandrill/mandrill.class');
 
         return new MandrillTransporter( createTransport( mandrillTransport({
           auth : {
@@ -122,6 +117,10 @@ export class TransporterFactory {
         }) ), args );
 
       case PROVIDER.postmark:
+
+        const PostmarkTransport = require('nodemailer-postmark-transport');
+        const { PostmarkTransporter } = require('./postmark/postmark.class');
+
         TransporterFactory.engine = PostmarkTransport.PostmarkTransport;
         return new PostmarkTransporter( createTransport( new TransporterFactory.engine({
           auth: { apiKey: args.auth.apiKey }
@@ -129,12 +128,18 @@ export class TransporterFactory {
 
       case PROVIDER.sendgrid :
 
+        const sendgridTransport = require('nodemailer-sendgrid');
+        const { SendgridTransporter } = require('./sendgrid/sendgrid.class');
+
         return new SendgridTransporter( createTransport( sendgridTransport({
           apiKey: args.auth.apiKey
         }) ), args );
       
       case PROVIDER.sendinblue :
 
+        const sendinblueTransport = require('nodemailer-sendinblue-v3-transport');
+        const { SendinblueTransporter } = require('./sendinblue/sendinblue.class');
+        
         TransporterFactory.engine = sendinblueTransport({
           apiKey: args.auth.apiKey,
           apiUrl: 'https://api.sendinblue.com/v3/smtp'
@@ -142,6 +147,9 @@ export class TransporterFactory {
         return new SendinblueTransporter( createTransport( TransporterFactory.engine ), args );
 
       case PROVIDER.sparkpost :
+
+        const sparkpostTransport = require('nodemailer-sparkpost-transport');
+        const { SparkpostTransporter } = require('./sparkpost/sparkpost.class');
 
         return new SparkpostTransporter( createTransport( sparkpostTransport({
           sparkPostApiKey: args.auth.apiKey,

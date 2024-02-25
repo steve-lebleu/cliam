@@ -1,1 +1,1 @@
-export type RenderEngine = 'provider' | 'default' | 'self';
+export type RenderEngine = 'provider' | 'cliam' | 'self';

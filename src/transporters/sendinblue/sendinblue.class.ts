@@ -14,7 +14,6 @@ import { SendingResponse } from './../../classes/sending-response.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Sendinblue transporter for mail sending.
@@ -66,7 +65,7 @@ export class SendinblueTransporter extends Transporter {
           templateId: parseInt(templateId, 10)
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -129,7 +128,6 @@ export class SendinblueTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.sendinblue)
       .set('server', null)
       .set('uri', response.res.req.protocol + '//' + response.res.req.host + response.res.req.path)

@@ -17,7 +17,6 @@ import { Debug } from './../../types/decorators/debug.decorator';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Brevo transporter for mail sending.
@@ -68,7 +67,7 @@ export class BrevoTransporter extends Transporter {
           templateId: parseInt(templateId, 10)
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -131,7 +130,6 @@ export class BrevoTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.brevo)
       .set('server', null)
       .set('uri', null)

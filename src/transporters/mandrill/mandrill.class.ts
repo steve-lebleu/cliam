@@ -14,7 +14,6 @@ import { SendingResponse } from './../../classes/sending-response.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Mandrill transporter for mail sending.
@@ -67,7 +66,7 @@ export class MandrillTransporter extends Transporter {
           template_name: payload.meta.templateId || templateId
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -133,7 +132,6 @@ export class MandrillTransporter extends Transporter {
     }
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.mandrill)
       .set('server', null)
       .set('uri', null)

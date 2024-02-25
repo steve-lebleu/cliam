@@ -17,7 +17,6 @@ import { Debug } from './../../types/decorators/debug.decorator';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 import { getMailjetErrorMessages } from './../../utils/error.util';
 
@@ -65,7 +64,7 @@ export class MailjetTransporter extends Transporter {
         Object.assign(output.Messages[0], { TemplateLanguage: true });
         Object.assign(output.Messages[0], { TemplateID: parseInt(templateId, 10) });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output.Messages[0], {
           TextPart: body.text,
@@ -128,7 +127,6 @@ export class MailjetTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.mailjet)
       .set('server', null)
       .set('uri', incoming.config.url)

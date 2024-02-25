@@ -31,10 +31,10 @@ describe('Cliam', () => {
 
     describe(`Cliam::mail::${transporter}`, () => {
 
-      describe('RenderEngine::default', () => {
+      describe('RenderEngine::cliam', () => {
         Object.keys(EVENT).forEach((event, idx) => {
           it(event, async () => {
-            const payload = JSON.parse( JSON.stringify( requestPayload('provider', transporter) ) );
+            const payload = JSON.parse( JSON.stringify( requestPayload('cliam', transporter) ) );
             const stub = sinon.stub(Cliam.mailers[transporter], 'getTemplateId').returns(null);
             delete payload.content;
             const response = await Cliam.mail(event, payload);
@@ -47,7 +47,7 @@ describe('Cliam', () => {
       describe('RenderEngine::self', () => {
         Object.keys(EVENT).forEach((event, idx) => {
           it(event, async () => {
-            const payload = JSON.parse( JSON.stringify( requestPayload('provider', transporter) ) );
+            const payload = JSON.parse( JSON.stringify( requestPayload('self', transporter) ) );
             delete payload.data;
             const response = await Cliam.mail(event, payload);
             expect(response.statusCode).to.be.eqls(202);

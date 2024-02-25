@@ -13,8 +13,6 @@ import { ITransporterMailer } from './../ITransporterMailer.interface';
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { MODE } from '../../types/enums/mode.enum';
-
 import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
@@ -111,7 +109,6 @@ export class SmtpTransporter extends Transporter {
     const res = new SendingResponse();
 
     return res
-      .set('mode', MODE.smtp)
       .set('provider', null)
       .set('server', null)
       .set('uri', null)

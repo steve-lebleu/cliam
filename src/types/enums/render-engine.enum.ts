@@ -3,6 +3,6 @@
  */
 export enum RENDER_ENGINE {
   provider = 'provider',
-  default = 'default',
+  cliam = 'cliam',
   self = 'self'
 }

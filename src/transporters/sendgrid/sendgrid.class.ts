@@ -13,7 +13,6 @@ import { SendingError } from './../../classes/sending-error.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 import { Debug } from './../../types/decorators/debug.decorator';
 
@@ -66,7 +65,7 @@ export class SendgridTransporter extends Transporter {
           templateId: payload.meta.templateId || templateId
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -123,7 +122,6 @@ export class SendgridTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.sendgrid)
       .set('server', incoming.headers['server'] as string)
       .set('uri', incoming.request.uri.href)

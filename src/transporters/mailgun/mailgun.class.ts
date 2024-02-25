@@ -14,7 +14,6 @@ import { Debug } from '../../types/decorators/debug.decorator';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * This class set a Mailgun transporter for mail sending.
@@ -62,7 +61,7 @@ export class MailgunTransporter extends Transporter {
           template: templateId
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -125,7 +124,6 @@ export class MailgunTransporter extends Transporter {
     const res = new SendingResponse();
     
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.mailgun)
       .set('server', null)
       .set('uri', null)

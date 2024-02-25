@@ -41,7 +41,7 @@ describe('Transporters', () => {
         const mailer = new Mailer(Container.transporters[transporter]);
 
         const event = 'user.welcome';
-        const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+        const payload = requestPayload('self', transporter );
 
         mailer.setAddresses(payload);
         mailer.setRenderEngine(event, payload);
@@ -52,13 +52,13 @@ describe('Transporters', () => {
         expect(mailer.renderEngine).to.be.equals('self');
       });
 
-      it(`${transporter}::build should give the output using default render engine`, () => {
+      it(`${transporter}::build should give the output using cliam render engine`, () => {
         const mailer = new Mailer(Container.transporters[transporter]);
 
         const stub = sinon.stub(mailer, 'getTemplateId').callsFake(() => null);
 
         const event = 'user.welcome';
-        const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+        const payload = requestPayload( 'cliam', transporter );
         delete payload.content;
 
         mailer.setAddresses(payload);
@@ -67,7 +67,7 @@ describe('Transporters', () => {
         const result = mailer.transporter.build( mailer.getMail('user.welcome', payload ) );
 
         expect(result).to.be.an('object');
-        expect(mailer.renderEngine).to.be.equals('default');
+        expect(mailer.renderEngine).to.be.equals('cliam');
 
         stub.restore();
       });
@@ -77,7 +77,7 @@ describe('Transporters', () => {
           const mailer = new Mailer(Container.transporters[transporter]);
   
           const event = 'user.welcome';
-          const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+          const payload = requestPayload( 'provider', transporter );
           
           delete payload.content;
   
@@ -95,7 +95,7 @@ describe('Transporters', () => {
         it(`${transporter}::address should returns a string`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+          const payload = requestPayload( 'cliam', transporter );
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.address(payload.meta.from);
@@ -105,7 +105,7 @@ describe('Transporters', () => {
         it(`${transporter}::address should returns an object`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+          const payload = requestPayload( 'cliam', transporter );
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.address(payload.meta.from);
@@ -117,7 +117,7 @@ describe('Transporters', () => {
         it(`${transporter}::addresses should returns an array of strings`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+          const payload = requestPayload( 'cliam', transporter );
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.addresses(payload.meta.to);
@@ -128,7 +128,7 @@ describe('Transporters', () => {
         it(`${transporter}::addresses should returns an array of objects`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+          const payload = requestPayload( 'cliam', transporter );
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.addresses(payload.meta.to);
@@ -153,7 +153,7 @@ describe('Transporters', () => {
         const mailer = new Mailer(Container.transporters[transporter]);
         const stub = sinon.stub(mailer.transporter.transporter, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
         const event = 'user.welcome';
-        const payload = requestPayload( transporter.lastIndexOf('smtp') !== -1 ? 'smtp' : 'api', transporter );
+        const payload = requestPayload( 'cliam', transporter );
         payload.meta.to = [ { email: 'john.doe@test.com' } ];
         delete payload.content;
         mailer.setAddresses(payload);
