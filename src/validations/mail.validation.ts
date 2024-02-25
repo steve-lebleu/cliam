@@ -7,9 +7,11 @@ import { BUFFER_MIME_TYPE } from '../types/enums/buffer-mime-type.enum';
 import { recipient } from '../types/schemas/recipient.schema';
 
 import { list } from '../utils/enum.util';
+import { RENDER_ENGINE } from '../types/enums/render-engine.enum';
 
 const mailSchema = Joi.object({
   transporterId: Joi.string().optional(),
+  renderEngine: Joi.valid( ...list( RENDER_ENGINE ) ).required(),
   meta: Joi.object({
     subject: Joi.string().max(128).required(),
     from: recipient(),

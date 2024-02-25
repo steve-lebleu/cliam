@@ -57,6 +57,7 @@ Define a minimalist configuration in *.cliamrc.js* newly created:
 
 ```javascript
 require('dotenv').config();
+
 module.exports = {
   "sandbox": true,
   "transporters": [

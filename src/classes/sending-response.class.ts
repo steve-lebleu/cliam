@@ -1,4 +1,3 @@
-import { MODE } from '../types/enums/mode.enum';
 import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
 import { PROVIDER } from '../types/enums/provider.enum';
 
@@ -8,14 +7,9 @@ import { PROVIDER } from '../types/enums/provider.enum';
 export class SendingResponse implements ISendingResponse {
 
   /**
-   * @description Request mode api|smtp
-   */
-  mode: MODE;
-
-  /**
    * @description Request web API provider if mode is API
    */
-  provider: PROVIDER;
+  provider?: PROVIDER;
   
   /**
    * @description Timestamp returned by Cliam wrapper

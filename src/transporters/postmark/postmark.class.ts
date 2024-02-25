@@ -13,7 +13,6 @@ import { SendingError } from './../../classes/sending-error.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 import { IPostmarkBody } from './IPostmarkBody.interface';
 
@@ -63,7 +62,7 @@ export class PostmarkTransporter extends Transporter {
           templateId: parseInt(templateId, 10),
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -127,7 +126,6 @@ export class PostmarkTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.postmark)
       .set('server', null)
       .set('uri', null)

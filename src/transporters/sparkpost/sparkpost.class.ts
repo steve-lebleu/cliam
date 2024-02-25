@@ -15,7 +15,6 @@ import { SendingResponse } from '../../classes/sending-response.class';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Sparkpost transporter for mail sending.
@@ -69,7 +68,7 @@ export class SparkpostTransporter extends Transporter {
           use_draft_template: false
         });
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
           text: body.text,
@@ -149,7 +148,6 @@ export class SparkpostTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.sparkpost)
       .set('server', null)
       .set('uri', null)

@@ -19,7 +19,6 @@ import { Debug } from '../../types/decorators/debug.decorator';
 
 import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
-import { MODE } from '../../types/enums/mode.enum';
 
 /**
  * Set a Mailersend transporter for mail sending.
@@ -63,7 +62,7 @@ export class MailersendTransporter extends Transporter {
           .setPersonalization([{ email: this.address(payload.meta.to[0]).email, data: [ payload.data as any ] }])
           .setTemplateId(templateId);
         break;
-      case RENDER_ENGINE.default:
+      case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         params
           .setText(body.text)
@@ -120,7 +119,6 @@ export class MailersendTransporter extends Transporter {
     const res = new SendingResponse();
 
     res
-      .set('mode', MODE.api)
       .set('provider', PROVIDER.mailersend)
       .set('server', response.headers['server'])
       .set('uri', null)

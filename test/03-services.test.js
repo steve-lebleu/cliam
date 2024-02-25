@@ -49,24 +49,34 @@ describe('Services', () => {
     });
 
     describe('::setRenderEngine', () => {
-      it('should set the renderEngine as \'self\' when mode is SMTP and payload has a content', (done) => {
+      it('should set the renderEngine as \'self\' when provider is not defined and payload.renderEngine is self', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload();
+        const payload = requestPayload('self');
         mailer.setRenderEngine('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('self');
         done();
       });
 
-      it('should set the renderEngine as \'default\' when mode is SMTP and payload has no content', (done) => {
+      it('should set the renderEngine as \'self\' when provider is not defined and payload.renderEngine is not provided and payload has a content', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
-        delete payload.content;
+        delete payload.renderEngine;
         mailer.setRenderEngine('user.welcome', payload);
-        expect(mailer.renderEngine).to.be.equals('default');
+        expect(mailer.renderEngine).to.be.equals('self');
         done();
       });
 
-      it('should set the renderEngine as \'provider\' when mode is API and a template mapping can be found in the options', (done) => {
+      it('should set the renderEngine as \'cliam\' when provider is not defined and payload.renderEngine is not provided and payload has no content', (done) => {
+        const mailer = new Mailer(Container.transporters['hosting-smtp']);
+        const payload = requestPayload();
+        delete payload.content;
+        delete payload.renderEngine;
+        mailer.setRenderEngine('user.welcome', payload);
+        expect(mailer.renderEngine).to.be.equals('cliam');
+        done();
+      });
+
+      it('should set the renderEngine as \'provider\' when provider is defined and payload.renderEngine is \'provider\'', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.content;
@@ -74,21 +84,32 @@ describe('Services', () => {
         expect(mailer.renderEngine).to.be.equals('provider');
         done();
       });
-
-      it('should set the renderEngine as \'self\' when mode is API, a template mapping cannot be found in the options and payload has a content', (done) => {
+      it('should set the renderEngine as \'provider\' when provider is defined, payload.renderEngine is not provided and a template mapping can be found in the configuration', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
+        delete payload.content;
+        delete payload.renderEngine;
+        mailer.setRenderEngine('user.welcome', payload);
+        expect(mailer.renderEngine).to.be.equals('provider');
+        done();
+      });
+
+      it('should set the renderEngine as \'self\' when provider is defined, a template mapping cannot be found in the options and payload has a content', (done) => {
+        const mailer = new Mailer(Container.transporters['postmark-api']);
+        const payload = requestPayload();
+        delete payload.renderEngine;
         mailer.setRenderEngine('user.notfound', payload);
         expect(mailer.renderEngine).to.be.equals('self');
         done();
       });
 
-      it('should set the renderEngine as \'default\' when mode is API, a template mapping cannot be found in the options and payload has no content', (done) => {
+      it('should set the renderEngine as \'cliam\' when provider is defined, a template mapping cannot be found in the options and payload has no content', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
+        delete payload.renderEngine;
         delete payload.content;
         mailer.setRenderEngine('user.notfound', payload);
-        expect(mailer.renderEngine).to.be.equals('default');
+        expect(mailer.renderEngine).to.be.equals('cliam');
         done();
       });
 
@@ -97,6 +118,7 @@ describe('Services', () => {
         const spy = sinon.spy(mailer, 'getTemplateId');
         const payload = requestPayload();
         delete payload.content;
+        delete payload.renderEngine;
         mailer.setRenderEngine('user.welcome', payload);
         sinon.assert.callCount(spy, 1);
         spy.restore();
@@ -172,7 +194,7 @@ describe('Services', () => {
 
       it('should set text value as body when the render engine is \'self\'', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload();
+        const payload = requestPayload('self');
         mailer.setRenderEngine('user.welcome', payload);
         const result = mailer.getMail('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('self');
@@ -180,13 +202,13 @@ describe('Services', () => {
         done();
       });
 
-      it('should set text value as body when the render engine is \'default\'', (done) => {
+      it('should set text value as body when the render engine is \'cliam\'', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload();
+        const payload = requestPayload('cliam');
         delete payload.content;
         mailer.setRenderEngine('user.welcome', payload);
         const result = mailer.getMail('user.welcome', payload);
-        expect(mailer.renderEngine).to.be.equals('default');
+        expect(mailer.renderEngine).to.be.equals('cliam');
         expect(result.body).to.be.not.null;
         done();
       });
@@ -223,7 +245,7 @@ describe('Services', () => {
       it('should returns the mappad value from the transporter configuration', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const templateId = mailer.getTemplateId('user.welcome');
-        expect(templateId).to.be.equals(mailer.transporter.configuration.options.templates['user.welcome']);
+        expect(templateId).to.be.equals(mailer.transporter.configuration.templates['user.welcome']);
         done();
       });
     });
@@ -262,7 +284,7 @@ describe('Services', () => {
 
       it('should returns text and html from the current payload when the template is rendered by the client (self) and has text and html defined', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload();
+        const payload = requestPayload('self');
         payload.content = [];
         payload.content.push({ type: 'text/plain', value: 'avalue' }, { type: 'text/html', value: '<p>anothervalue</p>' });
         
@@ -279,7 +301,7 @@ describe('Services', () => {
 
       it('should returns html from the current payload and generates text part from render engine when the template is rendered by the client (self) and exposes only HTML buffer', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload();
+        const payload = requestPayload('self');
         payload.content = [];
         payload.content.push({ type: 'text/html', value: '<p>anothervalue</p>' });
         
