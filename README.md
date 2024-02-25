@@ -63,7 +63,6 @@ module.exports = {
   "transporters": [
     {
       "id": "unique-transporter-key",
-      "mode": "smtp",
       "auth": {
         "username": process.env.SMTP_USERNAME,
         "password": process.env.SMTP_PWD
@@ -76,16 +75,13 @@ module.exports = {
     },
     {
       "id": "other-unique-transporter-key",
-      "mode": "api",
       "provider": "sendgrid",
       "auth": {
         "apiKey": process.env.WEB_API_SENDGRID_API_KEY,
       },
-      "options": {
-        "templates": {
-          "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc",
-          ...
-        }
+      "templates": {
+        "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc",
+        ...
       }
     }
   ]
