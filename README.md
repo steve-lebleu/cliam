@@ -56,8 +56,6 @@ Create a *.cliamrc.js* module on the root of your project.
 Define a minimalist configuration in *.cliamrc.js* newly created:
 
 ```javascript
-require('dotenv').config();
-
 module.exports = {
   "sandbox": true,
   "transporters": [
@@ -88,7 +86,7 @@ module.exports = {
 }
 ```
 
-:warning: It's strongly advised to use environment secrets to fill in sensible values like api keys. Dotenv is embedded in Cliam, so you can just write an .env file and put Dotenv on the top of your .cliamrc.js.
+It's advised to use environment secrets to fill in sensible values like api keys. Dotenv is embedded in Cliam, so you can just write an .env file with the required keys regarding your *cliamrc.js* definition.
 
 See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for more information about availables options and configurations.
 
