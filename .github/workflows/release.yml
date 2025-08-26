@@ -12,7 +12,7 @@ jobs:
       NODE_ENV: dev
     steps:
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: '**/node_modules'
           key: node-modules-${{ hashfiles('**/package-lock.json') }}
