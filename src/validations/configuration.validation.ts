@@ -1,17 +1,16 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
-import { host } from '../types/schemas/host.schema';
-import { password } from '../types/schemas/password.schema';
-import { port } from '../types/schemas/port.schema';
-import { smtp as smtpSchema } from '../types/schemas/smtp.schema';
-import { username } from '../types/schemas/username.schema';
+import { host } from '@schemas/host.schema';
+import { password } from '@schemas/password.schema';
+import { port } from '@schemas/port.schema';
+import { username } from '@schemas/username.schema';
 
-import { list } from '../utils/enum.util';
+import { list } from '@utils/enum.util';
 
-import { PROVIDER } from '../types/enums/provider.enum';
-import { SOCIAL_NETWORK } from '../types/enums/social-network.enum';
+import { PROVIDER } from '@enums/provider.enum';
+import { SOCIAL_NETWORK } from '@enums/social-network.enum';
 
-const configurationSchema = Joi.object({
+export const configurationSchema = Joi.object({
   sandbox: Joi.boolean().default(false),
   variables: Joi.object({
     domain: Joi.string().uri().required(),
@@ -164,5 +163,3 @@ const configurationSchema = Joi.object({
     .min(1).required()
     .unique((a, b) => a.id === b.id).required(),
 });
-
-export { configurationSchema }

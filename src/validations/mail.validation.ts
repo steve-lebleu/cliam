@@ -1,14 +1,14 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
-import { ATTACHMENT_DISPOSITION } from '../types/enums/attachment-disposition.enum';
-import { ATTACHMENT_MIME_TYPE } from '../types/enums/attachment-mime-type.enum';
-import { BUFFER_MIME_TYPE } from '../types/enums/buffer-mime-type.enum';
+import { ATTACHMENT_DISPOSITION } from '@enums/attachment-disposition.enum';
+import { ATTACHMENT_MIME_TYPE } from '@enums/attachment-mime-type.enum';
+import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
 
-import { recipient } from '../types/schemas/recipient.schema';
+import { recipient } from '@schemas/recipient.schema';
 
-import { list } from '../utils/enum.util';
+import { list } from '@utils/enum.util';
 
-const mailSchema = Joi.object({
+export const mailSchema = Joi.object({
   transporterId: Joi.string().optional(),
   meta: Joi.object({
     subject: Joi.string().max(128).required(),
@@ -19,7 +19,7 @@ const mailSchema = Joi.object({
     bcc: Joi.array().items( recipient() ),
     attachments: Joi.array().items(
       Joi.object({
-        content: Joi.alternatives([ Joi.string().base64(), Joi.string().regex(/^data:[a-zA-Z-\/]{1,48};base64,.*$/) ]).required(),
+        content: Joi.alternatives([ Joi.string().base64(), Joi.string().regex(/^data:[a-zA-Z-/]{1,48};base64,.*$/) ]).required(),
         type: Joi.any().valid(...list(ATTACHMENT_MIME_TYPE)),
         filename: Joi.string().regex(/[a-z-A-Z-0-9]{2,}\.[a-z]{3,4}/).required(), /** @todo LOW :: attachment.filename extension should also match attachment.type */
         disposition: Joi.any().valid(...list(ATTACHMENT_DISPOSITION)).default( ATTACHMENT_DISPOSITION.attachment )
@@ -38,5 +38,3 @@ const mailSchema = Joi.object({
   ).max(2),
   data: Joi.object()
 }).xor('content', 'data').required();
-
-export { mailSchema };

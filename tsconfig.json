@@ -19,7 +19,7 @@
       "@decorators/*": ["src/types/decorators/*"],
       "@enums/*": ["src/types/enums/*"],
       "@interfaces/*": ["src/types/interfaces/*"],
-      "@schemas/*": ["src/types/schemas/*"],
+      "@schemas/*": ["src/validations/schemas/*"],
       "@typings/*": ["src/types/types/*"],
       "@services/*": ["src/services/*"],
       "@transporters/*": ["src/transporters/*"],
