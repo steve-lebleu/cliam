@@ -1,26 +1,25 @@
-const sinon = require('sinon');
-const { expect } = require('chai');
+import { describe, it } from 'bun:test';
+import sinon from 'sinon';
+import { expect } from 'chai';
 
-const { requestPayload } = require(process.cwd() + '/test/fixtures');
-
-const { Container } = require(process.cwd() + '/dist/services/container.service');
-const { Mailer } = require(process.cwd() + '/dist/services/mailer.service');
-const { RenderEngine } = require(process.cwd() + '/dist/services/render-engine.service');
-
-const { mailSchema } = require(process.cwd() + '/dist/validations/mail.validation');
-const { SendingError } = require(process.cwd() + '/dist/classes/sending-error.class');
-const { SendingResponse } = require(process.cwd() + '/dist/classes/sending-response.class');
+import { requestPayload } from './fixtures/index';
+import { Container } from '../src/services/container.service';
+import { Mailer } from '../src/services/mailer.service';
+import { RenderEngine } from '../src/services/render-engine.service';
+import { mailSchema } from '../src/validations/mail.validation';
+import { SendingError } from '../src/classes/sending-error.class';
+import { SendingResponse } from '../src/classes/sending-response.class';
 
 describe('Services', () => {
 
   describe('Container', () => {
 
-    it('should expose a validated client configuration after Cliam.configure()', (done) => {
+    it('should expose a validated client configuration after Cliam.configure()', (done: any) => {
       expect(Container.configuration).to.be.not.null;
       done();
     });
 
-    it('should expose instantiated transporters after Cliam.configure()', (done) => {
+    it('should expose instantiated transporters after Cliam.configure()', (done: any) => {
       expect(Container.transporters).to.be.not.null;
       Object.keys(Container.transporters).forEach(key => {
         expect(Container.transporters[key].configuration).to.be.not.null;
@@ -29,15 +28,11 @@ describe('Services', () => {
       done();
     });
 
-    it('should throw when accessed before Cliam.configure() is called', (done) => {
-      const { Container: FreshContainer } = require(process.cwd() + '/dist/services/container.service');
+    it('should throw when accessed before Cliam.configure() is called', (done: any) => {
       try {
-        // access configuration before configure() — should throw since the module
-        // state was already set by bootstrap, so we test via a direct property access
-        // on a fresh require that shares the same module cache state
-        expect(FreshContainer.configuration).to.be.not.null;
+        expect(Container.configuration).to.be.not.null;
         done();
-      } catch(e) {
+      } catch (e) {
         expect(e).to.be.instanceOf(Error);
         done();
       }
@@ -46,14 +41,15 @@ describe('Services', () => {
 
   describe('Mailer', () => {
 
-    it('should be coupled to a transporter instance', (done) => {
+    it('should be coupled to a transporter instance', (done: any) => {
       const mailer = new Mailer(Container.transporters['hosting-smtp']);
       expect(mailer.transporter).to.be.not.null;
       done();
     });
 
     describe('::setRenderEngine', () => {
-      it('should infer \'self\' when content is present (SMTP)', (done) => {
+
+      it("should infer 'self' when content is present (SMTP)", (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         mailer.setRenderEngine('user.welcome', payload);
@@ -61,7 +57,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should infer \'cliam\' when content is absent and no provider (SMTP)', (done) => {
+      it("should infer 'cliam' when content is absent and no provider (SMTP)", (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         delete payload.content;
@@ -70,7 +66,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should infer \'self\' when content is present (web API)', (done) => {
+      it("should infer 'self' when content is present (web API)", (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         mailer.setRenderEngine('user.welcome', payload);
@@ -78,7 +74,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should infer \'provider\' when content is absent and a template mapping exists in the configuration', (done) => {
+      it("should infer 'provider' when content is absent and a template mapping exists in the configuration", (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.content;
@@ -87,7 +83,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should infer \'self\' when content is present even if a template mapping exists', (done) => {
+      it("should infer 'self' when content is present even if a template mapping exists", (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         mailer.setRenderEngine('user.welcome', payload);
@@ -95,7 +91,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should infer \'cliam\' when content is absent and no template mapping exists', (done) => {
+      it("should infer 'cliam' when content is absent and no template mapping exists", (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.content;
@@ -104,7 +100,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should call ::getTemplateId to check for a template mapping when content is absent', (done) => {
+      it('should call ::getTemplateId to check for a template mapping when content is absent', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const spy = sinon.spy(mailer, 'getTemplateId');
         const payload = requestPayload();
@@ -117,7 +113,8 @@ describe('Services', () => {
     });
 
     describe('::setAddresses', () => {
-      it('should set from address with the cliamrc one if not present in on fly payload', (done) => {
+
+      it('should set from address with the cliamrc one if not present in on fly payload', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.meta.from;
@@ -127,7 +124,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should set from address with the current payload one', (done) => {
+      it('should set from address with the current payload one', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         const from = payload.meta.from;
@@ -136,7 +133,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should set reply-to address with the cliamrc one if not present in on fly payload', (done) => {
+      it('should set reply-to address with the cliamrc one if not present in on fly payload', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.meta.replyTo;
@@ -146,7 +143,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should set reply-to address with the current payload one', (done) => {
+      it('should set reply-to address with the current payload one', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         const replyTo = payload.meta.replyTo;
@@ -157,20 +154,21 @@ describe('Services', () => {
     });
 
     describe('::getMail', () => {
-      it('should throws an error when trying to use cliam template for a non supported event', (done) => {
+
+      it('should throws an error when trying to use cliam template for a non supported event', (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         delete payload.content;
         try {
           mailer.setRenderEngine('event.notfound', payload);
           mailer.getMail('event.notfound', payload);
-        } catch(e) {
+        } catch (e) {
           expect(e).to.be.instanceOf(Error);
           done();
         }
       });
 
-      it('should returns object with payload, templateId, renderEngine, body and origin properties', (done) => {
+      it('should returns object with payload, templateId, renderEngine, body and origin properties', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         const result = mailer.getMail('user.welcome', payload);
@@ -182,7 +180,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should set text value as body when the render engine is \'self\'', (done) => {
+      it("should set text value as body when the render engine is 'self'", (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         mailer.setRenderEngine('user.welcome', payload);
@@ -192,7 +190,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should set text value as body when the render engine is \'cliam\'', (done) => {
+      it("should set text value as body when the render engine is 'cliam'", (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         delete payload.content;
@@ -203,7 +201,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should set null as body when the render engine is \'provider\'', (done) => {
+      it("should set null as body when the render engine is 'provider'", (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.content;
@@ -214,9 +212,9 @@ describe('Services', () => {
         done();
       });
     });
-    
+
     describe('::getOrigin', () => {
-      it('should return the origin value from Container.configuration.variables.domain', (done) => {
+      it('should return the origin value from Container.configuration.variables.domain', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const origin = mailer.getOrigin();
         expect(origin).to.be.equals(Container.configuration.variables.domain);
@@ -225,14 +223,15 @@ describe('Services', () => {
     });
 
     describe('::getTemplateId', () => {
-      it('should returns null', (done) => {
+
+      it('should returns null', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const templateId = mailer.getTemplateId('user.notfound');
         expect(templateId).to.be.null;
         done();
       });
 
-      it('should returns the mappad value from the transporter configuration', (done) => {
+      it('should returns the mappad value from the transporter configuration', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const templateId = mailer.getTemplateId('user.welcome');
         expect(templateId).to.be.equals(mailer.transporter.configuration.templates['user.welcome']);
@@ -241,7 +240,8 @@ describe('Services', () => {
     });
 
     describe('::hasPlainText', () => {
-      it('should returns false when payload does no contains a buffer', (done) => {
+
+      it('should returns false when payload does no contains a buffer', (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         payload.content = [];
@@ -250,7 +250,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should returns false when payload do not contains a buffer with a value nor a type text/plain', (done) => {
+      it('should returns false when payload do not contains a buffer with a value nor a type text/plain', (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         payload.content = [];
@@ -260,7 +260,7 @@ describe('Services', () => {
         done();
       });
 
-      it('should returns true when payload contains a buffer with a value and a type text/plain', (done) => {
+      it('should returns true when payload contains a buffer with a value and a type text/plain', (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         payload.content.push({ type: 'text/plain', value: 'avalue' });
@@ -272,90 +272,79 @@ describe('Services', () => {
 
     describe('::getCompiled', () => {
 
-      it('should returns text and html from the current payload when the template is rendered by the client (self) and has text and html defined', (done) => {
+      it("should returns text and html from the current payload when the template is rendered by the client (self) and has text and html defined", (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         payload.content = [];
         payload.content.push({ type: 'text/plain', value: 'avalue' }, { type: 'text/html', value: '<p>anothervalue</p>' });
-        
         mailer.setRenderEngine('user.welcome', payload);
-        
         const result = mailer.getCompiled('user.welcome', payload);
-
         expect(mailer.renderEngine).to.be.equals('self');
         expect(result.text).to.be.equals('avalue');
         expect(result.html).to.be.equals('<p>anothervalue</p>');
-
         done();
       });
 
-      it('should returns html from the current payload and generates text part from render engine when the template is rendered by the client (self) and exposes only HTML buffer', (done) => {
+      it("should returns html from the current payload and generates text part from render engine when the template is rendered by the client (self) and exposes only HTML buffer", (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         payload.content = [];
         payload.content.push({ type: 'text/html', value: '<p>anothervalue</p>' });
-        
         mailer.setRenderEngine('user.welcome', payload);
-        
         const result = mailer.getCompiled('user.welcome', payload);
-
         expect(mailer.renderEngine).to.be.equals('self');
         expect(result.text).to.be.equals('anothervalue');
         expect(result.html).to.be.equals('<p>anothervalue</p>');
-
         done();
       });
 
-      it('should compile and returns templates when the template is rendered by the client (provider)', (done) => {
+      it("should compile and returns templates when the template is rendered by the client (provider)", (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.content;
-        
         mailer.setRenderEngine('user.welcome', payload);
-        
         const result = mailer.getCompiled('user.welcome', payload);
-
         expect(mailer.renderEngine).to.be.equals('provider');
         expect(result.text).to.contains('contact@john-doe.com');
         expect(result.html).to.contains('contact@john-doe.com');
-
         done();
       });
     });
 
     describe('::send', () => {
-      it('should be exposed a public method', (done) => {
+
+      it('should be exposed a public method', (done: any) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         expect(mailer).to.haveOwnProperty('send');
         expect(mailer.send).to.be.a('function');
         done();
       });
 
-      it('should set the render engine before to send email', (done) => {
+      it('should set the render engine before to send email', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const setRenderEngineSpy = sinon.spy(mailer, 'setRenderEngine');
-        const payload = JSON.parse( JSON.stringify( requestPayload() ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload()));
         delete payload.content;
         mailer.send('user.welcome', payload);
         setRenderEngineSpy.restore();
         sinon.assert.callCount(setRenderEngineSpy, 1);
         done();
       });
-  
-      it('should set the the addresses before to send email', (done) => {
+
+      it('should set the the addresses before to send email', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const setAddressesSpy = sinon.spy(mailer, 'setAddresses');
-        const payload = JSON.parse( JSON.stringify( requestPayload() ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload()));
         mailer.send('user.welcome', payload);
         setAddressesSpy.restore();
         sinon.assert.callCount(setAddressesSpy, 1);
         done();
       });
-  
-      it('should validate the payload before to send email', (done) => {
+
+      it('should validate the payload before to send email', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const validateSpy = sinon.spy(mailSchema, 'validate');
-        const payload = JSON.parse( JSON.stringify( requestPayload() ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload()));
         mailer.send('user.welcome', payload);
         validateSpy.restore();
         sinon.assert.callCount(validateSpy, 1);
@@ -364,14 +353,14 @@ describe('Services', () => {
 
       it('should returns an error if the payload is not valid', async () => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
-        const payload = JSON.parse( JSON.stringify( requestPayload() ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload()));
         payload.meta.to = undefined;
         const result = await mailer.send('user.welcome', payload);
         expect(result).to.be.instanceOf(SendingError);
       });
 
-      it('should call the transporter.build method', (done) => {
-        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
+      it('should call the transporter.build method', (done: any) => {
+        const payload = JSON.parse(JSON.stringify(requestPayload('postmark-api')));
         delete payload.content;
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const buildSpy = sinon.spy(mailer.transporter, 'build');
@@ -381,10 +370,10 @@ describe('Services', () => {
         done();
       });
 
-      it('should call the transporter.send method', (done) => {
+      it('should call the transporter.send method', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const sendSpy = sinon.spy(mailer.transporter, 'send');
-        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload('postmark-api')));
         delete payload.content;
         mailer.send('user.welcome', payload);
         sendSpy.restore();
@@ -393,10 +382,10 @@ describe('Services', () => {
       });
 
       it('should success with a Promise<SendingResponse>', async () => {
-        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload('postmark-api')));
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const sendStub = sinon.stub(mailer.transporter, 'send').callsFake(() => Promise.resolve(new SendingResponse()));
-        payload.meta.to = [ { email: 'john.doe@test.com' } ];
+        payload.meta.to = [{ email: 'john.doe@test.com' }];
         delete payload.content;
         const result = await mailer.send('user.welcome', payload);
         expect(result).to.be.instanceOf(SendingResponse);
@@ -405,49 +394,49 @@ describe('Services', () => {
 
       it('should fails with a Promise<SendingError>', async () => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
-        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
+        const payload = JSON.parse(JSON.stringify(requestPayload('postmark-api')));
         payload.meta.to = undefined;
         const result = await mailer.send('user.welcome', payload);
         expect(result).to.be.instanceOf(SendingError);
       });
     });
   });
-  
+
   describe('RenderEngine', () => {
 
     describe('::getBanner', () => {
 
-      it('should give the banner related to the current event', (done) => {
-        const result = RenderEngine.getBanner('user.welcome');
+      it('should give the banner related to the current event', (done: any) => {
+        const result = (RenderEngine as any).getBanner('user.welcome');
         expect(result).to.be.eqls('https://cdn.konfer.be/images/cliam/banners/welcome.png');
-        done()
-      });
-
-      it('should give the default banner when current event has no related template', (done) => {
-        const result = RenderEngine.getBanner('event.notfound');
-        expect(result).to.be.equals('https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg');
         done();
       });
 
+      it('should give the default banner when current event has no related template', (done: any) => {
+        const result = (RenderEngine as any).getBanner('event.notfound');
+        expect(result).to.be.equals('https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg');
+        done();
+      });
     });
 
     describe('::getSegment', () => {
-      it('should returns the default segment related to the current event', (done) => {
-        const result = RenderEngine.getSegment('user.welcome');
+
+      it('should returns the default segment related to the current event', (done: any) => {
+        const result = (RenderEngine as any).getSegment('user.welcome');
         expect(result).to.be.equals('default');
         done();
       });
 
-      it('should returns the passed segment', (done) => {
-        const result = RenderEngine.getSegment('event.notfound');
+      it('should returns the passed segment', (done: any) => {
+        const result = (RenderEngine as any).getSegment('event.notfound');
         expect(result).to.be.equals('event.notfound');
         done();
       });
     });
 
     describe('::customize', () => {
-      it('should replace colors values in current templates', (done) => {
-        const result = RenderEngine.customize('<p color="#111111">customize</p>');
+      it('should replace colors values in current templates', (done: any) => {
+        const result = (RenderEngine as any).customize('<p color="#111111">customize</p>');
         expect(result).to.contains('5bd1d7');
         expect(result).to.not.contains('111111');
         done();
@@ -455,7 +444,7 @@ describe('Services', () => {
     });
 
     describe('::textify', () => {
-      it('should returns sanitized string', (done) => {
+      it('should returns sanitized string', (done: any) => {
         const result = RenderEngine.textify('<p color="#111111">customize</p>');
         expect(result).to.equals('customize');
         done();
@@ -463,7 +452,7 @@ describe('Services', () => {
     });
 
     describe('::compile', () => {
-      it('should returns an object with text and html properties', (done) => {
+      it('should returns an object with text and html properties', (done: any) => {
         const payload = requestPayload();
         const result = RenderEngine.compile('user.welcome', payload.data);
         expect(result).to.haveOwnProperty('text');

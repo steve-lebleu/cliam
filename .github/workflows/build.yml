@@ -10,15 +10,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: '**/node_modules'
-          key: node-modules-${{ hashfiles('**/package-lock.json') }}
+          key: bun-modules-${{ hashfiles('**/bun.lockb') }}
       - name: Github checkout
         uses: actions/checkout@v4
-      - name: Setup node.js environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.19.0'
-      - name: Install NPM dependencies
-        run: npm i typescript@5.3.3 -g && npm i
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
       - name: Create .env file
         run: |
           touch .env
@@ -38,12 +36,10 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
-      - name: Create .cliamrc.js file
-        run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
-      - name: Compile Typescript files
-        run: tsc
+      - name: Build
+        run: bun run build
       - name: Execute units tests
-        run: npm run ci:test
+        run: bun run ci:test
       - name: Upload reports artifact
         uses: actions/upload-artifact@v4
         with:
