@@ -16,6 +16,8 @@ export default (transporter: string): HttpResult | Record<string, unknown> | unk
       return { status: 202, headers: { 'x-message-id': 'id' }, data: null } as HttpResult;
     case 'postmark-api':
       return { To: 'test@test.com', SubmittedAt: '2021-01-01T00:00:00Z', MessageID: 'id', ErrorCode: 0, Message: 'OK' };
+    case 'resend-api':
+      return { id: 'id', object: 'email', from: 'test@test.com', to: ['test@test.com'], created_at: '2024-01-01T00:00:00Z' };
     case 'sparkpost-api':
       return { results: { id: 'id', total_accepted_recipients: 1, total_rejected_recipients: 0 } };
     case 'hosting-smtp':

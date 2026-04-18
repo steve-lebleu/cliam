@@ -5,7 +5,6 @@ import type { ATTACHMENT_MIME_TYPE } from '../enums/attachment-mime-type.enum';
  * Describe fields of an email attachment
  */
 export interface IAttachment {
-
   /**
    * @description Base64 encoded content
    */

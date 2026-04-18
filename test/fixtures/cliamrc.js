@@ -198,6 +198,32 @@ module.exports = {
       }
     },
     {
+      "id": "resend-api",
+      "provider": "resend",
+      "auth": {
+        "apiKey": process.env.RESEND_API_KEY,
+      },
+      "options": {},
+      "templates": {
+        "default": "my-template-id",
+        "event.subscribe": "my-template-id",
+        "event.unsubscribe": "my-template-id",
+        "event.updated": "my-template-id",
+        "user.bye": "my-template-id",
+        "user.confirm": "my-template-id",
+        "user.contact": "my-template-id",
+        "user.invite": "my-template-id",
+        "user.progress": "my-template-id",
+        "user.survey": "my-template-id",
+        "user.welcome": "my-template-id",
+        "order.invoice": "my-template-id",
+        "order.progress": "my-template-id",
+        "order.shipped": "my-template-id",
+        "password.request": "my-template-id",
+        "password.updated": "my-template-id"
+      }
+    },
+    {
       "id": "sparkpost-api",
       "provider": "sparkpost",
       "auth": {

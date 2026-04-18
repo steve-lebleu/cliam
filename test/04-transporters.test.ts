@@ -10,7 +10,7 @@ import { HttpTransporter } from '../src/transporters/http.transporter';
 import { SendingError } from '../src/core/sending-error.class';
 import { SendingResponse } from '../src/core/sending-response.class';
 
-const HTTP_TRANSPORTERS = ['brevo-api', 'mailersend-api', 'mailgun-api', 'mailjet-api', 'mandrill-api', 'postmark-api', 'sendgrid-api', 'sparkpost-api'];
+const HTTP_TRANSPORTERS = ['brevo-api', 'mailersend-api', 'mailgun-api', 'mailjet-api', 'mandrill-api', 'postmark-api', 'resend-api', 'sendgrid-api', 'sparkpost-api'];
 
 describe('Transporters', () => {
 
@@ -74,7 +74,7 @@ describe('Transporters', () => {
         });
       }
 
-      if (['mailgun-api', 'postmark-api', 'mandrill-api', 'hosting-smtp'].includes(transporter)) {
+      if (['mailgun-api', 'postmark-api', 'mandrill-api', 'resend-api', 'hosting-smtp'].includes(transporter)) {
         it(`${transporter}::address should returns a string`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const payload = requestPayload(transporter);
@@ -94,7 +94,7 @@ describe('Transporters', () => {
         });
       }
 
-      if (['mailgun-api', 'postmark-api', 'mandrill-api', 'hosting-smtp'].includes(transporter)) {
+      if (['mailgun-api', 'postmark-api', 'mandrill-api', 'resend-api', 'hosting-smtp'].includes(transporter)) {
         it(`${transporter}::addresses should returns an array of strings`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const payload = requestPayload(transporter);

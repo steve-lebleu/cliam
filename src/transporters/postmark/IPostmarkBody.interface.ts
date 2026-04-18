@@ -1,11 +1,11 @@
-import type { IAttachment } from '../../types/interfaces/IAttachment.interface';
+import type { IAttachment } from '@interfaces/IAttachment.interface';
 
 export interface IPostmarkBody {
   from: string;
   to: Array<string>;
   replyTo: string;
   subject: string;
-  templateModel?: Record<string,unknown>;
+  templateModel?: Record<string, unknown>;
   templateId?: string;
   text?: string;
   html?: string;

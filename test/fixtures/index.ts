@@ -13,6 +13,7 @@ export const transporters: string[] = [
   'mandrill-api',
   'postmark-api',
   'sendgrid-api',
+  'resend-api',
   'sparkpost-api',
   'hosting-smtp'
 ];

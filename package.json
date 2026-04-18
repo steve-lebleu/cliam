@@ -65,6 +65,10 @@
       "import": "./dist/transporters/sendgrid/index.js",
       "types": "./dist/transporters/sendgrid/index.d.ts"
     },
+    "./providers/resend": {
+      "import": "./dist/transporters/resend/index.js",
+      "types": "./dist/transporters/resend/index.d.ts"
+    },
     "./providers/sparkpost": {
       "import": "./dist/transporters/sparkpost/index.js",
       "types": "./dist/transporters/sparkpost/index.d.ts"

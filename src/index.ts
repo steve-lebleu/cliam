@@ -28,4 +28,5 @@ import './transporters/mailjet';
 import './transporters/mandrill';
 import './transporters/postmark';
 import './transporters/sendgrid';
+import './transporters/resend';
 import './transporters/sparkpost';

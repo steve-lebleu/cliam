@@ -107,6 +107,10 @@ export const configurationSchema = Joi.object({
                 is: Joi.any().valid(PROVIDER.postmark).required(),
                 then: Joi.string().regex(/^[a-z-0-9]{8}-[a-z-0-9]{4}-[a-z-0-9]{4}-[a-z-0-9]{4}-[a-z-0-9]{12}$/)
               },
+              {
+                is: Joi.any().valid(PROVIDER.resend).required(),
+                then: Joi.string().regex(/^re_[a-zA-Z0-9]{32}$/)
+              },
             ]
           }).concat(Joi.string().when('...provider', {
             is: Joi.exist(),

@@ -9,5 +9,6 @@ export enum PROVIDER {
   mandrill = 'mandrill',
   postmark = 'postmark',
   sendgrid = 'sendgrid',
+  resend = 'resend',
   sparkpost = 'sparkpost'
 }

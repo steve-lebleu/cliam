@@ -15,6 +15,8 @@ export default (transporter: string) => {
       return new Error('Dummy error');
     case 'hosting-smtp':
       return Object.assign(new Error('Invalid address'), { responseCode: 550, code: 'EENVELOPE', response: '550 Invalid address' });
+    case 'resend-api':
+      return { name: 'validation_error', message: 'Invalid email address', statusCode: 422 };
     case 'sparkpost-api':
       return { statusCode: 400, errors: [{ message: 'error', description: 'description' }] };
   }
