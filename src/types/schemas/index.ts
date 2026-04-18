@@ -5,8 +5,8 @@ import { id } from './id.schema';
 import { mimetype } from './mimetype.schema';
 import { name } from './name.schema';
 import { password } from './password.schema';
-import { port } from './port.schema';
 import { path } from './path.schema';
+import { port } from './port.schema';
 import { recipient } from './recipient.schema';
 import { username } from './username.schema';
 

@@ -6,12 +6,12 @@ const _require = createRequire(import.meta.url);
 import { Container } from '@services/container.service';
 import { Mailer } from '@services/mailer.service';
 
-import type { Event } from '@typings/event.type';
 import type { IPayload } from '@interfaces/IPayload.interface';
+import type { Event } from '@typings/event.type';
 
 import type { IClientConfiguration } from './client-configuration.class';
-import type { SendingResponse } from './sending-response.class';
 import type { SendingError } from './sending-error.class';
+import type { SendingResponse } from './sending-response.class';
 
 export class Cliam {
   private static mailers: { [id: string]: Mailer } = {};
@@ -25,9 +25,9 @@ export class Cliam {
     Container.configure(config);
     Cliam.mailers = {};
 
-    Object.keys(Container.transporters).forEach(key => {
+    for (const key of Object.keys(Container.transporters)) {
       Cliam.mailers[key] = new Mailer(Container.transporters[key]);
-    });
+    }
   }
 
   /**

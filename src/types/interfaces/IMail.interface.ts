@@ -1,5 +1,5 @@
-import { RenderEngine } from '@/types/types/render-engine.type';
-import { IPayload } from '../interfaces/IPayload.interface';
+import type { RenderEngine } from '@/types/types/render-engine.type';
+import type { IPayload } from '../interfaces/IPayload.interface';
 
 /**
  * @description

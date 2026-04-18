@@ -1,15 +1,15 @@
-import { SendingResponse } from './../classes/sending-response.class';
 import { SendingError } from './../classes/sending-error.class';
+import type { SendingResponse } from './../classes/sending-response.class';
 
-import type { IPayload } from '@interfaces/IPayload.interface';
-import type { Transporter } from '@transporters/transporter.class';
-import { Container } from '@services/container.service';
-import { RenderEngine } from './render-engine.service';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
-import type { IMail } from '@interfaces/IMail.interface';
-import type { IBuffer } from '@interfaces/IBuffer.interface';
 import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
+import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import type { IBuffer } from '@interfaces/IBuffer.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IPayload } from '@interfaces/IPayload.interface';
+import { Container } from '@services/container.service';
+import type { Transporter } from '@transporters/transporter.class';
 import { mailSchema } from './../validations/mail.validation';
+import { RenderEngine } from './render-engine.service';
 
 /**
  * @description Main class to manage incoming mail requests. Mostly, this class is responsible of:

@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
-import { AnySchema } from 'joi';
+import type { AnySchema } from 'joi';
 
 import { host } from './host.schema';
+import { password } from './password.schema';
 import { port } from './port.schema';
 import { username } from './username.schema';
-import { password } from './password.schema';
 
 const smtp = (): AnySchema => {
   return Joi.object({

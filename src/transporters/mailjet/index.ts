@@ -1,7 +1,7 @@
-import mailjetTransport from 'node-mailjet';
-import { MailjetTransporter } from './mailjet.class';
-import { registerTransporter } from '../registry';
 import { PROVIDER } from '@enums/provider.enum';
+import mailjetTransport from 'node-mailjet';
+import { registerTransporter } from '../registry';
+import { MailjetTransporter } from './mailjet.class';
 
 registerTransporter(PROVIDER.mailjet, (vars, args) => {
   const client = (mailjetTransport as any).Client.apiConnect(args.auth.apiKey, args.auth.apiSecret);

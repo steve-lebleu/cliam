@@ -1,6 +1,6 @@
-import { IAddressB } from '../../types/interfaces/addresses/IAddressB.interface';
-import { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
-import { IAttachment } from '../../types/interfaces/IAttachment.interface';
+import type { IAttachment } from '../../types/interfaces/IAttachment.interface';
+import type { IAddressB } from '../../types/interfaces/addresses/IAddressB.interface';
+import type { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
 
 export interface ISparkpostBody {
   content: {

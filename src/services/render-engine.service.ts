@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
-import * as Hbs from 'hbs';
 import Color from 'color';
+import * as Hbs from 'hbs';
 
 import { htmlToText } from 'html-to-text';
 

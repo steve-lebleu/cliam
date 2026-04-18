@@ -17,6 +17,11 @@ npm run ci:test
 # Compile TypeScript
 npm run build
 
+# Lint, format, or both
+npm run lint
+npm run format
+npm run check
+
 # Generate TypeDoc documentation
 npm run doc:typedoc
 ```

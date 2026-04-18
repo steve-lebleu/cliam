@@ -1,7 +1,7 @@
-import type { PROVIDER } from '@enums/provider.enum';
-import type { Transporter } from './transporter.class';
-import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import type { IAddressable } from '@/types/interfaces/addresses/IAddressable.interface';
+import type { PROVIDER } from '@enums/provider.enum';
+import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
+import type { Transporter } from './transporter.class';
 
 export type TransporterVars = { domain: string; addresses: { from: IAddressable; replyTo: IAddressable } };
 export type TransporterCreator = (vars: TransporterVars, args: ITransporterConfiguration) => Transporter;

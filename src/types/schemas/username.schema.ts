@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { AnySchema } from 'joi';
+import type { AnySchema } from 'joi';
 
 const username = (): AnySchema => {
   return Joi.string().max(32);

@@ -1,20 +1,20 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IPostmarkError } from './IPostmarkError.interface';
-import { IPostmarkResponse } from './IPostmarkResponse.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IPostmarkError } from './IPostmarkError.interface';
+import type { IPostmarkResponse } from './IPostmarkResponse.interface';
 
-import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
-import { IPostmarkBody } from './IPostmarkBody.interface';
+import type { IPostmarkBody } from './IPostmarkBody.interface';
 
 import { Debug } from './../../types/decorators/debug.decorator';
 
@@ -59,7 +59,7 @@ export class PostmarkTransporter extends Transporter {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           templateModel: payload.data,
-          templateId: parseInt(templateId, 10),
+          templateId: Number.parseInt(templateId, 10),
         });
         break;
       case RENDER_ENGINE.cliam:

@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { AnySchema } from 'joi';
+import type { AnySchema } from 'joi';
 
 const host = (type: string): AnySchema => {
   const types = [

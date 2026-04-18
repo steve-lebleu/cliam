@@ -1,8 +1,8 @@
-import { SendingResponse } from './../classes/sending-response.class';
-import { SendingError } from './../classes/sending-error.class';
-import { ITransporterMailer } from './ITransporterMailer.interface';
-import { IMail } from './../types/interfaces/IMail.interface';
-import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
+import type { SendingError } from './../classes/sending-error.class';
+import type { SendingResponse } from './../classes/sending-response.class';
+import type { IMail } from './../types/interfaces/IMail.interface';
+import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './ITransporterMailer.interface';
 
 /**
  * Main Transporter class

@@ -1,7 +1,7 @@
-import { Transporter } from './transporter.class';
-import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
-import { IAddressable } from '@/types/interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@/types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import { resolveTransporter } from './registry';
+import type { Transporter } from './transporter.class';
 
 export class TransporterFactory {
   private constructor() {}

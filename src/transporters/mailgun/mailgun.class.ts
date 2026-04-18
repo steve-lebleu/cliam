@@ -1,19 +1,19 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IMailgunError } from './IMailgunError.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IMailgunError } from './IMailgunError.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { Debug } from '../../types/decorators/debug.decorator';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * This class set a Mailgun transporter for mail sending.

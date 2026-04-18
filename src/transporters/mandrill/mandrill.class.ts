@@ -1,19 +1,19 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { IMandrillResponse } from './IMandrillResponse.interface';
-import { IMandrillError } from './IMandrillError.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IMandrillError } from './IMandrillError.interface';
+import type { IMandrillResponse } from './IMandrillResponse.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Mandrill transporter for mail sending.

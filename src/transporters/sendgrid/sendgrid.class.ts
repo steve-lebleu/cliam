@@ -1,18 +1,18 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { ISendgridResponse } from './ISendgridResponse.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ISendgridError } from './ISendgridError.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { ISendgridError } from './ISendgridError.interface';
+import type { ISendgridResponse } from './ISendgridResponse.interface';
 
-import { SendingResponse } from './../../classes/sending-response.class';
 import { SendingError } from './../../classes/sending-error.class';
+import { SendingResponse } from './../../classes/sending-response.class';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 import { Debug } from './../../types/decorators/debug.decorator';
 

@@ -1,7 +1,7 @@
-import { MailerSend } from 'mailersend';
-import { MailersendTransporter } from './mailersend.class';
-import { registerTransporter } from '../registry';
 import { PROVIDER } from '@enums/provider.enum';
+import { MailerSend } from 'mailersend';
+import { registerTransporter } from '../registry';
+import { MailersendTransporter } from './mailersend.class';
 
 registerTransporter(PROVIDER.mailersend, (vars, args) => {
   const engine = new MailerSend({ apiKey: args.auth.apiKey }) as any;

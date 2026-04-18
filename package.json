@@ -95,6 +95,9 @@
   },
   "scripts": {
     "build": "tsup",
+    "lint": "biome lint src",
+    "format": "biome format --write src",
+    "check": "biome check --write src",
     "ci:test": "nyc --reporter=lcov --report-dir=./reports/coverage npm-run-all -s test:*",
     "test": "nyc --reporter=html --report-dir=./reports/nyc-coverage npm-run-all -s test:*",
     "test:unit": "./node_modules/.bin/mocha ./test/00-bootstrap.test.js --exit --reporter spec --timeout 5000 --env test",
@@ -118,20 +121,15 @@
     "nodemailer-sparkpost-transport": "2.2.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@types/hbs": "^4.0.4",
     "@types/node": "^20.11.6",
     "@types/node-mailjet": "^3.3.12",
     "@types/nodemailer": "^6.4.14",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
     "chai": "4.3.4",
     "chance": "^1.1.11",
     "coveralls": "3.1.1",
     "dotenv": "^16.4.1",
-    "eslint": "^7.21.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "32.2.0",
-    "eslint-plugin-prefer-arrow": "1.2.3",
     "lodash": "4.17.21",
     "mocha": "^10.3.0",
     "nodemon": "^3.0.3",
@@ -140,7 +138,6 @@
     "sinon": "^17.0.1",
     "tsconfig-paths": "3.12.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.3.3",
-    "typescript-eslint": "0.0.1-alpha.0"
+    "typescript": "^5.3.3"
   }
 }

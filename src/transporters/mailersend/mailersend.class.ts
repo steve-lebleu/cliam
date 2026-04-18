@@ -1,24 +1,24 @@
-import { Attachment, EmailParams, Sender, Recipient } from "mailersend";
+import { Attachment, EmailParams, Recipient, Sender } from "mailersend";
 
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
 import { IMailersendBody } from './IMailersendBody.interface';
-import { IMailersendResponse } from './IMailersendResponse.interface';
-import { IMailersendError } from './IMailersendError.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IMailersendError } from './IMailersendError.interface';
+import type { IMailersendResponse } from './IMailersendResponse.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { Debug } from '../../types/decorators/debug.decorator';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Mailersend transporter for mail sending.

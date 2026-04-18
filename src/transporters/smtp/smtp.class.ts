@@ -1,14 +1,14 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { ISMTPResponse } from './ISMTPResponse.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IGmailError } from './IGmailError.interface';
-import { IInfomaniakError } from './IInformaniakError.interface';
-import { ISMTPError } from './ISMTPError.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IGmailError } from './IGmailError.interface';
+import type { IInfomaniakError } from './IInformaniakError.interface';
+import type { ISMTPError } from './ISMTPError.interface';
+import type { ISMTPResponse } from './ISMTPResponse.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';

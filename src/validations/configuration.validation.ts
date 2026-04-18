@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 
-import { smtp as smtpSchema } from '../types/schemas/smtp.schema';
 import { host } from '../types/schemas/host.schema';
-import { port } from '../types/schemas/port.schema';
-import { username } from '../types/schemas/username.schema';
 import { password } from '../types/schemas/password.schema';
+import { port } from '../types/schemas/port.schema';
+import { smtp as smtpSchema } from '../types/schemas/smtp.schema';
+import { username } from '../types/schemas/username.schema';
 
 import { list } from '../utils/enum.util';
 

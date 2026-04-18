@@ -1,19 +1,19 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { ISendinblueResponse } from './ISendinblueResponse.interface';
-import { ISendinblueError } from './ISendinblueError.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { ISendinblueError } from './ISendinblueError.interface';
+import type { ISendinblueResponse } from './ISendinblueResponse.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 /**
  * Set a Sendinblue transporter for mail sending.
@@ -62,7 +62,7 @@ export class SendinblueTransporter extends Transporter {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,
-          templateId: parseInt(templateId, 10)
+          templateId: Number.parseInt(templateId, 10)
         });
         break;
       case RENDER_ENGINE.cliam:
@@ -149,6 +149,6 @@ export class SendinblueTransporter extends Transporter {
   error(error: ISendinblueError): SendingError {
     const errorCode = /[0-9]+/;
     const statusCode = errorCode.exec(error.message);
-    return new SendingError(parseInt(statusCode[0], 10), error.name, [error.message]);
+    return new SendingError(Number.parseInt(statusCode[0], 10), error.name, [error.message]);
   }
 }

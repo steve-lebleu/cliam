@@ -1,4 +1,4 @@
-import { PROVIDER } from './../enums/provider.enum';
+import type { PROVIDER } from './../enums/provider.enum';
 
 /**
  * Define mail sending uniform response properties.

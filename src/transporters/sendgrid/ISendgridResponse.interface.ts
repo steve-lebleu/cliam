@@ -1,4 +1,4 @@
-import { Url } from "url";
+import type { Url } from 'node:url';
 
 export interface ISendgridResponse {
   request: {

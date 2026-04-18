@@ -1,22 +1,22 @@
 import { Transporter } from './../transporter.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IMailjetResponse } from './IMailjetResponse.interface';
-import { IMailjetError } from './IMailjetError.interface';
-import { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
+import type { IMail } from './../../types/interfaces/IMail.interface';
+import type { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
+import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
+import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { IMailjetError } from './IMailjetError.interface';
+import type { IMailjetErrorMessage } from './IMailjetErrorMessage.interface';
+import type { IMailjetResponse } from './IMailjetResponse.interface';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { Debug } from './../../types/decorators/debug.decorator';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 import { PROVIDER } from '../../types/enums/provider.enum';
+import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
 
 import { getMailjetErrorMessages } from './../../utils/error.util';
 
@@ -62,7 +62,7 @@ export class MailjetTransporter extends Transporter {
       case RENDER_ENGINE.provider:
         Object.assign(output.Messages[0], { Variables: payload.data });
         Object.assign(output.Messages[0], { TemplateLanguage: true });
-        Object.assign(output.Messages[0], { TemplateID: parseInt(templateId, 10) });
+        Object.assign(output.Messages[0], { TemplateID: Number.parseInt(templateId, 10) });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:

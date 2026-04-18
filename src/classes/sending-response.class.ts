@@ -1,5 +1,5 @@
-import type { ISendingResponse } from '@interfaces/ISendingResponse.interface';
 import type { PROVIDER } from '@enums/provider.enum';
+import type { ISendingResponse } from '@interfaces/ISendingResponse.interface';
 
 /**
  * Sending response wrapper
@@ -50,8 +50,6 @@ export class SendingResponse implements ISendingResponse {
    * @description HTTP status message
    */
   statusMessage: string;
-
-  constructor() {}
 
   /**
    * @description Property setter
