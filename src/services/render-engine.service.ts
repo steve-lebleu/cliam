@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import Color from 'color';
 import * as Hbs from 'hbs';
 
-import { htmlToText } from 'html-to-text';
+import { convert } from 'html-to-text';
 
 import { Container } from './container.service';
 
@@ -142,7 +142,7 @@ class RenderEngine {
    * @param html
    */
   textify(html: string): string {
-    return htmlToText(html, {}) as string;
+    return convert(html, {}) as string;
   }
 
   /**

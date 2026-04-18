@@ -12,8 +12,9 @@ export default (transporter: string) => {
       return { code: 400, message: '400' };
     case 'sendgrid-api':
     case 'postmark-api':
-    case 'hosting-smtp':
       return new Error('Dummy error');
+    case 'hosting-smtp':
+      return Object.assign(new Error('Invalid address'), { responseCode: 550, code: 'EENVELOPE', response: '550 Invalid address' });
     case 'sparkpost-api':
       return { statusCode: 400, errors: [{ message: 'error', description: 'description' }] };
   }

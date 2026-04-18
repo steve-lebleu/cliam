@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 import type { AnySchema } from 'joi';
 
 import { host } from './host.schema';

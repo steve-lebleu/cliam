@@ -25,7 +25,7 @@ export class PostmarkTransporter extends HttpTransporter {
 
     const output: Record<string, unknown> = {
       From: this.address(payload.meta.from),
-      To: this.addresses(payload.meta.to),
+      To: this.addresses(payload.meta.to).join(','),
       ReplyTo: this.address(payload.meta.replyTo),
       Subject: payload.meta.subject,
     };
@@ -47,11 +47,11 @@ export class PostmarkTransporter extends HttpTransporter {
     }
 
     if (typeof payload.meta.cc !== 'undefined') {
-      Object.assign(output, { Cc: this.addresses(payload.meta.cc) });
+      Object.assign(output, { Cc: this.addresses(payload.meta.cc).join(',') });
     }
 
     if (typeof payload.meta.bcc !== 'undefined') {
-      Object.assign(output, { Bcc: this.addresses(payload.meta.bcc) });
+      Object.assign(output, { Bcc: this.addresses(payload.meta.bcc).join(',') });
     }
 
     if (typeof payload.meta.attachments !== 'undefined') {
@@ -75,8 +75,8 @@ export class PostmarkTransporter extends HttpTransporter {
     return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : recipient.email;
   }
 
-  addresses(recipients: Array<string | IAddressable>): string {
-    return [...recipients].map((r: string | IAddressable) => this.address(r)).join(',');
+  addresses(recipients: Array<string | IAddressable>): string[] {
+    return [...recipients].map((r: string | IAddressable) => this.address(r));
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {

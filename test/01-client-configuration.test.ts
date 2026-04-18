@@ -32,14 +32,16 @@ describe('Client configuration', () => {
       it('should give an error when domain is required', (done: any) => {
         payload.variables.domain = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls('"variables.domain" is required');
+        expect(error).to.be.an('error');
+        expect(error?.details[0].message).to.be.eqls('"variables.domain" is required');
         done();
       });
 
       it('error - should be a valid uri', (done: any) => {
         payload.variables.domain = 'Yoda';
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error.details[0].message).to.be.eqls('"variables.domain" must be a valid uri');
+        expect(error).to.be.an('error');
+        expect(error?.details[0].message).to.be.eqls('"variables.domain" must be a valid uri');
         done();
       });
     });

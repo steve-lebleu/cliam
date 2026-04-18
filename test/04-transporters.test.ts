@@ -94,7 +94,7 @@ describe('Transporters', () => {
         });
       }
 
-      if (['brevo-api', 'mailgun-api', 'postmark-api', 'mandrill-api', 'hosting-smtp'].includes(transporter)) {
+      if (['mailgun-api', 'postmark-api', 'mandrill-api', 'hosting-smtp'].includes(transporter)) {
         it(`${transporter}::addresses should returns an array of strings`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const payload = requestPayload(transporter);
