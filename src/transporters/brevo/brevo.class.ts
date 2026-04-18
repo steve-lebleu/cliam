@@ -38,14 +38,14 @@ export class BrevoTransporter extends HttpTransporter {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,
-          templateId: Number.parseInt(templateId, 10),
+          templateId: Number.parseInt(templateId!, 10),
         });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
-          textContent: body.text,
-          htmlContent: body.html,
+          textContent: body?.text,
+          htmlContent: body?.html,
         });
         break;
     }

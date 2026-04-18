@@ -3,11 +3,11 @@ import { HttpClient } from '@services/http.service';
 import { registerTransporter } from '../transporter.registry';
 import { SparkpostTransporter } from './sparkpost.class';
 
-registerTransporter(PROVIDER.sparkpost, (vars, args) =>
+registerTransporter(PROVIDER.sparkpost, (_vars, args) =>
   new SparkpostTransporter(
     new HttpClient({
       baseUrl: 'https://api.sparkpost.com/api/',
-      headers: { 'Authorization': args.auth.apiKey },
+      headers: { 'Authorization': args.auth.apiKey! },
     }),
     args,
   )

@@ -8,7 +8,7 @@ registerTransporter(PROVIDER.brevo, (_vars, args) =>
     new HttpClient({
       baseUrl: 'https://api.brevo.com/v3/',
       headers: {
-        'api-key': args.auth.apiKey,
+        'api-key': args.auth.apiKey!,
         'accept': 'application/json',
         'content-type': 'application/json',
       },

@@ -5,68 +5,22 @@ import type { ISendingResponse } from '@interfaces/ISendingResponse.interface';
  * @summary Sending response wrapper
  */
 export class SendingResponse implements ISendingResponse {
-  /**
-   * @description Request web API provider if mode is API
-   */
   provider?: PROVIDER;
+  timestamp: number | null = null;
+  server: string | null = null;
+  uri: string | null = null;
+  messageId?: string | null = null;
+  headers: object | null = null;
+  body: Record<string, unknown> | string | null = null;
+  statusCode: number | null = null;
+  statusMessage: string | null = null;
 
-  /**
-   * @description Timestamp returned by Cliam wrapper
-   */
-  timestamp: string;
-
-  /**
-   * @description Request server
-   */
-  server: string;
-
-  /**
-   * @description Request uri
-   */
-  uri: string;
-
-  /**
-   * @description
-   */
-  messageId?: string;
-
-  /**
-   * @description Request headers
-   */
-  headers: object;
-
-  /**
-   * @description Response body
-   */
-  body: Record<string,unknown>;
-
-  /**
-   * @description HTTP status code
-   */
-  statusCode: number;
-
-  /**
-   * @description HTTP status message
-   */
-  statusMessage: string;
-
-  /**
-   * @description Property setter
-   *
-   * @param property
-   * @param value
-   */
-  set(property: string, value: number | string | string[] | Record<string, unknown>): SendingResponse {
-    this[property] = value;
+  set(property: string, value: unknown): SendingResponse {
+    (this as Record<string, unknown>)[property] = value;
     return this;
   }
 
-  /**
-   * @description Property getter
-   *
-   * @param property
-   */
-  get(property: string): number | string | string[] | Record<string, unknown> {
-    return this[property];
+  get(property: string): unknown {
+    return (this as Record<string, unknown>)[property];
   }
-};
+}

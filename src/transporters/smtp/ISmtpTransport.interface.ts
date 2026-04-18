@@ -1,4 +1,8 @@
+import type { Options } from 'nodemailer/lib/smtp-transport';
+import type { ISMTPResponse } from './ISMTPResponse.interface';
+
 export interface ISmtpTransport {
-  options?: Record<string, unknown>;
-  sendMail: (body: unknown) => Promise<unknown>;
+  options?: Options;
+  //sendMail(body: unknown, callback: (err: Error | null, info: ISMTPResponse) => void): void;
+  sendMail(body: unknown): Promise<ISMTPResponse>;
 }

@@ -8,7 +8,7 @@ registerTransporter(PROVIDER.mailersend, (_vars, args) =>
     new HttpClient({
       baseUrl: 'https://api.mailersend.com/v1/',
       headers: {
-        'Authorization': `Bearer ${args.auth.apiKey}`,
+        'Authorization': `Bearer ${args.auth.apiKey!}`,
         'Content-Type': 'application/json',
       },
     }),

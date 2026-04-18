@@ -25,7 +25,7 @@ import type { ISMTPResponse } from './ISMTPResponse.interface';
  * @see https://nodemailer.com/smtp/
  */
 export class SmtpTransporter extends Transporter {
-  private readonly transport: ISmtpTransport;
+  protected readonly transport: ISmtpTransport;
 
   constructor(transport: ISmtpTransport, configuration: ITransporterConfiguration) {
     super(configuration);
@@ -64,8 +64,8 @@ export class SmtpTransporter extends Transporter {
     }
 
     Object.assign(output, {
-      text: body.text,
-      html: body.html
+      text: body?.text,
+      html: body?.html
     });
 
     return output;
@@ -129,22 +129,22 @@ export class SmtpTransporter extends Transporter {
 
     const output: ISendingError = {
       errors: [],
-      statusCode: null,
-      statusText: null,
+      statusCode: 0,
+      statusText: '',
     };
 
-    if (this.transport.options.host === 'smtp.gmail.com') {
+    if (this.transport.options?.host === 'smtp.gmail.com') {
       const e = error as IGmailError;
 
       const regError = /[A-Z]{1}[a-z\s\W]+\./g;
-      const matchError = regError.exec(e.response)[0];
+      const matchError = regError.exec(e.response)?.[0];
 
-      output.errors = [matchError];
+      output.errors = [matchError ?? 'Unknown error'];
       output.statusText = e.responseCode.toString();
       output.statusCode = e.code;
     }
 
-    if (this.transport.options.host === 'mail.infomaniak.com') {
+    if (this.transport.options?.host === 'mail.infomaniak.com') {
       const e = error as IInfomaniakError;
 
       output.errors = [e.response];
@@ -159,8 +159,8 @@ export class SmtpTransporter extends Transporter {
     try {
       const info = await this.transport.sendMail(body);
       return this.response(info);
-    } catch (err) {
-      return this.error(err);
+    } catch (err: unknown) {
+      return this.error(err as Error | IGmailError | IInfomaniakError | ISMTPError);
     }
   }
 }

@@ -8,7 +8,7 @@ registerTransporter(PROVIDER.postmark, (_vars, args) =>
     new HttpClient({
       baseUrl: 'https://api.postmarkapp.com/',
       headers: {
-        'X-Postmark-Server-Token': args.auth.apiKey,
+        'X-Postmark-Server-Token': args.auth.apiKey!,
         'Content-Type': 'application/json',
       },
     }),

@@ -12,7 +12,7 @@ const password = (type: string): AnySchema => {
       schema: Joi.string().min(8).max(24)
     }
   ];
-  return types.filter( h => h.type === type ).slice().shift().schema;
+  return types.find(h => h.type === type)!.schema;
 };
 
 export { password }

@@ -9,6 +9,6 @@ export interface ITransporterConfiguration {
   id: string
   provider: PROVIDER
   auth: ITransporterCredentials
-  options: ITransporterOptions // FIXME: templates is present also in options
-  templates?: Record<string, string>[]
+  options: ITransporterOptions
+  templates?: Record<string, string>
 }

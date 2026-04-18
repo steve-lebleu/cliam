@@ -63,7 +63,7 @@ export class Cliam {
 
     const key = payload.transporterId || Object.keys(Container.transporters).shift();
 
-    if (!Cliam.mailers[key]) {
+    if (!key || !Cliam.mailers[key]) {
       throw new Error(`transporterId "${key}" not found in configuration`);
     }
 

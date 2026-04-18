@@ -43,7 +43,7 @@ export class MandrillTransporter extends HttpTransporter {
         };
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
-        Object.assign(message, { text: body.text, html: body.html });
+        Object.assign(message, { text: body?.text, html: body?.html });
         break;
     }
 

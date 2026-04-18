@@ -1,1 +1,1 @@
-export type IMailersendBody = {}
+export type IMailersendBody = Record<string, unknown>

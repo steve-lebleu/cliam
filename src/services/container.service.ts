@@ -41,9 +41,12 @@ export const Container = {
     }
 
     _configuration = new ClientConfiguration(value);
-    _transporters = _configuration.transporters
+
+    const { transporters, variables } = _configuration;
+
+    _transporters = transporters
       .reduce((result: { [id: string]: Transporter }, transporterDefinition) => {
-        result[transporterDefinition.id] = TransporterFactory.get(_configuration.variables, transporterDefinition);
+        result[transporterDefinition.id] = TransporterFactory.get(variables, transporterDefinition);
         return result;
       }, {});
   }

@@ -46,8 +46,8 @@ export class SparkpostTransporter extends HttpTransporter {
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output.content as Record<string, unknown>, {
-          text: body.text,
-          html: body.html,
+          text: body?.text,
+          html: body?.html,
         });
         break;
     }

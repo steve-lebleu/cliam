@@ -51,11 +51,6 @@ export interface IPayload {
      * @description Attachments objects to join to email
      */
     attachments?: Array<IAttachment>;
-
-    /**
-     * @description Images objects to include to email
-     */
-    inlineImages?: Array<IAttachment>
   };
 
   /**

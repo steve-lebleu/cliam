@@ -1,6 +1,4 @@
-import ky, { type HTTPError, type KyInstance } from 'ky';
-
-export type { HTTPError };
+import ky, { type KyInstance } from 'ky';
 
 export type HttpClientConfig = {
   baseUrl: string;

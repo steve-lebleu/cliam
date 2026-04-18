@@ -37,14 +37,14 @@ export class MailjetTransporter extends HttpTransporter {
         Object.assign(message, {
           Variables: payload.data,
           TemplateLanguage: true,
-          TemplateID: Number.parseInt(templateId, 10),
+          TemplateID: Number.parseInt(templateId!, 10),
         });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(message, {
-          TextPart: body.text,
-          HTMLPart: body.html,
+          TextPart: body?.text,
+          HTMLPart: body?.html,
         });
         break;
     }

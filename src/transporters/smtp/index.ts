@@ -1,6 +1,7 @@
 import { createTransport } from 'nodemailer';
 import { registerTransporter } from '@transporters/transporter.registry';
 import { SmtpTransporter } from './smtp.class';
+import type { ISmtpTransport } from './ISmtpTransport.interface';
 
 registerTransporter('smtp', (_vars, args) =>
   new SmtpTransporter(createTransport({
@@ -13,7 +14,7 @@ registerTransporter('smtp', (_vars, args) =>
     },
     greetingTimeout: 5000,
     socketTimeout: 5000
-  }), args)
+  }) as unknown as ISmtpTransport, args)
 );
 
 export { SmtpTransporter };

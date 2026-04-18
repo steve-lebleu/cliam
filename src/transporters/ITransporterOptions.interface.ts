@@ -4,6 +4,5 @@
 export interface ITransporterOptions {
   host: string,
   port: number,
-  secure: boolean,
-  templates: {[event: string]: string}
+  secure: boolean
 }

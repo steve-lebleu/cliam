@@ -86,14 +86,16 @@
   },
   "scripts": {
     "build": "tsup",
+    "typecheck": "tsc --noEmit",
     "lint": "biome lint src",
-    "format": "biome format --write src",
     "check": "biome check --write src",
     "test": "bun test test/",
     "ci:test": "bun test test/ --coverage --coverage-reporter=lcov --coverage-dir=./reports/coverage",
     "doc:typedoc": "typedoc --name 'Cliam documentation' --defaultCategory 'Test' --categorizeByGroup true --out ./docs/typedoc ./src"
   },
   "dependencies": {
+    "@swc/core": "^1.15.26",
+    "@types/html-to-text": "^9.0.4",
     "color": "^5.0.3",
     "hbs": "^4.2.1",
     "html-to-text": "^9.0.5",
@@ -114,6 +116,6 @@
     "dotenv": "^17.4.2",
     "sinon": "^21.1.2",
     "tsup": "^8.5.1",
-    "typescript": "^5.3.3"
+    "typescript": "6.0.3"
   }
 }

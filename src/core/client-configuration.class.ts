@@ -9,12 +9,12 @@ export class ClientConfiguration {
   /**
    * @description Enable / disable sandbox mode
    */
-  sandbox: boolean
+  sandbox?: boolean;
 
   /**
    * @description Values used by Cliam to send emails
    */
-  variables: {
+  variables!: {
     domain: string
     addresses: {
       from: IAddressable,
@@ -30,7 +30,7 @@ export class ClientConfiguration {
   /**
    * @description Array of Transporters instances configuration provided by the consumer
    */
-  transporters: ITransporterConfiguration[]
+  transporters!: ITransporterConfiguration[];
 
   constructor(payload: Record<string, unknown>) {
     Object.assign(this, payload);

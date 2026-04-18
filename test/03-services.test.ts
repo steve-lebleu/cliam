@@ -433,11 +433,15 @@ describe('Services', () => {
       });
     });
 
-    describe('::customize', () => {
-      it('should replace colors values in current templates', (done: any) => {
-        const result = (RenderEngine as any).customize('<p color="#111111">customize</p>');
-        expect(result).to.contains('5bd1d7');
-        expect(result).to.not.contains('111111');
+    describe('::getColors', () => {
+      it('should return named color map with theme values', (done: any) => {
+        const colors = (RenderEngine as any).getColors();
+        expect(colors.primaryColor).to.equal('5bd1d7');
+        expect(colors.secondaryColor).to.equal('348498');
+        expect(colors.tertiaryColor).to.equal('004d61');
+        expect(colors.quaternaryColor).to.equal('ff502f');
+        expect(colors.primaryColorLight).to.be.a('string').and.not.equal('fffff1');
+        expect(colors.primaryColorDark).to.be.a('string').and.not.equal('000001');
         done();
       });
     });

@@ -4,7 +4,7 @@ import { registerTransporter } from '../transporter.registry';
 import { MailgunTransporter } from './mailgun.class';
 
 registerTransporter(PROVIDER.mailgun, (vars, args) => {
-  const credentials = btoa(`api:${args.auth.apiKey}`);
+  const credentials = btoa(`api:${args.auth.apiKey!}`);
 
   return new MailgunTransporter(
     new HttpClient({

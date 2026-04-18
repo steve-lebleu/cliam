@@ -69,7 +69,7 @@
     
     .table-banner {
       margin: auto;
-      background-color: #222222;
+      background-color: #{{secondaryColor}};
       padding: 20px;
     }
 
@@ -86,7 +86,7 @@
       font-weight: bold; 
       mso-height-rule: exactly; 
       line-height: 20px; 
-      color: #333333; 
+      color: #{{tertiaryColor}};
       border-collapse: separate !important;
     }
 
@@ -139,7 +139,7 @@
     /* What it does: A work-around for iOS meddling in triggered links. */
     a.mobile-link--footer,
     a[x-apple-data-detectors] {
-      color: #333333;
+      color: #{{tertiaryColor}};
       text-decoration: underline !important;
     }
     
@@ -157,12 +157,12 @@
     }
 
     a.plain-text-link {
-      color: #444444 !important;
+      color: #{{quaternaryColor}} !important;
       text-decoration: none !important;
     }
 
     a.plain-text-link:hover {
-      color: #000004 !important;
+      color: #{{quaternaryColorDark}} !important;
       text-decoration: underline !important;
     }
   </style>
@@ -173,8 +173,8 @@
     /* What it does: Hover styles for buttons */
 
     .button-a {
-      background: #444444; 
-      border: 15px solid #444444; 
+      background: #{{quaternaryColor}};
+      border: 15px solid #{{quaternaryColor}};
       font-family: sans-serif; 
       font-size: 13px; 
       line-height: 1.1; 
@@ -187,8 +187,8 @@
     }
 
     .button-a:hover {
-      background: #000004 !important;
-      border-color: #000004 !important;
+      background: #{{quaternaryColorDark}} !important;
+      border-color: #{{quaternaryColorDark}} !important;
     }
 
     /* Media Queries */
@@ -430,9 +430,9 @@
 
 </head>
 
-<body bgcolor="#111111" width="100%" style="Margin: 0;">
+<body bgcolor="#{{primaryColor}}" width="100%" style="Margin: 0;">
 
-  <center style="width: 100%; background: #111111;">
+  <center style="width: 100%; background: #{{primaryColor}};">
 
     <!-- Visually Hidden Preheader Text : BEGIN -->
     <div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">

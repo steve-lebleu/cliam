@@ -1,7 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
@@ -11,7 +16,7 @@
         "noUnusedVariables": "warn"
       },
       "style": {
-        "noVar": "error",
+        "noNonNullAssertion": "off",
         "useConst": "error",
         "useForOf": "error",
         "useShorthandFunctionType": "error",
@@ -20,7 +25,7 @@
       "suspicious": {
         "noDoubleEquals": "error",
         "noExplicitAny": "off",
-        "noConsoleLog": "off",
+        "noConsole": "off",
         "noThenProperty": "off"
       },
       "security": {
@@ -32,6 +37,6 @@
     "enabled": false
   },
   "files": {
-    "ignore": ["node_modules", "dist", "test", "docs"]
+    "includes": ["src/**"]
   }
 }

@@ -43,8 +43,8 @@ export class MailersendTransporter extends HttpTransporter {
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
-          text: body.text,
-          html: body.html,
+          text: body?.text,
+          html: body?.html,
         });
         break;
     }

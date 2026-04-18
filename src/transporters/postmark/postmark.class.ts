@@ -36,14 +36,14 @@ export class PostmarkTransporter extends HttpTransporter {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           TemplateModel: payload.data,
-          TemplateId: Number.parseInt(templateId, 10),
+          TemplateId: Number.parseInt(templateId!, 10),
         });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
-          TextBody: body.text,
-          HtmlBody: body.html,
+          TextBody: body?.text,
+          HtmlBody: body?.html,
         });
         break;
     }

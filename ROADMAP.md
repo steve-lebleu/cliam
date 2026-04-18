@@ -47,6 +47,4 @@ The current layout conflates unrelated concerns under weak folder names.
 
 With a clean foundation in place.
 
-- **Fix theme color substitution.** The current approach of doing a global string replace on hex values (`111111`, `222222`, ...) inside compiled HTML is fragile — any occurrence in a URL, attribute, or inline style will be corrupted. Replace with proper Handlebars variable injection.
-- **`inlineImages` in `IPayload`.** Currently declared but not validated and not handled by any transporter. Implement or formally deprecate.
 - **New providers.** The direct HTTP approach makes adding providers cheap. Candidates: Resend, Amazon SES (native, replacing the abandoned `nodemailer-ses-transport`).

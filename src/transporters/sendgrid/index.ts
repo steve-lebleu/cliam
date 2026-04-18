@@ -7,7 +7,7 @@ registerTransporter(PROVIDER.sendgrid, (_vars, args) =>
   new SendgridTransporter(
     new HttpClient({
       baseUrl: 'https://api.sendgrid.com/',
-      headers: { 'Authorization': `Bearer ${args.auth.apiKey}` },
+      headers: { 'Authorization': `Bearer ${args.auth.apiKey!}` },
     }),
     args,
   )

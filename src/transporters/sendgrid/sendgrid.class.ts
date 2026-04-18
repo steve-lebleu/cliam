@@ -44,8 +44,8 @@ export class SendgridTransporter extends HttpTransporter {
       case RENDER_ENGINE.self:
         Object.assign(output, {
           content: [
-            { type: 'text/plain', value: body.text },
-            { type: 'text/html', value: body.html },
+            { type: 'text/plain', value: body?.text },
+            { type: 'text/html', value: body?.html },
           ],
         });
         break;

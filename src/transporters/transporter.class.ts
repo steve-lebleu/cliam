@@ -10,7 +10,7 @@ export abstract class Transporter {
   /**
    * @description Initial transporter configuration options defined in cliamrc
    */
-  public configuration: ITransporterConfiguration = null;
+  public configuration!: ITransporterConfiguration;
 
   constructor(configuration: ITransporterConfiguration) {
     this.configuration = configuration;
