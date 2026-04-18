@@ -1,142 +1,103 @@
-import { Attachment, EmailParams, Recipient, Sender } from "mailersend";
-
-import { Transporter } from './../transporter.class';
-
 import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import type { IMail } from './../../types/interfaces/IMail.interface';
 import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import type { ITransporterMailer } from './../ITransporterMailer.interface';
-import { IMailersendBody } from './IMailersendBody.interface';
 import type { IMailersendError } from './IMailersendError.interface';
-import type { IMailersendResponse } from './IMailersendResponse.interface';
+import type { HttpResult } from '@services/http.service';
 
 import { SendingError } from './../../classes/sending-error.class';
 import { SendingResponse } from './../../classes/sending-response.class';
 
 import { Debug } from '../../types/decorators/debug.decorator';
 
-import { PROVIDER } from '../../types/enums/provider.enum';
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '@enums/provider.enum';
+import { RENDER_ENGINE } from '@enums/render-engine.enum';
+
+import { HttpTransporter } from './../http.transporter';
 
 /**
- * Set a Mailersend transporter for mail sending.
+ * Mailersend transporter — sends via the Mailersend API (https://api.mailersend.com/v1/email).
  *
- * @see https://www.npmjs.com/package/mailersend
  * @see https://app.mailersend.com/
- *
+ * @see https://developers.mailersend.com/api/v1/email.html
  */
-export class MailersendTransporter extends Transporter {
-
-  /**
-   * @description
-   *
-   * @param transporterEngine Transporter instance
-   * @param configuration Transporter configuration
-   */
-  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
-    super(transporterEngine, configuration);
-  }
-
-  /**
-   * @description Build body request according to Mailersend requirements
-   */
+export class MailersendTransporter extends HttpTransporter {
   @Debug('mailersend')
-  build({...args }: IMail): Record<string,unknown> {
-
+  build({ ...args }: IMail): Record<string, unknown> {
     const { payload, templateId, body, renderEngine } = args;
 
-    const from = new Sender(this.address(payload.meta.from).email, this.address(payload.meta.from)?.name);
-    const recipients = payload.meta.to.map(to => new Recipient(to.email, to.name));
-    
-    const params = new EmailParams()
-      .setFrom(from)
-      .setTo(recipients)
-      .setReplyTo(from)
-      .setSubject(payload.meta.subject);
+    const output: Record<string, unknown> = {
+      from: this.address(payload.meta.from),
+      to: this.addresses(payload.meta.to),
+      subject: payload.meta.subject,
+      reply_to: this.address(payload.meta.replyTo),
+    };
 
-    switch(renderEngine.valueOf()) {
+    switch (renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
-        params
-          .setPersonalization([{ email: this.address(payload.meta.to[0]).email, data: [ payload.data as any ] }])
-          .setTemplateId(templateId);
+        Object.assign(output, {
+          template_id: templateId,
+          personalization: [{ email: this.address(payload.meta.to[0]).email, data: payload.data }],
+        });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
-        params
-          .setText(body.text)
-          .setHtml(body.html);
+        Object.assign(output, {
+          text: body.text,
+          html: body.html,
+        });
         break;
     }
 
-    if (typeof(payload.meta.cc) !== 'undefined') {
-      params.setCc(this.addresses(payload.meta.cc))
+    if (typeof payload.meta.cc !== 'undefined') {
+      Object.assign(output, { cc: this.addresses(payload.meta.cc) });
     }
 
-    if (typeof(payload.meta.bcc) !== 'undefined') {
-      params.setBcc(this.addresses(payload.meta.bcc))
+    if (typeof payload.meta.bcc !== 'undefined') {
+      Object.assign(output, { bcc: this.addresses(payload.meta.bcc) });
     }
 
-    if (typeof(payload.meta.attachments) !== 'undefined') {
-      const attachments = payload.meta.attachments.map( (attachment: IAttachment) => {
-        return new Attachment(attachment.content, attachment.filename, attachment.filename);
-      })
-      params.setAttachments(attachments);
+    if (typeof payload.meta.attachments !== 'undefined') {
+      Object.assign(output, {
+        attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
+          content: attachment.content,
+          filename: attachment.filename,
+        })),
+      });
     }
 
-    return params as any; // TODO as any is not acceptable
+    return output;
   }
 
-  /**
-   * @description Format email address according to Mailersend requirements
-   *
-   * @param recipient  Entry to format as email address
-   */
-  address(recipient: string|IAddressable): IAddressB {
+  address(recipient: string | IAddressable): IAddressB {
     if (typeof recipient === 'string') {
       return { email: recipient };
     }
     return recipient as IAddressB;
   }
 
-  /**
-   * @description Format email addresses according to Mailersend requirements
-   *
-   * @param recipients Entries to format as email address
-   */
-  addresses(recipients: Array<string|IAddressable>): Array<IAddressable> {
-    return [...recipients].map( (recipient: IAddressable) => ({ email: recipient.email, name: recipient.name }) );
+  addresses(recipients: Array<string | IAddressable>): Array<IAddressB> {
+    return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  /**
-   * @description Format API response
-   *
-   * @param response Response from Mailersend API
-   */
-  response(response: IMailersendResponse): SendingResponse {
+  async dispatch(body: Record<string, unknown>): Promise<SendingResponse> {
+    const result = await this.httpClient.post('email', body);
+    return this.response(result);
+  }
 
-    const res = new SendingResponse();
-
-    res
+  response(result: HttpResult): SendingResponse {
+    return new SendingResponse()
       .set('provider', PROVIDER.mailersend)
-      .set('server', response.headers['server'])
+      .set('server', result.headers.server ?? null)
       .set('uri', null)
-      .set('headers', JSON.stringify(response.headers))
+      .set('headers', JSON.stringify(result.headers))
       .set('timestamp', Date.now())
-      .set('messageId', response.headers['x-message-id'])
-      .set('body', response.body)
+      .set('messageId', result.headers['x-message-id'] ?? null)
+      .set('body', null)
       .set('statusCode', 202)
       .set('statusMessage', null);
-
-    return res;
   }
 
-  /**
-   * @description Format error output
-   *
-   * @param error Error from Mailersend API
-   */
   error(error: IMailersendError): SendingError {
     return new SendingError(error.statusCode, error.body.message, [error.body.errors]);
   }

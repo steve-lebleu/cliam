@@ -1,15 +1,19 @@
 import { PROVIDER } from '@enums/provider.enum';
-import { MailerSend } from 'mailersend';
+import { HttpClient } from '@services/http.service';
 import { registerTransporter } from '../registry';
 import { MailersendTransporter } from './mailersend.class';
 
-registerTransporter(PROVIDER.mailersend, (vars, args) => {
-  const engine = new MailerSend({ apiKey: args.auth.apiKey }) as any;
-  engine.sendMail = (payload: any, callback: (err?: Error, result?: Record<string, unknown>) => void): Promise<void> =>
-    engine.email.send(payload)
-      .then((result: any) => callback(null, result))
-      .catch((e: Error) => callback(e));
-  return new MailersendTransporter(engine, args);
-});
+registerTransporter(PROVIDER.mailersend, (vars, args) =>
+  new MailersendTransporter(
+    new HttpClient({
+      baseUrl: 'https://api.mailersend.com/v1/',
+      headers: {
+        'Authorization': `Bearer ${args.auth.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    }),
+    args,
+  )
+);
 
 export { MailersendTransporter };

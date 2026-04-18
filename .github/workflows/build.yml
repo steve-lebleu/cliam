@@ -31,7 +31,6 @@ jobs:
           echo MANDRILL_API_KEY = "${{ secrets.MANDRILL_API_KEY }}" >> .env
           echo POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}" >> .env
           echo SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}" >> .env
-          echo SENDINBLUE_API_KEY = "${{ secrets.SENDINBLUE_API_KEY }}" >> .env
           echo SMTP_HOST = "${{ secrets.SMTP_HOST }}" >> .env
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env

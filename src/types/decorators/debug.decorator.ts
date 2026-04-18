@@ -76,13 +76,6 @@ const Debug = ( transporter: string ): any => {
                 }
               });
               break;
-            case PROVIDER.sendinblue:
-              Object.assign(output, {
-                headers: {
-                  'X-Sib-Sandbox': 'drop'
-                }
-              });
-              break;
             case PROVIDER.sparkpost:
               Object.assign(output, {
                 options: {

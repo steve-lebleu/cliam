@@ -1,13 +1,20 @@
 import { PROVIDER } from '@enums/provider.enum';
-import { createTransport } from 'nodemailer';
-import brevoTransport from 'nodemailer-brevo-transport';
+import { HttpClient } from '@services/http.service';
 import { registerTransporter } from '../registry';
 import { BrevoTransporter } from './brevo.class';
 
 registerTransporter(PROVIDER.brevo, (vars, args) =>
-  new BrevoTransporter(createTransport(new (brevoTransport as any)({
-    apiKey: args.auth.apiKey
-  })), args)
+  new BrevoTransporter(
+    new HttpClient({
+      baseUrl: 'https://api.brevo.com/v3/',
+      headers: {
+        'api-key': args.auth.apiKey,
+        'accept': 'application/json',
+        'content-type': 'application/json',
+      },
+    }),
+    args,
+  )
 );
 
 export { BrevoTransporter };

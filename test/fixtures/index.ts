@@ -12,7 +12,6 @@ export const transporters: string[] = [
   'mailjet-api',
   'mandrill-api',
   'postmark-api',
-  'sendinblue-api',
   'sendgrid-api',
   'sparkpost-api',
   'hosting-smtp'

@@ -1,16 +1,18 @@
 import { PROVIDER } from '@enums/provider.enum';
-import { createTransport } from 'nodemailer';
-import mailgunTransport from 'nodemailer-mailgun-transport';
+import { HttpClient } from '@services/http.service';
 import { registerTransporter } from '../registry';
 import { MailgunTransporter } from './mailgun.class';
 
-registerTransporter(PROVIDER.mailgun, (vars, args) =>
-  new MailgunTransporter(createTransport((mailgunTransport as any)({
-    auth: {
-      api_key: args.auth.apiKey,
-      domain: vars.domain
-    }
-  })), args)
-);
+registerTransporter(PROVIDER.mailgun, (vars, args) => {
+  const credentials = btoa(`api:${args.auth.apiKey}`);
+
+  return new MailgunTransporter(
+    new HttpClient({
+      baseUrl: `https://api.mailgun.net/v3/${vars.domain}/`,
+      headers: { 'Authorization': `Basic ${credentials}` },
+    }),
+    args,
+  );
+});
 
 export { MailgunTransporter };

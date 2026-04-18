@@ -1,12 +1,7 @@
-import { Transporter } from './../transporter.class';
-
 import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
 import type { IMail } from './../../types/interfaces/IMail.interface';
 import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
 import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import type { ITransporterMailer } from './../ITransporterMailer.interface';
-import { IBrevoBody } from './IBrevoBody.interface';
 import type { IBrevoError } from './IBrevoError.interface';
 import type { IBrevoResponse } from './IBrevoResponse.interface';
 
@@ -15,121 +10,83 @@ import { SendingResponse } from './../../classes/sending-response.class';
 
 import { Debug } from './../../types/decorators/debug.decorator';
 
-import { PROVIDER } from '../../types/enums/provider.enum';
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
+import { PROVIDER } from '@enums/provider.enum';
+import { RENDER_ENGINE } from '@enums/render-engine.enum';
+
+import { HttpTransporter } from './../http.transporter';
 
 /**
- * Set a Brevo transporter for mail sending.
+ * Brevo transporter — sends via the Brevo SMTP API (https://api.brevo.com/v3/smtp/email).
  *
- * @dependency nodemailer
- * @dependency nodemailer-brevo-transport
- *
- * @see https://nodemailer.com/smtp/
- * @see https://www.npmjs.com/package/nodemailer-brevo-transport
  * @see https://app.brevo.com/
- *
+ * @see https://developers.brevo.com/reference/sendtransacemail
  */
-export class BrevoTransporter extends Transporter {
-
-  /**
-   * @description
-   *
-   * @param transporterEngine Transporter instance
-   * @param configuration Transporter configuration
-   */
-  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
-    super(transporterEngine, configuration);
-  }
-
-  /**
-   * @description Build body request according to Brevo requirements
-   */
+export class BrevoTransporter extends HttpTransporter {
   @Debug('brevo')
-  build({...args }: IMail): Record<string,unknown> {
-
+  build({ ...args }: IMail): Record<string, unknown> {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output = {
-      headers: {
-        'content-type': 'application/json',
-        'accept': 'application/json'
-      },
+    const output: Record<string, unknown> = {
       to: this.addresses(payload.meta.to),
-      from: payload.meta.from,
-      'reply-to': this.address(payload.meta.replyTo),
-      subject: payload.meta.subject
+      sender: this.address(payload.meta.from),
+      replyTo: this.address(payload.meta.replyTo),
+      subject: payload.meta.subject,
     };
 
-    switch(renderEngine.valueOf()) {
+    switch (renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           params: payload.data,
-          templateId: Number.parseInt(templateId, 10)
+          templateId: Number.parseInt(templateId, 10),
         });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
-          text: body.text,
-          html: body.html
+          textContent: body.text,
+          htmlContent: body.html,
         });
         break;
     }
 
-    if (typeof(payload.meta.cc) !== 'undefined') {
+    if (typeof payload.meta.cc !== 'undefined') {
       Object.assign(output, { cc: this.addresses(payload.meta.cc) });
     }
 
-    if (typeof(payload.meta.bcc) !== 'undefined') {
+    if (typeof payload.meta.bcc !== 'undefined') {
       Object.assign(output, { bcc: this.addresses(payload.meta.bcc) });
     }
 
-    if (typeof(payload.meta.attachments) !== 'undefined') {
+    if (typeof payload.meta.attachments !== 'undefined') {
       Object.assign(output, {
-        attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
-          return {
-            content : attachment.content,
-            filename: attachment.filename,
-            name: attachment.filename
-          }
-        })
+        attachment: payload.meta.attachments.map((attachment: IAttachment) => ({
+          content: attachment.content,
+          name: attachment.filename,
+        })),
       });
     }
 
     return output;
   }
 
-  /**
-   * @description Format email address according to Brevo requirements
-   *
-   * @param recipient  Entry to format as email address
-   */
-  address(recipient: string|IAddressable): IAddressB {
+  address(recipient: string | IAddressable): IAddressB {
     if (typeof recipient === 'string') {
       return { email: recipient };
     }
     return recipient as IAddressB;
   }
 
-  /**
-   * @description Format email addresses according to Brevo requirements
-   *
-   * @param recipients Entries to format as email address
-   */
-  addresses(recipients: Array<string|IAddressable>): Array<string> {
-    return [...recipients].map( (recipient: IAddressable) => recipient.email );
+  addresses(recipients: Array<string | IAddressable>): Array<IAddressB> {
+    return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  /**
-   * @description Format API response
-   *
-   * @param response Response from Brevo API
-   */
+  async dispatch(body: Record<string, unknown>): Promise<SendingResponse> {
+    const result = await this.httpClient.post<IBrevoResponse>('smtp/email', body);
+    return this.response(result.data);
+  }
+
   response(response: IBrevoResponse): SendingResponse {
-
-    const res = new SendingResponse();
-
-    res
+    return new SendingResponse()
       .set('provider', PROVIDER.brevo)
       .set('server', null)
       .set('uri', null)
@@ -139,18 +96,10 @@ export class BrevoTransporter extends Transporter {
       .set('body', response.messageId)
       .set('statusCode', 202)
       .set('statusMessage', null);
-
-    return res;
   }
 
-  /**
-   * @description Format error output
-   *
-   * @param error Error from Brevo API
-   */
   error(error: IBrevoError): SendingError {
-    const errorCode = /[0-9]+/;
-    const statusCode = errorCode.exec(error.message);
-    return new SendingError(Number.parseInt(statusCode[0], 10), error.name, [error.message]);
+    const match = /[0-9]+/.exec(error.message);
+    return new SendingError(match ? Number.parseInt(match[0], 10) : 500, error.name, [error.message]);
   }
 }

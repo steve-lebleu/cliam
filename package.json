@@ -19,7 +19,6 @@
     "mailersend",
     "brevo",
     "sparkpost",
-    "sendinblue",
     "mandrill",
     "mailjet",
     "mailgun",
@@ -70,10 +69,6 @@
       "import": "./dist/transporters/sendgrid/index.js",
       "types": "./dist/transporters/sendgrid/index.d.ts"
     },
-    "./providers/sendinblue": {
-      "import": "./dist/transporters/sendinblue/index.js",
-      "types": "./dist/transporters/sendinblue/index.d.ts"
-    },
     "./providers/sparkpost": {
       "import": "./dist/transporters/sparkpost/index.js",
       "types": "./dist/transporters/sparkpost/index.d.ts"
@@ -108,23 +103,12 @@
     "html-to-text": "^8.1.0",
     "joi": "^17.12.0",
     "ky": "^2.0.1",
-    "mailersend": "^2.2.0",
-    "node-mailjet": "^6.0.5",
-    "nodemailer": "^6.9.8",
-    "nodemailer-brevo-transport": "^2.1.0",
-    "nodemailer-mailgun-transport": "^2.1.5",
-    "nodemailer-mandrill-transport": "1.2.0",
-    "nodemailer-postmark-transport": "^6.0.0",
-    "nodemailer-sendgrid": "1.0.3",
-    "nodemailer-sendinblue-v3-transport": "1.0.0",
-    "nodemailer-ses-transport": "1.5.1",
-    "nodemailer-sparkpost-transport": "2.2.0"
+    "nodemailer": "^6.9.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/hbs": "^4.0.4",
     "@types/node": "^20.11.6",
-    "@types/node-mailjet": "^3.3.12",
     "@types/nodemailer": "^6.4.14",
     "@types/chai": "^4.3.14",
     "@types/chance": "^1.1.6",

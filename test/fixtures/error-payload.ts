@@ -1,15 +1,14 @@
 export default (transporter: string) => {
   switch (transporter) {
     case 'mailjet-api':
-      return { response: { res: { text: '{ "ErrorMessage": [ { "status": "200", "statusCode": "200", "statusText": "text" } ] }' } }, statusCode: 500, ErrorMessage: 'error' };
+      return { statusCode: 500, ErrorMessage: 'error message' };
     case 'mailgun-api':
-      return { message: 'this is a response' };
+      return { status: 400, type: 'BadRequest', details: 'Invalid domain' };
     case 'mandrill-api':
-      return { messageId: 'id', accepted: [], rejected: [{ _id: 'id', email: 'email', status: 'status', reject_reason: 'reason' }] };
+      return { code: -1, name: 'ValidationError', message: 'Validation error' };
     case 'mailersend-api':
-      return { name: 'MailersendError', statusText: 'KO', statusCode: 200, message: 'message', body: { message: 'message', errors: 'errors' } };
+      return { name: 'MailersendError', statusCode: 422, body: { message: 'Unprocessable Entity', errors: 'errors' } };
     case 'brevo-api':
-    case 'sendinblue-api':
       return { code: 400, message: '400' };
     case 'sendgrid-api':
     case 'postmark-api':

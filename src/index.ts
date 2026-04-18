@@ -9,5 +9,4 @@ import './transporters/mailjet';
 import './transporters/mandrill';
 import './transporters/postmark';
 import './transporters/sendgrid';
-import './transporters/sendinblue';
 import './transporters/sparkpost';

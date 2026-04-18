@@ -8,7 +8,6 @@ import type { ITransporterMailer } from './ITransporterMailer.interface';
  * Main Transporter class
  */
 export abstract class Transporter {
-
   /**
    * @description Initial transporter configuration options defined in cliamrc
    */
@@ -17,7 +16,7 @@ export abstract class Transporter {
   /**
    * @description Wrapped concrete transporter instance
    */
-  public transporter: ITransporterMailer = null;
+  public transporter: ITransporterMailer | null = null;
 
   constructor(transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration) {
     this.transporter = transporterEngine;
@@ -43,7 +42,7 @@ export abstract class Transporter {
    *
    * @param err
    */
-  public build({...args }: IMail): any {}
+  public build({..._args }: IMail): any {}
 
   /**
    * @description Send email

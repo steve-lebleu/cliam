@@ -6,8 +6,11 @@ import { requestPayload, responsePayload, errorPayload, transporters } from './f
 import { Container } from '../src/services/container.service';
 import { Mailer } from '../src/services/mailer.service';
 import { TransporterFactory } from '../src/transporters/transporter.factory';
+import { HttpTransporter } from '../src/transporters/http.transporter';
 import { SendingError } from '../src/classes/sending-error.class';
 import { SendingResponse } from '../src/classes/sending-response.class';
+
+const HTTP_TRANSPORTERS = ['brevo-api', 'mailersend-api', 'mailgun-api', 'mailjet-api', 'mandrill-api', 'postmark-api', 'sendgrid-api', 'sparkpost-api'];
 
 describe('Transporters', () => {
 
@@ -125,14 +128,22 @@ describe('Transporters', () => {
         expect(result).to.be.instanceOf(SendingError);
       });
 
-      it(`${transporter}::send should call internally the sendMail method`, () => {
+      it(`${transporter}::send should call internally the send method`, () => {
         const mailer = new Mailer(Container.transporters[transporter]);
-        const stub = sinon.stub(mailer.transporter.transporter, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
         const payload = requestPayload(transporter);
         payload.meta.to = [{ email: 'john.doe@test.com' }];
         delete payload.content;
         mailer.setAddresses(payload);
         mailer.setRenderEngine('user.welcome', payload);
+
+        let stub: sinon.SinonStub;
+        if (HTTP_TRANSPORTERS.includes(transporter)) {
+          const method = transporter === 'mailgun-api' ? 'postForm' : 'post';
+          stub = sinon.stub((mailer.transporter as unknown as HttpTransporter).httpClient, method).resolves({ status: 202, headers: {}, data: {} });
+        } else {
+          stub = sinon.stub(mailer.transporter.transporter, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
+        }
+
         mailer.transporter.send(mailer.transporter.build(mailer.getMail('user.welcome', payload)));
         stub.restore();
         sinon.assert.callCount(stub, 1);

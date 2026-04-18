@@ -12,7 +12,6 @@ export default defineConfig({
     'src/transporters/mandrill/index.ts',
     'src/transporters/postmark/index.ts',
     'src/transporters/sendgrid/index.ts',
-    'src/transporters/sendinblue/index.ts',
     'src/transporters/sparkpost/index.ts',
   ],
   format: ['esm'],
