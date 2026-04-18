@@ -128,6 +128,20 @@ Use environment variables for sensitive values such as API keys. Cliam does not 
 
 See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for the full list of available options.
 
+### Optional provider loading
+
+By default `import { Cliam } from 'cliam'` registers all supported providers. If you use a bundler and want to reduce your bundle size, import from `cliam/core` and load only the providers you actually use:
+
+```typescript
+import { Cliam } from 'cliam/core';
+import 'cliam/providers/sendgrid';
+// import 'cliam/providers/smtp'; // add others as needed
+```
+
+Available sub-paths: `cliam/providers/brevo`, `cliam/providers/mailersend`, `cliam/providers/mailgun`, `cliam/providers/mailjet`, `cliam/providers/mandrill`, `cliam/providers/postmark`, `cliam/providers/sendgrid`, `cliam/providers/sendinblue`, `cliam/providers/sparkpost`, `cliam/providers/smtp`.
+
+If a transporter is configured but its provider was never imported, Cliam throws at send time with a clear message.
+
 ### Implement
 
 ```typescript

@@ -33,6 +33,50 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    },
+    "./providers/smtp": {
+      "import": "./dist/transporters/smtp/index.js",
+      "types": "./dist/transporters/smtp/index.d.ts"
+    },
+    "./providers/brevo": {
+      "import": "./dist/transporters/brevo/index.js",
+      "types": "./dist/transporters/brevo/index.d.ts"
+    },
+    "./providers/mailersend": {
+      "import": "./dist/transporters/mailersend/index.js",
+      "types": "./dist/transporters/mailersend/index.d.ts"
+    },
+    "./providers/mailgun": {
+      "import": "./dist/transporters/mailgun/index.js",
+      "types": "./dist/transporters/mailgun/index.d.ts"
+    },
+    "./providers/mailjet": {
+      "import": "./dist/transporters/mailjet/index.js",
+      "types": "./dist/transporters/mailjet/index.d.ts"
+    },
+    "./providers/mandrill": {
+      "import": "./dist/transporters/mandrill/index.js",
+      "types": "./dist/transporters/mandrill/index.d.ts"
+    },
+    "./providers/postmark": {
+      "import": "./dist/transporters/postmark/index.js",
+      "types": "./dist/transporters/postmark/index.d.ts"
+    },
+    "./providers/sendgrid": {
+      "import": "./dist/transporters/sendgrid/index.js",
+      "types": "./dist/transporters/sendgrid/index.d.ts"
+    },
+    "./providers/sendinblue": {
+      "import": "./dist/transporters/sendinblue/index.js",
+      "types": "./dist/transporters/sendinblue/index.d.ts"
+    },
+    "./providers/sparkpost": {
+      "import": "./dist/transporters/sparkpost/index.js",
+      "types": "./dist/transporters/sparkpost/index.d.ts"
     }
   },
   "homepage": "https://github.com/steve-lebleu/cliam#readme",
