@@ -1,12 +1,17 @@
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
 
-import { Container } from './../services/container.service';
-import { IClientConfiguration } from './client-configuration.class';
-import { Event } from './../types/types/event.type';
-import { IPayload } from './../types/interfaces/IPayload.interface';
-import { SendingResponse } from './sending-response.class';
-import { SendingError } from './sending-error.class';
-import { Mailer } from './../services/mailer.service';
+const _require = createRequire(import.meta.url);
+
+import { Container } from '@services/container.service';
+import { Mailer } from '@services/mailer.service';
+
+import type { Event } from '@typings/event.type';
+import type { IPayload } from '@interfaces/IPayload.interface';
+
+import type { IClientConfiguration } from './client-configuration.class';
+import type { SendingResponse } from './sending-response.class';
+import type { SendingError } from './sending-error.class';
 
 export class Cliam {
   private static mailers: { [id: string]: Mailer } = {};
@@ -36,9 +41,9 @@ export class Cliam {
       throw new Error(`Cliam configuration file not found: ${filePath}`);
     }
 
-    delete require.cache[require.resolve(filePath)];
+    delete _require.cache[_require.resolve(filePath)];
 
-    const config = require(filePath);
+    const config = _require(filePath);
     Cliam.configure(config);
   }
 

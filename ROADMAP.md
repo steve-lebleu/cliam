@@ -15,6 +15,8 @@ The contract must be settled before the internals move.
 ESM first so the HTTP rewrites in Phase 3 land cleanly in a native ESM codebase.
 
 - **Migrate to ESM.** Convert the project to native ES modules. Target Node 18+.
+- **Switch build tool to `tsup`.** Replace `tsc` as the build tool with `tsup` (esbuild-based). This eliminates the need for explicit `.js` extensions on relative imports, enables TypeScript path aliases at runtime, and produces clean ESM output. The `build` script becomes `tsup`. Use `"moduleResolution": "Bundler"` in `tsconfig.json` to match.
+- **Add TypeScript path aliases.** Use `@/*` → `src/*` so imports read `@/services/container` instead of relative paths. `tsup` resolves these at build time with no post-processing needed.
 - **Drop `dynamic require()` in `TransporterFactory`.** Replace the switch/require pattern with static imports resolved at configuration time.
 - **Optional provider loading.** Expose providers as named exports so consumers can import only what they use. Bundlers can then tree-shake the rest. This also makes it straightforward to add new providers without touching the core.
 - **Migrate to Biome.** Replace ESLint and its plugin chain (`eslint-plugin-import`, `eslint-plugin-jsdoc`, `eslint-plugin-prefer-arrow`) plus any Prettier config with a single `biome.json`. One tool handles linting and formatting, faster and with zero plugin maintenance overhead.
@@ -32,7 +34,16 @@ The core problem: every `nodemailer-*` transporter package is a thin HTTP wrappe
 - **Merge `sendinblue` and `brevo`.** They are the same provider post-rebrand. Keep `brevo`, add `sendinblue` as a deprecated alias that logs a warning.
 - **Audit and drop transitive dependencies.** Once the nodemailer transport packages are gone, audit what remains and drop anything not actively maintained or replaceable with a few lines of code.
 
-## Phase 4 — Polish and new features
+## Phase 4 — Source structure refactor
+
+The current layout conflates unrelated concerns under weak folder names.
+
+- **Dissolve `classes/`.** The folder groups four unrelated things: the public entry point (`Cliam`), a config shape (`ClientConfiguration`), and two value objects (`SendingResponse`, `SendingError`). Move `SendingResponse` and `SendingError` to `types/`, inline `ClientConfiguration` into `types/interfaces/`, and let `Cliam` stand alone or move into a top-level `core/` if a grouping is still wanted.
+- **Move Joi schemas out of `types/`.** `types/schemas/` holds runtime validation logic, not type definitions. Merge into `validations/` where the other schemas already live.
+- **Rehome the orphaned decorator.** `types/decorators/debug.decorator.ts` is a single file with no natural parent. Move it to `utils/` or drop it if unused.
+- **Rename the inner `types/types/` folder.** The `types/types/` nesting is redundant. Rename to `types/aliases/` or fold the type aliases directly into `types/interfaces/` where they are derived types of existing interfaces.
+
+## Phase 5 — Polish and new features
 
 With a clean foundation in place.
 

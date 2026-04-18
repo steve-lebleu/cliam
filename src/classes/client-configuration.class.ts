@@ -1,6 +1,6 @@
-import { IPlaceholder } from './../types/interfaces/IPlaceholder.interface';
-import { IAddressable } from './../types/interfaces/addresses/IAddressable.interface';
-import { ITransporterConfiguration } from '../transporters/ITransporterConfiguration.interface';
+import type { IPlaceholder } from '@interfaces/IPlaceholder.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
 export interface IClientConfiguration {
   sandbox?: boolean
@@ -18,8 +18,7 @@ export interface IClientConfiguration {
 /**
  * @description Representation of cliamrc file
  */
-class ClientConfiguration {
-
+export class ClientConfiguration {
   /**
    * @description Enable / disable sandbox mode
    */
@@ -50,5 +49,3 @@ class ClientConfiguration {
     Object.assign(this, payload);
   }
 }
-
-export { ClientConfiguration }

@@ -1,4 +1,4 @@
-import { ISendingError } from '../types/interfaces/ISendingError.interface';
+import type { ISendingError } from '@interfaces/ISendingError.interface';
 
 /**
  * Type sending error

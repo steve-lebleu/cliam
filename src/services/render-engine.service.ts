@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 
 import * as Hbs from 'hbs';
-import * as Color from 'color';
+import Color from 'color';
 
 import { htmlToText } from 'html-to-text';
 

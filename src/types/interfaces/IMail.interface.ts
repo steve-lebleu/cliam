@@ -1,4 +1,4 @@
-import { RenderEngine } from 'types/types/render-engine.type';
+import { RenderEngine } from '@/types/types/render-engine.type';
 import { IPayload } from '../interfaces/IPayload.interface';
 
 /**

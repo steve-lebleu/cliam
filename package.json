@@ -27,7 +27,14 @@
     "smtp"
   ],
   "main": "./dist/index.js",
+  "type": "module",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "homepage": "https://github.com/steve-lebleu/cliam#readme",
   "repository": {
     "type": "git",
@@ -43,7 +50,7 @@
     "commitLimit": false
   },
   "scripts": {
-    "build": "./node_modules/.bin/tsc",
+    "build": "tsup",
     "ci:test": "nyc --reporter=lcov --report-dir=./reports/coverage npm-run-all -s test:*",
     "test": "nyc --reporter=html --report-dir=./reports/nyc-coverage npm-run-all -s test:*",
     "test:unit": "./node_modules/.bin/mocha ./test/00-bootstrap.test.js --exit --reporter spec --timeout 5000 --env test",
@@ -68,7 +75,6 @@
   },
   "devDependencies": {
     "@types/hbs": "^4.0.4",
-    "dotenv": "^16.4.1",
     "@types/node": "^20.11.6",
     "@types/node-mailjet": "^3.3.12",
     "@types/nodemailer": "^6.4.14",
@@ -77,6 +83,7 @@
     "chai": "4.3.4",
     "chance": "^1.1.11",
     "coveralls": "3.1.1",
+    "dotenv": "^16.4.1",
     "eslint": "^7.21.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsdoc": "32.2.0",
@@ -88,6 +95,7 @@
     "nyc": "15.1.0",
     "sinon": "^17.0.1",
     "tsconfig-paths": "3.12.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.3.3",
     "typescript-eslint": "0.0.1-alpha.0"
   }

@@ -1,5 +1,5 @@
-import { ISendingResponse } from '../types/interfaces/ISendingResponse.interface';
-import { PROVIDER } from '../types/enums/provider.enum';
+import type { ISendingResponse } from '@interfaces/ISendingResponse.interface';
+import type { PROVIDER } from '@enums/provider.enum';
 
 /**
  * Sending response wrapper
@@ -10,12 +10,12 @@ export class SendingResponse implements ISendingResponse {
    * @description Request web API provider if mode is API
    */
   provider?: PROVIDER;
-  
+
   /**
    * @description Timestamp returned by Cliam wrapper
    */
   timestamp: string;
-  
+
   /**
    * @description Request server
    */

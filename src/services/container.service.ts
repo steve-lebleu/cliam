@@ -1,6 +1,6 @@
-import { Transporter } from './../transporters/transporter.class';
-import { TransporterFactory } from './../transporters/transporter.factory';
-import { ClientConfiguration, IClientConfiguration } from './../classes/client-configuration.class';
+import type { Transporter } from '@transporters/transporter.class';
+import { TransporterFactory } from '@transporters/transporter.factory';
+import { ClientConfiguration, type IClientConfiguration } from './../classes/client-configuration.class';
 import { configurationSchema } from './../validations/configuration.validation';
 
 let _configuration: ClientConfiguration | null = null;
