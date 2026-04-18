@@ -79,7 +79,7 @@ export class PostmarkTransporter extends HttpTransporter {
     return [...recipients].map((r: string | IAddressable) => this.address(r)).join(',');
   }
 
-  async dispatch(body: Record<string, unknown>): Promise<SendingResponse> {
+  async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const endpoint = 'TemplateId' in body ? 'email/withTemplate' : 'email';
     const result = await this.httpClient.post<IPostmarkResponse>(endpoint, body);
     return this.response(result.data);

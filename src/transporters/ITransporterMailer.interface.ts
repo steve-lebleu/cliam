@@ -3,5 +3,5 @@
  */
 export interface ITransporterMailer {
   options?: any;
-  sendMail: ( body: any, callback: (err, result) => void ) => void
+  sendMail: (body: any) => Promise<any>;
 }

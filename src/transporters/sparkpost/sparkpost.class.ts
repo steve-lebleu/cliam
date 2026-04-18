@@ -98,7 +98,7 @@ export class SparkpostTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async dispatch(body: Record<string, unknown>): Promise<SendingResponse> {
+  async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const result = await this.httpClient.post<ISparkpostResponse>('v1/transmissions', body);
     return this.response(result.data);
   }

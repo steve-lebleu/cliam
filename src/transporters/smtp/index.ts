@@ -1,5 +1,5 @@
 import { createTransport } from 'nodemailer';
-import { registerTransporter } from '../registry';
+import { registerTransporter } from '../transporter.registry';
 import { SmtpTransporter } from './smtp.class';
 
 registerTransporter('smtp', (vars, args) =>

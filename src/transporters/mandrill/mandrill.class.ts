@@ -81,7 +81,7 @@ export class MandrillTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient, type));
   }
 
-  async dispatch(body: Record<string, unknown>): Promise<SendingResponse> {
+  async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const isTemplate = 'template_name' in body;
     const endpoint = isTemplate ? 'messages/send-template' : 'messages/send';
     const payload = isTemplate ? body : body;

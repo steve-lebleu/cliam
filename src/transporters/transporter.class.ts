@@ -44,20 +44,5 @@ export abstract class Transporter {
    */
   public build({..._args }: IMail): any {}
 
-  /**
-   * @description Send email
-   *
-   * @returns
-   */
-  async send(body: Record<string,unknown>): Promise<SendingResponse|SendingError> {
-		return new Promise( (resolve, reject) => {
-			this.transporter.sendMail( body, (err, info) => {
-        if (err) {
-          reject(this.error(err));
-        } else {
-          resolve(this.response(info));
-        }
-      });
-		});
-  }
+  abstract send(body: Record<string, unknown>): Promise<SendingResponse | SendingError>;
 }

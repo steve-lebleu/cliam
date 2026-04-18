@@ -1,6 +1,6 @@
 import { PROVIDER } from '@enums/provider.enum';
 import { HttpClient } from '@services/http.service';
-import { registerTransporter } from '../registry';
+import { registerTransporter } from '../transporter.registry';
 import { BrevoTransporter } from './brevo.class';
 
 registerTransporter(PROVIDER.brevo, (vars, args) =>

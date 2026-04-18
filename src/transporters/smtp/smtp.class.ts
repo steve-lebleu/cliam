@@ -156,4 +156,13 @@ export class SmtpTransporter extends Transporter {
 
     return new SendingError(error.responseCode, error.code.toString(), [error.response])
   }
+
+  async send(body: Record<string, unknown>): Promise<SendingResponse | SendingError> {
+    try {
+      const info = await this.transporter.sendMail(body);
+      return this.response(info);
+    } catch (err) {
+      return this.error(err);
+    }
+  }
 }

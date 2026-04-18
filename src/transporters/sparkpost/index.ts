@@ -1,6 +1,6 @@
 import { PROVIDER } from '@enums/provider.enum';
 import { HttpClient } from '@services/http.service';
-import { registerTransporter } from '../registry';
+import { registerTransporter } from '../transporter.registry';
 import { SparkpostTransporter } from './sparkpost.class';
 
 registerTransporter(PROVIDER.sparkpost, (vars, args) =>

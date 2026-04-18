@@ -1,6 +1,6 @@
 import { PROVIDER } from '@enums/provider.enum';
 import { HttpClient } from '@services/http.service';
-import { registerTransporter } from '../registry';
+import { registerTransporter } from '../transporter.registry';
 import { MailjetTransporter } from './mailjet.class';
 
 registerTransporter(PROVIDER.mailjet, (vars, args) => {
