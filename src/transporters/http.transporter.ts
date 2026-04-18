@@ -6,7 +6,7 @@ export abstract class HttpTransporter extends Transporter {
   public readonly httpClient: HttpClient;
 
   constructor(httpClient: HttpClient, configuration: ITransporterConfiguration) {
-    super(null, configuration);
+    super(configuration);
     this.httpClient = httpClient;
   }
 }

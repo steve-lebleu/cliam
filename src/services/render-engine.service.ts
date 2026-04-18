@@ -13,16 +13,6 @@ class RenderEngine {
   /**
    * @description
    */
-  private static instance: RenderEngine = null;
-
-  /**
-   * @description
-   */
-  private readonly THEME = Container.configuration?.placeholders?.theme;
-
-  /**
-   * @description
-   */
   private readonly LAYOUT: string = '/../../src/views/layouts/default.hbs';
 
   /**
@@ -34,6 +24,10 @@ class RenderEngine {
    * @description
    */
   private readonly BLOCKS: string = '/../../src/views/blocks';
+
+  private get THEME() {
+    return Container.configuration?.placeholders?.theme;
+  }
 
   /**
    * @description TODO: find / remember what this fucking default property is
@@ -70,38 +64,28 @@ class RenderEngine {
     { facebook: 'https://i.ibb.co/wSZ1ks0/faceboook.png' }
   ];
 
-  /**
-   * @description
-   */
-  private readonly COLORS: Array<{key: string, value: string}> = [
-    { key: '111111', value: this.THEME?.primaryColor || null },
-    { key: '222222', value: this.THEME?.secondaryColor || null },
-    { key: '333333', value: this.THEME?.tertiaryColor || null },
-    { key: '444444', value: this.THEME?.quaternaryColor || null },
-    { key: 'fffff1', value: this.THEME?.primaryColor ? Color(`#${this.THEME.primaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: 'fffff2', value: this.THEME?.secondaryColor ? Color(`#${this.THEME.secondaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: 'fffff3', value: this.THEME?.tertiaryColor ? Color(`#${this.THEME.tertiaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: 'fffff4', value: this.THEME?.quaternaryColor ? Color(`#${this.THEME.quaternaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: '000001', value: this.THEME?.primaryColor ? Color(`#${this.THEME.primaryColor}`).darken(0.50).hex().substring(1) : null },
-    { key: '000002', value: this.THEME?.secondaryColor ? Color(`#${this.THEME.secondaryColor}`).darken(0.50).hex().substring(1) : null },
-    { key: '000003', value: this.THEME?.tertiaryColor ? Color(`#${this.THEME.tertiaryColor}`).darken(0.50).hex().substring(1) : null },
-    { key: '000004', value: this.THEME?.quaternaryColor ? Color(`#${this.THEME.quaternaryColor}`).darken(0.50).hex().substring(1) : null }
-  ];
+  private get COLORS(): Array<{key: string, value: string}> {
+    const t = this.THEME;
+    return [
+      { key: '111111', value: t?.primaryColor || null },
+      { key: '222222', value: t?.secondaryColor || null },
+      { key: '333333', value: t?.tertiaryColor || null },
+      { key: '444444', value: t?.quaternaryColor || null },
+      { key: 'fffff1', value: t?.primaryColor ? Color(`#${t.primaryColor}`).lighten(0.50).hex().substring(1) : null },
+      { key: 'fffff2', value: t?.secondaryColor ? Color(`#${t.secondaryColor}`).lighten(0.50).hex().substring(1) : null },
+      { key: 'fffff3', value: t?.tertiaryColor ? Color(`#${t.tertiaryColor}`).lighten(0.50).hex().substring(1) : null },
+      { key: 'fffff4', value: t?.quaternaryColor ? Color(`#${t.quaternaryColor}`).lighten(0.50).hex().substring(1) : null },
+      { key: '000001', value: t?.primaryColor ? Color(`#${t.primaryColor}`).darken(0.50).hex().substring(1) : null },
+      { key: '000002', value: t?.secondaryColor ? Color(`#${t.secondaryColor}`).darken(0.50).hex().substring(1) : null },
+      { key: '000003', value: t?.tertiaryColor ? Color(`#${t.tertiaryColor}`).darken(0.50).hex().substring(1) : null },
+      { key: '000004', value: t?.quaternaryColor ? Color(`#${t.quaternaryColor}`).darken(0.50).hex().substring(1) : null },
+    ];
+  }
 
   constructor() {
     Hbs.handlebars.registerHelper('year', () => {
       return new Date().getFullYear();
     });
-  }
-
-  /**
-   * @description
-   */
-  static get(): RenderEngine {
-    if(!RenderEngine.instance) {
-      RenderEngine.instance = new RenderEngine();
-    }
-    return RenderEngine.instance;
   }
 
   /**
@@ -172,7 +156,6 @@ class RenderEngine {
   }
 }
 
-// Fixme: this singleton pattern is to deprecate, at least on this way. Prefer module pattern
-const service = RenderEngine.get();
+const service = new RenderEngine();
 
 export { service as RenderEngine }

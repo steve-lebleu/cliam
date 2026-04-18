@@ -9,9 +9,11 @@ import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
 import type { ISendingError } from '@interfaces/ISendingError.interface';
+import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
 import type { IGmailError } from './IGmailError.interface';
 import type { IInfomaniakError } from './IInformaniakError.interface';
+import type { ISmtpTransport } from './ISmtpTransport.interface';
 import type { ISMTPError } from './ISMTPError.interface';
 import type { ISMTPResponse } from './ISMTPResponse.interface';
 
@@ -23,9 +25,13 @@ import type { ISMTPResponse } from './ISMTPResponse.interface';
  * @see https://nodemailer.com/smtp/
  */
 export class SmtpTransporter extends Transporter {
-  /**
-   * @description Build body request according to Mailjet requirements
-   */
+  private readonly transport: ISmtpTransport;
+
+  constructor(transport: ISmtpTransport, configuration: ITransporterConfiguration) {
+    super(configuration);
+    this.transport = transport;
+  }
+
   @Debug('smtp')
   build({...args }: IMail): Record<string,unknown> {
     const { payload, body } = args;
@@ -127,7 +133,7 @@ export class SmtpTransporter extends Transporter {
       statusText: null,
     };
 
-    if (this.transporter.options.host === 'smtp.gmail.com') {
+    if (this.transport.options.host === 'smtp.gmail.com') {
       const e = error as IGmailError;
 
       const regError = /[A-Z]{1}[a-z\s\W]+\./g;
@@ -138,7 +144,7 @@ export class SmtpTransporter extends Transporter {
       output.statusCode = e.code;
     }
 
-    if (this.transporter.options.host === 'mail.infomaniak.com') {
+    if (this.transport.options.host === 'mail.infomaniak.com') {
       const e = error as IInfomaniakError;
 
       output.errors = [e.response];
@@ -151,7 +157,7 @@ export class SmtpTransporter extends Transporter {
 
   async send(body: Record<string, unknown>): Promise<SendingResponse | SendingError> {
     try {
-      const info = await this.transporter.sendMail(body);
+      const info = await this.transport.sendMail(body);
       return this.response(info);
     } catch (err) {
       return this.error(err);

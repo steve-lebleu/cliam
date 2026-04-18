@@ -7,8 +7,8 @@ import { Container } from '../src/services/container.service';
 import { Mailer } from '../src/services/mailer.service';
 import { RenderEngine } from '../src/services/render-engine.service';
 import { mailSchema } from '../src/validations/mail.validation';
-import { SendingError } from '../src/classes/sending-error.class';
-import { SendingResponse } from '../src/classes/sending-response.class';
+import { SendingError } from '../src/core/sending-error.class';
+import { SendingResponse } from '../src/core/sending-response.class';
 
 describe('Services', () => {
 
@@ -22,8 +22,9 @@ describe('Services', () => {
     it('should expose instantiated transporters after Cliam.configure()', (done: any) => {
       expect(Container.transporters).to.be.not.null;
       Object.keys(Container.transporters).forEach(key => {
-        expect(Container.transporters[key].configuration).to.be.not.null;
-        expect(Container.transporters[key].transporter).to.be.not.null;
+        const t = Container.transporters[key] as any;
+        expect(t.configuration).to.be.not.null;
+        expect(key === 'hosting-smtp' ? t.transport : t.httpClient).to.be.not.null;
       });
       done();
     });

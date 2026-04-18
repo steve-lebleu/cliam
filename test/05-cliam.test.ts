@@ -4,7 +4,7 @@ import { expect } from 'chai';
 
 import { requestPayload, transporters } from './fixtures/index';
 import { EVENT } from '../src/types/enums/event.enum';
-import { SendingResponse } from '../src/classes/sending-response.class';
+import { SendingResponse } from '../src/core/sending-response.class';
 import { Cliam } from '../src/index';
 
 describe('Cliam', () => {

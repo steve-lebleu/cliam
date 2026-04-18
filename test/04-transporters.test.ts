@@ -7,8 +7,8 @@ import { Container } from '../src/services/container.service';
 import { Mailer } from '../src/services/mailer.service';
 import { TransporterFactory } from '../src/transporters/transporter.factory';
 import { HttpTransporter } from '../src/transporters/http.transporter';
-import { SendingError } from '../src/classes/sending-error.class';
-import { SendingResponse } from '../src/classes/sending-response.class';
+import { SendingError } from '../src/core/sending-error.class';
+import { SendingResponse } from '../src/core/sending-response.class';
 
 const HTTP_TRANSPORTERS = ['brevo-api', 'mailersend-api', 'mailgun-api', 'mailjet-api', 'mandrill-api', 'postmark-api', 'sendgrid-api', 'sparkpost-api'];
 
