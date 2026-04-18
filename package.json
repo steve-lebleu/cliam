@@ -2,8 +2,7 @@
   "name": "cliam",
   "version": "2.3.3",
   "engines": {
-    "node": ">=16.6.2",
-    "npm": ">=7.20.3"
+    "node": ">=18.19.0"
   },
   "author": "Steve Lebleu",
   "license": "GPL-3.0",
