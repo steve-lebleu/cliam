@@ -2,16 +2,14 @@ import { readFileSync } from 'node:fs';
 
 import Color from 'color';
 import * as Hbs from 'hbs';
-
 import { convert } from 'html-to-text';
 
-import { Container } from './container.service';
+import { Container } from '@services/container.service';
 
 /**
- * Light render engine embedding on the fly an hbs compilation middleware
+ * @description Light render engine embedding on the fly an hbs compilation middleware.
  */
 class RenderEngine {
-
   /**
    * @description
    */
@@ -115,7 +113,6 @@ class RenderEngine {
    * @todo LOW :: do better about socials and banner
    */
   compile(event: string, data: Record<string,unknown>): { text: string, html: string } {
-
     if (Container.configuration?.placeholders?.company?.socials) {
       Container.configuration?.placeholders?.company?.socials.map(social => {
         social.icon = this.SOCIALS.find(s => s[social.name])[social.name];
@@ -175,6 +172,7 @@ class RenderEngine {
   }
 }
 
+// Fixme: this singleton pattern is to deprecate, at least on this way. Prefer module pattern
 const service = RenderEngine.get();
 
 export { service as RenderEngine }

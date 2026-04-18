@@ -1,10 +1,9 @@
 import type { ISendingError } from '@interfaces/ISendingError.interface';
 
 /**
- * Type sending error
+ * @summary Sending error wrapper as the only one error type delivered by Cliam.
  */
 export class SendingError implements ISendingError {
-
   /**
    * @description HTTP response status code
    */
@@ -25,5 +24,4 @@ export class SendingError implements ISendingError {
     this.statusText = message;
     this.errors = errors;
   }
-
 }

@@ -3,16 +3,22 @@ import { createRequire } from 'node:module';
 
 const _require = createRequire(import.meta.url);
 
+import type { SendingError } from '@core/sending-error.class';
+import type { SendingResponse } from '@core/sending-response.class';
+
 import { Container } from '@services/container.service';
 import { Mailer } from '@services/mailer.service';
 
+import type { IClientConfiguration } from '@interfaces/IClientConfiguration.interface';
 import type { IPayload } from '@interfaces/IPayload.interface';
 import type { Event } from '@typings/event.type';
 
-import type { IClientConfiguration } from './client-configuration.class';
-import type { SendingError } from './sending-error.class';
-import type { SendingResponse } from './sending-response.class';
-
+/**
+ * @summary The core engine of Cliam allowing consumers to:
+ *
+ * - Configure their Cliam client
+ * - Send emails
+ */
 export class Cliam {
   private static mailers: { [id: string]: Mailer } = {};
 

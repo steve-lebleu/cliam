@@ -2,10 +2,9 @@ import type { PROVIDER } from '@enums/provider.enum';
 import type { ISendingResponse } from '@interfaces/ISendingResponse.interface';
 
 /**
- * Sending response wrapper
+ * @summary Sending response wrapper
  */
 export class SendingResponse implements ISendingResponse {
-
   /**
    * @description Request web API provider if mode is API
    */
@@ -57,7 +56,7 @@ export class SendingResponse implements ISendingResponse {
    * @param property
    * @param value
    */
-  set(property: string, value: number|string|string[]|Record<string,unknown>): SendingResponse {
+  set(property: string, value: number | string | string[] | Record<string, unknown>): SendingResponse {
     this[property] = value;
     return this;
   }
@@ -67,8 +66,7 @@ export class SendingResponse implements ISendingResponse {
    *
    * @param property
    */
-  get(property: string): number|string|string[]|Record<string,unknown> {
+  get(property: string): number | string | string[] | Record<string, unknown> {
     return this[property];
   }
-
 };

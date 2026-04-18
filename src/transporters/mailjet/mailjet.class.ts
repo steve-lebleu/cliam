@@ -1,18 +1,19 @@
-import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import type { IMail } from './../../types/interfaces/IMail.interface';
-import type { IAddressA } from './../../types/interfaces/addresses/IAddressA.interface';
-import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { IMailjetError } from './IMailjetError.interface';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import { HttpTransporter } from '@transporters/http.transporter';
 
-import { Debug } from './../../types/decorators/debug.decorator';
+import { Debug } from '@decorators/debug.decorator';
 
 import { PROVIDER } from '@enums/provider.enum';
 import { RENDER_ENGINE } from '@enums/render-engine.enum';
 
-import { HttpTransporter } from './../http.transporter';
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressA } from '@interfaces/addresses/IAddressA.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+
+import type { IMailjetError } from './IMailjetError.interface';
 
 /**
  * Mailjet transporter — sends via the Mailjet Send API v3.1.

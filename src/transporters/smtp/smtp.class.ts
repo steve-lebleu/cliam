@@ -1,19 +1,19 @@
-import { Transporter } from './../transporter.class';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import type { IMail } from './../../types/interfaces/IMail.interface';
-import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import type { ITransporterMailer } from './../ITransporterMailer.interface';
+import { Transporter } from '@transporters/transporter.class';
+
+import { Debug } from '@decorators/debug.decorator';
+
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { ISendingError } from '@interfaces/ISendingError.interface';
+
 import type { IGmailError } from './IGmailError.interface';
 import type { IInfomaniakError } from './IInformaniakError.interface';
 import type { ISMTPError } from './ISMTPError.interface';
 import type { ISMTPResponse } from './ISMTPResponse.interface';
-
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
-
-import { Debug } from './../../types/decorators/debug.decorator';
 
 /**
  * Set a Nodemailer SMTP transporter for mail sending.
@@ -23,23 +23,11 @@ import { Debug } from './../../types/decorators/debug.decorator';
  * @see https://nodemailer.com/smtp/
  */
 export class SmtpTransporter extends Transporter {
-
-  /**
-   * @description
-   *
-   * @param transporterEngine Transporter instance
-   * @param configuration Transporter configuration
-   */
-  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
-    super(transporterEngine, configuration);
-  }
-
   /**
    * @description Build body request according to Mailjet requirements
    */
   @Debug('smtp')
   build({...args }: IMail): Record<string,unknown> {
-
     const { payload, body } = args;
 
     const output = {
@@ -82,10 +70,11 @@ export class SmtpTransporter extends Transporter {
    *
    * @param recipient
    */
-  address(recipient: string|IAddressable): string {
+  address(recipient: string | IAddressable): string {
     if (typeof recipient === 'string') {
       return recipient;
     }
+
     return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : `<${recipient.email}>`;
   }
 
@@ -94,8 +83,8 @@ export class SmtpTransporter extends Transporter {
    *
    * @param recipients Entries to format as email address
    */
-  addresses(recipients: Array<string|IAddressable>): Array<string> {
-    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient) );
+  addresses(recipients: Array<string | IAddressable>): Array<string> {
+    return [...recipients].map( (recipient: string | IAddressable) => this.address(recipient) );
   }
 
   /**
@@ -104,7 +93,6 @@ export class SmtpTransporter extends Transporter {
    * @param response Response from Nodemailer SMTP API
    */
   response(response: ISMTPResponse): SendingResponse {
-
     const incoming = response;
     const res = new SendingResponse();
 
@@ -119,7 +107,6 @@ export class SmtpTransporter extends Transporter {
       .set('statusCode', 202)
       .set('statusMessage', incoming.response)
       .set('messageId', incoming.messageId);
-
   }
 
   /**
@@ -129,32 +116,37 @@ export class SmtpTransporter extends Transporter {
    *
    * @fixme Non managed error with smtp.gmail.com and secure true : error have a different pattern and this regError.exec(error.response)[0] not working
    */
-  error(error: Error|IGmailError|IInfomaniakError|ISMTPError): SendingError {
-
+  error(error: Error | IGmailError | IInfomaniakError | ISMTPError): SendingError {
     if (error instanceof TypeError) {
       return new SendingError(417, error.name, [error.message]);
     }
 
-    if (this.transporter.options.host === 'smtp.gmail.com') {
+    const output: ISendingError = {
+      errors: [],
+      statusCode: null,
+      statusText: null,
+    };
 
-      error = error as IGmailError;
+    if (this.transporter.options.host === 'smtp.gmail.com') {
+      const e = error as IGmailError;
 
       const regError = /[A-Z]{1}[a-z\s\W]+\./g;
-      const matchError = regError.exec(error.response)[0];
-      const regHelp = /https:\/\/[a-z-A-Z0-9\w\.-\/\?\=]+/g;
-      const matchHelp = regHelp.exec(error.response)[0];
+      const matchError = regError.exec(e.response)[0];
 
-      return new SendingError(error.responseCode, error.code.toString(), [matchError]);
+      output.errors = [matchError];
+      output.statusText = e.responseCode.toString();
+      output.statusCode = e.code;
     }
 
     if (this.transporter.options.host === 'mail.infomaniak.com') {
-      error = error as IInfomaniakError;
-      return new SendingError(error.responseCode, error.code, [ error.response ]);
+      const e = error as IInfomaniakError;
+
+      output.errors = [e.response];
+      output.statusText = e.responseCode.toString();
+      output.statusCode = Number(e.code);
     }
 
-    error = error as ISMTPError;
-
-    return new SendingError(error.responseCode, error.code.toString(), [error.response])
+    return new SendingError(output.statusCode, output.statusText, output.errors)
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse | SendingError> {

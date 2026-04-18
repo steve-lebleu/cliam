@@ -1,5 +1,5 @@
-import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import type { HttpClient } from '@services/http.service';
+import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import { Transporter } from './transporter.class';
 
 export abstract class HttpTransporter extends Transporter {

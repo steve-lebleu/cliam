@@ -33,10 +33,6 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./core": {
-      "import": "./dist/core.js",
-      "types": "./dist/core.d.ts"
-    },
     "./providers/smtp": {
       "import": "./dist/transporters/smtp/index.js",
       "types": "./dist/transporters/smtp/index.d.ts"

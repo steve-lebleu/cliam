@@ -1,11 +1,11 @@
-import type { SendingError } from './../classes/sending-error.class';
-import type { SendingResponse } from './../classes/sending-response.class';
-import type { IMail } from './../types/interfaces/IMail.interface';
+import type { SendingError } from '@core/sending-error.class';
+import type { SendingResponse } from '@core/sending-response.class';
+import type { IMail } from '@interfaces/IMail.interface';
 import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import type { ITransporterMailer } from './ITransporterMailer.interface';
 
 /**
- * Main Transporter class
+ * @summary Base class for all Transporter classes
  */
 export abstract class Transporter {
   /**
@@ -24,25 +24,30 @@ export abstract class Transporter {
   }
 
   /**
-   * @description
+   * @description Method in charge of parsing the transporter engine error into a SendingError object
    *
-   * @param err
+   * @param err An error object from the transporter engine
    */
-  public error(err): any {}
+  abstract error(err: unknown): SendingError;
 
   /**
-   * @description
+   * @description Method in charge of parsing the transporter engine response into a SendingResponse object
    *
-   * @param err
+   * @param res A response object from the transporter engine
    */
-  public response(res): any {}
+  abstract response(res: unknown): SendingResponse;
 
   /**
-   * @description
+   * @description Method in charge to build the transporter engine specific request body
    *
-   * @param err
+   * @param args IMail interface arguments
    */
-  public build({..._args }: IMail): any {}
+  abstract build({ ...args }: IMail): Record<string, unknown>;
 
+  /**
+   * @description Method in charge to send the email through the transporter engine
+   *
+   * @param body The transporter engine specific request body
+   */
   abstract send(body: Record<string, unknown>): Promise<SendingResponse | SendingError>;
 }

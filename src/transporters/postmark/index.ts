@@ -1,9 +1,9 @@
 import { PROVIDER } from '@enums/provider.enum';
 import { HttpClient } from '@services/http.service';
-import { registerTransporter } from '../transporter.registry';
+import { registerTransporter } from '@transporters/transporter.registry';
 import { PostmarkTransporter } from './postmark.class';
 
-registerTransporter(PROVIDER.postmark, (vars, args) =>
+registerTransporter(PROVIDER.postmark, (_vars, args) =>
   new PostmarkTransporter(
     new HttpClient({
       baseUrl: 'https://api.postmarkapp.com/',

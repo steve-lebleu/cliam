@@ -2,19 +2,6 @@ import type { IPlaceholder } from '@interfaces/IPlaceholder.interface';
 import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
-export interface IClientConfiguration {
-  sandbox?: boolean
-  variables: {
-    domain: string
-    addresses: {
-      from: IAddressable
-      replyTo: IAddressable
-    }
-  }
-  placeholders?: IPlaceholder
-  transporters: ITransporterConfiguration[]
-}
-
 /**
  * @description Representation of cliamrc file
  */
@@ -41,11 +28,11 @@ export class ClientConfiguration {
   placeholders?: IPlaceholder;
 
   /**
-   * @description Array of Transporters instances defined in cliamrc
+   * @description Array of Transporters instances configuration provided by the consumer
    */
   transporters: ITransporterConfiguration[]
 
-  constructor(payload: Record<string,unknown>) {
+  constructor(payload: Record<string, unknown>) {
     Object.assign(this, payload);
   }
 }

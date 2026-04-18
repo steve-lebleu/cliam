@@ -1,9 +1,9 @@
 import { PROVIDER } from '@enums/provider.enum';
 import { HttpClient } from '@services/http.service';
-import { registerTransporter } from '../transporter.registry';
+import { registerTransporter } from '@transporters/transporter.registry';
 import { MailjetTransporter } from './mailjet.class';
 
-registerTransporter(PROVIDER.mailjet, (vars, args) => {
+registerTransporter(PROVIDER.mailjet, (_vars, args) => {
   const credentials = btoa(`${args.auth.apiKey}:${args.auth.apiSecret}`);
 
   return new MailjetTransporter(

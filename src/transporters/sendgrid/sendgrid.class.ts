@@ -1,17 +1,20 @@
-import type { IMail } from './../../types/interfaces/IMail.interface';
-import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { ISendgridError } from './ISendgridError.interface';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
+
 import type { HttpResult } from '@services/http.service';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import { HttpTransporter } from '@transporters/http.transporter';
 
 import { PROVIDER } from '@enums/provider.enum';
 import { RENDER_ENGINE } from '@enums/render-engine.enum';
 
-import { Debug } from './../../types/decorators/debug.decorator';
-import { HttpTransporter } from './../http.transporter';
+import { Debug } from '@decorators/debug.decorator';
+
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressB } from '@interfaces/addresses/IAddressB.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+
+import type { ISendgridError } from './ISendgridError.interface';
 
 /**
  * SendGrid transporter — sends via the SendGrid Mail Send API v3.
@@ -82,7 +85,7 @@ export class SendgridTransporter extends HttpTransporter {
   response(result: HttpResult): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.sendgrid)
-      .set('server', result.headers['server'] ?? null)
+      .set('server', result.headers.server ?? null)
       .set('uri', null)
       .set('headers', JSON.stringify(result.headers))
       .set('timestamp', Date.now())

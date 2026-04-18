@@ -15,13 +15,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@core/*": ["src/core/*"],
       "@decorators/*": ["src/types/decorators/*"],
       "@enums/*": ["src/types/enums/*"],
       "@interfaces/*": ["src/types/interfaces/*"],
       "@schemas/*": ["src/types/schemas/*"],
       "@typings/*": ["src/types/types/*"],
       "@services/*": ["src/services/*"],
-      "@classes/*": ["src/classes/*"],
       "@transporters/*": ["src/transporters/*"],
       "@validations/*": ["src/validations/*"],
       "@utils/*": ["src/utils/*"]

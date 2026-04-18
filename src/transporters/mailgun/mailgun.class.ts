@@ -1,17 +1,17 @@
-import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import type { IMail } from './../../types/interfaces/IMail.interface';
-import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { IMailgunError } from './IMailgunError.interface';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import { HttpTransporter } from '@transporters/http.transporter';
 
-import { Debug } from '../../types/decorators/debug.decorator';
+import { Debug } from '@decorators/debug.decorator';
+
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
 
 import { PROVIDER } from '@enums/provider.enum';
 import { RENDER_ENGINE } from '@enums/render-engine.enum';
 
-import { HttpTransporter } from './../http.transporter';
+import type { IMailgunError } from './IMailgunError.interface';
 
 /**
  * Mailgun transporter — sends via the Mailgun Messages API.
@@ -61,6 +61,7 @@ export class MailgunTransporter extends HttpTransporter {
     if (typeof recipient === 'string') {
       return recipient;
     }
+
     return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : recipient.email;
   }
 

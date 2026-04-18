@@ -1,9 +1,9 @@
 import { PROVIDER } from '@enums/provider.enum';
 import { HttpClient } from '@services/http.service';
-import { registerTransporter } from '../transporter.registry';
+import { registerTransporter } from '@transporters/transporter.registry';
 import { SendgridTransporter } from './sendgrid.class';
 
-registerTransporter(PROVIDER.sendgrid, (vars, args) =>
+registerTransporter(PROVIDER.sendgrid, (_vars, args) =>
   new SendgridTransporter(
     new HttpClient({
       baseUrl: 'https://api.sendgrid.com/',

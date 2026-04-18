@@ -1,15 +1,17 @@
-import { SendingError } from './../classes/sending-error.class';
-import type { SendingResponse } from './../classes/sending-response.class';
+import { SendingError } from '@core/sending-error.class';
+import type { SendingResponse } from '@core/sending-response.class';
+
+import { Container } from '@services/container.service';
+import { RenderEngine } from '@services/render-engine.service';
+import type { Transporter } from '@transporters/transporter.class';
 
 import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
 import { RENDER_ENGINE } from '@enums/render-engine.enum';
 import type { IBuffer } from '@interfaces/IBuffer.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IPayload } from '@interfaces/IPayload.interface';
-import { Container } from '@services/container.service';
-import type { Transporter } from '@transporters/transporter.class';
-import { mailSchema } from './../validations/mail.validation';
-import { RenderEngine } from './render-engine.service';
+
+import { mailSchema } from '@validations/mail.validation';
 
 /**
  * @description Main class to manage incoming mail requests. Mostly, this class is responsible of:
@@ -119,7 +121,7 @@ class Mailer {
    * @param event Event name
    */
   private getTemplateId(event: string): string {
-    if (!this.transporter.configuration?.templates?.hasOwnProperty(event)) {
+    if (!this.transporter.configuration?.templates?.[event]) {
       return null;
     }
 

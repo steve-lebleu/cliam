@@ -1,11 +1,21 @@
+import { ClientConfiguration } from '@core/client-configuration.class';
+
 import type { Transporter } from '@transporters/transporter.class';
 import { TransporterFactory } from '@transporters/transporter.factory';
-import { ClientConfiguration, type IClientConfiguration } from './../classes/client-configuration.class';
-import { configurationSchema } from './../validations/configuration.validation';
+
+import type { IClientConfiguration } from '@interfaces/IClientConfiguration.interface';
+
+import { configurationSchema } from '@validations/configuration.validation';
 
 let _configuration: ClientConfiguration | null = null;
 let _transporters: { [id: string]: Transporter } | null = null;
 
+/**
+ * @description The Container acts as initiator and configuration provider through a module pattern.
+ *
+ * - Manage initialisation of the configuration, validation included
+ * - Act next like a Singleton (module pattern) to be a configuration provider
+ */
 export const Container = {
   get configuration(): ClientConfiguration {
     if (!_configuration) {
@@ -31,9 +41,10 @@ export const Container = {
     }
 
     _configuration = new ClientConfiguration(value);
-    _transporters = _configuration.transporters.reduce((result: { [id: string]: Transporter }, transporterDefinition) => {
-      result[transporterDefinition.id] = TransporterFactory.get(_configuration.variables, transporterDefinition);
-      return result;
-    }, {});
+    _transporters = _configuration.transporters
+      .reduce((result: { [id: string]: Transporter }, transporterDefinition) => {
+        result[transporterDefinition.id] = TransporterFactory.get(_configuration.variables, transporterDefinition);
+        return result;
+      }, {});
   }
 };

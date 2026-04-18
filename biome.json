@@ -20,7 +20,8 @@
       "suspicious": {
         "noDoubleEquals": "error",
         "noExplicitAny": "off",
-        "noConsoleLog": "off"
+        "noConsoleLog": "off",
+        "noThenProperty": "off"
       },
       "security": {
         "noGlobalEval": "error"

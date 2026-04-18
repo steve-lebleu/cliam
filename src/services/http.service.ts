@@ -29,11 +29,13 @@ export class HttpClient {
 
   async post<T = unknown>(path: string, body: unknown, headers?: Record<string, string>): Promise<HttpResult<T>> {
     const response = await this.instance.post(path, { json: body, headers });
+
     return this.normalize<T>(response);
   }
 
   async postForm<T = unknown>(path: string, body: Record<string, string | string[]>, headers?: Record<string, string>): Promise<HttpResult<T>> {
     const form = new FormData();
+
     for (const [key, value] of Object.entries(body)) {
       if (Array.isArray(value)) {
         for (const v of value) form.append(key, v);
@@ -41,12 +43,15 @@ export class HttpClient {
         form.append(key, value);
       }
     }
+
     const response = await this.instance.post(path, { body: form, headers });
+
     return this.normalize<T>(response);
   }
 
   private async normalize<T>(response: Response): Promise<HttpResult<T>> {
     const text = await response.text();
+
     return {
       status: response.status,
       headers: Object.fromEntries(response.headers.entries()),

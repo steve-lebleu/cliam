@@ -1,17 +1,18 @@
-import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import type { IMail } from './../../types/interfaces/IMail.interface';
-import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { IMandrillError } from './IMandrillError.interface';
-import type { IMandrillResponse } from './IMandrillResponse.interface';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import { HttpTransporter } from '@transporters/http.transporter';
 
 import { PROVIDER } from '@enums/provider.enum';
 import { RENDER_ENGINE } from '@enums/render-engine.enum';
 
-import { HttpTransporter } from './../http.transporter';
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressB } from '@interfaces/addresses/IAddressB.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+
+import type { IMandrillError } from './IMandrillError.interface';
+import type { IMandrillResponse } from './IMandrillResponse.interface';
 
 /**
  * Mandrill transporter — sends via the Mandrill Transactional API.

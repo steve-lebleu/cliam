@@ -1,17 +1,18 @@
-import type { IAttachment } from '../../types/interfaces/IAttachment.interface';
-import type { IMail } from '../../types/interfaces/IMail.interface';
-import type { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
-import type { IAddressable } from '../../types/interfaces/addresses/IAddressable.interface';
-import type { ISparkpostError } from './ISparkpostError.interface';
-import type { ISparkpostResponse } from './ISparkpostResponse.interface';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { SendingError } from '../../classes/sending-error.class';
-import { SendingResponse } from '../../classes/sending-response.class';
+import { HttpTransporter } from '@transporters/http.transporter';
 
 import { PROVIDER } from '@enums/provider.enum';
 import { RENDER_ENGINE } from '@enums/render-engine.enum';
 
-import { HttpTransporter } from './../http.transporter';
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressD } from '@interfaces/addresses/IAddressD.interface';
+import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+
+import type { ISparkpostError } from './ISparkpostError.interface';
+import type { ISparkpostResponse } from './ISparkpostResponse.interface';
 
 /**
  * SparkPost transporter — sends via the SparkPost Transmissions API.

@@ -5,8 +5,8 @@ import type { IAddressable } from './../../types/interfaces/addresses/IAddressab
 import type { IMailersendError } from './IMailersendError.interface';
 import type { HttpResult } from '@services/http.service';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import { SendingError } from '../../core/sending-error.class';
+import { SendingResponse } from '../../core/sending-response.class';
 
 import { Debug } from '../../types/decorators/debug.decorator';
 

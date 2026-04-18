@@ -1,8 +1,8 @@
 import { createTransport } from 'nodemailer';
-import { registerTransporter } from '../transporter.registry';
+import { registerTransporter } from '@transporters/transporter.registry';
 import { SmtpTransporter } from './smtp.class';
 
-registerTransporter('smtp', (vars, args) =>
+registerTransporter('smtp', (_vars, args) =>
   new SmtpTransporter(createTransport({
     host: args.options.host,
     port: args.options.port,
