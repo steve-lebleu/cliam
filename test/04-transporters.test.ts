@@ -139,9 +139,10 @@ describe('Transporters', () => {
         let stub: sinon.SinonStub;
         if (HTTP_TRANSPORTERS.includes(transporter)) {
           const method = transporter === 'mailgun-api' ? 'postForm' : 'post';
-          stub = sinon.stub((mailer.transporter as unknown as HttpTransporter).httpClient, method).resolves({ status: 202, headers: {}, data: {} });
+          const data = transporter === 'mandrill-api' ? [] : transporter === 'sparkpost-api' ? { results: {} } : {};
+          stub = sinon.stub((mailer.transporter as unknown as HttpTransporter).httpClient, method).resolves({ status: 202, headers: {}, data });
         } else {
-          stub = sinon.stub(mailer.transporter.transporter, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
+          stub = sinon.stub((mailer.transporter as any).transport, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
         }
 
         mailer.transporter.send(mailer.transporter.build(mailer.getMail('user.welcome', payload)));

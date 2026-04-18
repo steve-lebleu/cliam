@@ -104,8 +104,8 @@ export class MandrillTransporter extends HttpTransporter {
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response[0]._id)
-      .set('body', response[0].status)
+      .set('messageId', response[0]?._id ?? null)
+      .set('body', response[0]?.status ?? null)
       .set('statusCode', 202)
       .set('statusMessage', null);
   }

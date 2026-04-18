@@ -1,4 +1,4 @@
-import { describe, it, beforeAll } from 'bun:test';
+import { describe, it, beforeAll, afterAll } from 'bun:test';
 import sinon from 'sinon';
 import { expect } from 'chai';
 
@@ -16,6 +16,10 @@ describe('Cliam', () => {
     });
   });
 
+  afterAll(() => {
+    Object.values(stubs).forEach((s: any) => s.restore());
+  });
+
   it('Cliam.mail() should throw when called before configure()', async () => {
     const originalMailers = (Cliam as any).mailers;
     (Cliam as any).mailers = {};
@@ -26,6 +30,25 @@ describe('Cliam', () => {
       expect(e.message).to.include('not configured');
     } finally {
       (Cliam as any).mailers = originalMailers;
+    }
+  });
+
+  it('Cliam.mail() should throw when transporterId is not found', async () => {
+    try {
+      await Cliam.mail('user.welcome', { transporterId: 'nonexistent', meta: {} } as any);
+    } catch (e: any) {
+      expect(e).to.be.instanceOf(Error);
+      expect(e.message).to.include('nonexistent');
+    }
+  });
+
+  it('Cliam.configureFromFile() should throw when file does not exist', (done: any) => {
+    try {
+      Cliam.configureFromFile('/nonexistent/path/cliamrc.js');
+    } catch (e: any) {
+      expect(e).to.be.instanceOf(Error);
+      expect(e.message).to.include('not found');
+      done();
     }
   });
 

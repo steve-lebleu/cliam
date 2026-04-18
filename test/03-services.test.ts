@@ -1,8 +1,9 @@
-import { describe, it } from 'bun:test';
+import { describe, it, afterEach } from 'bun:test';
 import sinon from 'sinon';
 import { expect } from 'chai';
 
-import { requestPayload } from './fixtures/index';
+import { requestPayload, cliamrc } from './fixtures/index';
+import { Cliam } from '../src/core/cliam.class';
 import { Container } from '../src/services/container.service';
 import { Mailer } from '../src/services/mailer.service';
 import { RenderEngine } from '../src/services/render-engine.service';
@@ -11,9 +12,9 @@ import { SendingError } from '../src/core/sending-error.class';
 import { SendingResponse } from '../src/core/sending-response.class';
 
 describe('Services', () => {
+  afterEach(() => sinon.restore());
 
   describe('Container', () => {
-
     it('should expose a validated client configuration after Cliam.configure()', (done: any) => {
       expect(Container.configuration).to.be.not.null;
       done();
@@ -29,14 +30,11 @@ describe('Services', () => {
       done();
     });
 
-    it('should throw when accessed before Cliam.configure() is called', (done: any) => {
-      try {
-        expect(Container.configuration).to.be.not.null;
-        done();
-      } catch (e) {
-        expect(e).to.be.instanceOf(Error);
-        done();
-      }
+    it('Cliam.configure() should initialise Container from a plain config object', (done: any) => {
+      Cliam.configure(cliamrc);
+      expect(Container.configuration).to.be.not.null;
+      expect(Container.transporters).to.be.not.null;
+      done();
     });
   });
 
