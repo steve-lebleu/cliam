@@ -31,5 +31,6 @@
     "node_modules",
     "dist",
     "test"
-  ]
+  ],
+  "types": ["bun-types"]
 }

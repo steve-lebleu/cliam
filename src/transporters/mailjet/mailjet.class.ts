@@ -5,15 +5,15 @@ import { HttpTransporter } from '@transporters/http.transporter';
 
 import { Debug } from '@decorators/debug.decorator';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
-import type { IAddressA } from '@interfaces/addresses/IAddressA.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { IMailjetError } from './IMailjetError.interface';
+import type { IMailjetAddress } from './IMailjetAddress.interface';
 
 /**
  * Mailjet transporter — sends via the Mailjet Send API v3.1.
@@ -70,14 +70,14 @@ export class MailjetTransporter extends HttpTransporter {
     return { Messages: [message] };
   }
 
-  address(recipient: string | IAddressable): IAddressA {
+  address(recipient: string | IAddressable): IMailjetAddress {
     if (typeof recipient === 'string') {
       return { Email: recipient };
     }
     return typeof recipient.name !== 'undefined' ? { Email: recipient.email, Name: recipient.name } : { Email: recipient.email };
   }
 
-  addresses(recipients: Array<string | IAddressable>): IAddressA[] {
+  addresses(recipients: Array<string | IAddressable>): IMailjetAddress[] {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 

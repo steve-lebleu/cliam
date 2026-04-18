@@ -1,5 +1,5 @@
 import type { IPlaceholder } from '@interfaces/IPlaceholder.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
 /**

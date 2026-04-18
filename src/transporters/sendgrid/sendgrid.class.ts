@@ -5,14 +5,14 @@ import type { HttpResult } from '@services/http.service';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import { Debug } from '@decorators/debug.decorator';
 
 import type { IMail } from '@interfaces/IMail.interface';
-import type { IAddressB } from '@interfaces/addresses/IAddressB.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddress } from '@interfaces/IAddress.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { ISendgridError } from './ISendgridError.interface';
 
@@ -66,14 +66,14 @@ export class SendgridTransporter extends HttpTransporter {
     return output;
   }
 
-  address(recipient: string | IAddressable, type?: string): string | IAddressB {
+  address(recipient: string | IAddressable, type?: string): string | IAddress {
     if (typeof recipient === 'string') {
       return type === 'from' ? recipient : { email: recipient };
     }
     return type === 'from' ? recipient.email : { email: recipient.email, name: recipient.name };
   }
 
-  addresses(recipients: Array<string | IAddressable>): Array<string | IAddressB> {
+  addresses(recipients: Array<string | IAddressable>): Array<string | IAddress> {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 

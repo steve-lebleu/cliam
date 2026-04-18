@@ -7,8 +7,8 @@ import { username } from '@schemas/username.schema';
 
 import { list } from '@utils/enum.util';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { SOCIAL_NETWORK } from '@enums/social-network.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { SOCIAL_NETWORK } from '@typings/social-network.type';
 
 export const configurationSchema = Joi.object({
   sandbox: Joi.boolean().default(false),

@@ -5,8 +5,9 @@ import { Container } from '@services/container.service';
 import { RenderEngine } from '@services/render-engine.service';
 import type { Transporter } from '@transporters/transporter.class';
 
-import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import { BUFFER_MIME_TYPE } from '@typings/buffer-mime-type.type';
+import { RENDER_ENGINE, type RenderEngine as RenderEngineType } from '@typings/render-engine.type';
+
 import type { IBuffer } from '@interfaces/IBuffer.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IPayload } from '@interfaces/IPayload.interface';
@@ -23,7 +24,7 @@ class Mailer {
   /**
    * @description Render engine to use for the current sending
    */
-  renderEngine!: RENDER_ENGINE;
+  renderEngine!: RenderEngineType;
 
   /**
    * @description Transporter instance
@@ -104,7 +105,7 @@ class Mailer {
       payload: payload as IMail['payload'],
       templateId: this.getTemplateId(event),
       renderEngine: this.renderEngine,
-      body: [ RENDER_ENGINE.self, RENDER_ENGINE.cliam ].includes(this.renderEngine) ? this.getCompiled(event, payload) : null,
+      body: (RENDER_ENGINE.self === this.renderEngine || RENDER_ENGINE.cliam === this.renderEngine) ? this.getCompiled(event, payload) : null,
       origin: this.getOrigin()
     }
   }

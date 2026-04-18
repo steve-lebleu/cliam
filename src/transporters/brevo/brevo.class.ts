@@ -1,20 +1,20 @@
 import { SendingError } from '@core/sending-error.class';
 import { SendingResponse } from '@core/sending-response.class';
 
+import { HttpTransporter } from '@transporters/http.transporter';
+
 import { Debug } from '@decorators/debug.decorator';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
-import type { IAddressB } from '@interfaces/addresses/IAddressB.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddress } from '@interfaces/IAddress.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { IBrevoError } from './IBrevoError.interface';
 import type { IBrevoResponse } from './IBrevoResponse.interface';
-
-import { HttpTransporter } from '@transporters/http.transporter';
 
 /**
  * Brevo transporter — sends via the Brevo SMTP API (https://api.brevo.com/v3/smtp/email).
@@ -70,14 +70,14 @@ export class BrevoTransporter extends HttpTransporter {
     return output;
   }
 
-  address(recipient: string | IAddressable): IAddressB {
+  address(recipient: string | IAddressable): IAddress {
     if (typeof recipient === 'string') {
       return { email: recipient };
     }
-    return recipient as IAddressB;
+    return recipient as IAddress;
   }
 
-  addresses(recipients: Array<string | IAddressable>): Array<IAddressB> {
+  addresses(recipients: Array<string | IAddressable>): Array<IAddress> {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 

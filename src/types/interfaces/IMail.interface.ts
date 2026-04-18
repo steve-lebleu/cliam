@@ -1,4 +1,4 @@
-import type { IAddressable } from './addresses/IAddressable.interface';
+import type { IAddressable } from './IAddressable.interface';
 import type { RenderEngine } from '@/types/types/render-engine.type';
 import type { IPayload } from '../interfaces/IPayload.interface';
 

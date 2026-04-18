@@ -7,7 +7,7 @@ import { Debug } from '@decorators/debug.decorator';
 
 import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 import type { ISendingError } from '@interfaces/ISendingError.interface';
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 

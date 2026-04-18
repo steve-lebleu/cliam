@@ -3,14 +3,14 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
-import type { IAddressD } from '@interfaces/addresses/IAddressD.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 
+import type { ISparkpostAddress } from './ISparkpostAddress.interface';
 import type { ISparkpostError } from './ISparkpostError.interface';
 import type { ISparkpostResponse } from './ISparkpostResponse.interface';
 
@@ -23,8 +23,8 @@ export class SparkpostTransporter extends HttpTransporter {
   build({ ...args }: IMail): Record<string, unknown> {
     const { payload, templateId, body, renderEngine } = args;
 
-    let cc: IAddressD[] = [];
-    let bcc: IAddressD[] = [];
+    let cc: ISparkpostAddress[] = [];
+    let bcc: ISparkpostAddress[] = [];
 
     const output: Record<string, unknown> = {
       recipients: this.addresses(payload.meta.to),
@@ -59,7 +59,7 @@ export class SparkpostTransporter extends HttpTransporter {
         Object.assign(addr, { header_to: typeof primary === 'string' ? primary : (primary as IAddressable).email });
         return addr;
       });
-      (output.recipients as IAddressD[]) = [...(output.recipients as IAddressD[]), ...cc];
+      (output.recipients as ISparkpostAddress[]) = [...(output.recipients as ISparkpostAddress[]), ...cc];
     }
 
     if (typeof payload.meta.bcc !== 'undefined') {
@@ -69,12 +69,12 @@ export class SparkpostTransporter extends HttpTransporter {
         Object.assign(addr, { header_to: typeof primary === 'string' ? primary : (primary as IAddressable).email });
         return addr;
       });
-      (output.recipients as IAddressD[]) = [...(output.recipients as IAddressD[]), ...bcc];
+      (output.recipients as ISparkpostAddress[]) = [...(output.recipients as ISparkpostAddress[]), ...bcc];
     }
 
     if (cc.length > 0 && bcc.length > 0) {
       Object.assign(output.content as Record<string, unknown>, {
-        headers: { CC: cc.map((r: IAddressD) => r.address) },
+        headers: { CC: cc.map((r: ISparkpostAddress) => r.address) },
       });
     }
 
@@ -91,11 +91,11 @@ export class SparkpostTransporter extends HttpTransporter {
     return output;
   }
 
-  address(recipient: string | IAddressable): IAddressD {
+  address(recipient: string | IAddressable): ISparkpostAddress {
     return { address: recipient };
   }
 
-  addresses(recipients: Array<string | IAddressable>): IAddressD[] {
+  addresses(recipients: Array<string | IAddressable>): ISparkpostAddress[] {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 

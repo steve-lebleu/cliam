@@ -1,6 +1,6 @@
 import type { IAttachment } from './IAttachment.interface';
 import type { IBuffer } from './IBuffer.interface';
-import type { IAddressable } from './addresses/IAddressable.interface';
+import type { IAddressable } from './IAddressable.interface';
 
 /**
  * Define a payload schema type

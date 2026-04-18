@@ -6,10 +6,10 @@ import { HttpTransporter } from '@transporters/http.transporter';
 import { Debug } from '@decorators/debug.decorator';
 
 import type { IMail } from '@interfaces/IMail.interface';
-import type { IAddressable } from '@interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import type { IMailgunError } from './IMailgunError.interface';
 

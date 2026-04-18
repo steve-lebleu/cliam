@@ -1,6 +1,7 @@
-import type { IAttachment } from '../../types/interfaces/IAttachment.interface';
-import type { IAddressB } from '../../types/interfaces/addresses/IAddressB.interface';
-import type { IAddressD } from '../../types/interfaces/addresses/IAddressD.interface';
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IAddress } from '@interfaces/IAddress.interface';
+
+import type { ISparkpostAddress } from './ISparkpostAddress.interface';
 
 export interface ISparkpostBody {
   content: {
@@ -8,7 +9,7 @@ export interface ISparkpostBody {
     headers?: {
       CC?: string[]
     },
-    from: IAddressB;
+    from: IAddress;
     html?: string;
     reply_to: string;
     subject: string;
@@ -16,6 +17,6 @@ export interface ISparkpostBody {
     text?: string;
     use_draft_template?: boolean;
   },
-  recipients: IAddressD[];
-  substitution_data?: Record<string,unknown>;
+  recipients: ISparkpostAddress[];
+  substitution_data?: Record<string, unknown>;
 }

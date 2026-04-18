@@ -1,4 +1,4 @@
-import type { IAddressable } from '@/types/interfaces/addresses/IAddressable.interface';
+import type { IAddressable } from '@/types/interfaces/IAddressable.interface';
 import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import { resolveTransporter } from './transporter.registry';
 import type { Transporter } from './transporter.class';

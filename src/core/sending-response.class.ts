@@ -1,11 +1,11 @@
-import type { PROVIDER } from '@enums/provider.enum';
+import type { Provider } from '@typings/provider.type';
 import type { ISendingResponse } from '@interfaces/ISendingResponse.interface';
 
 /**
  * @summary Sending response wrapper
  */
 export class SendingResponse implements ISendingResponse {
-  provider?: PROVIDER;
+  provider?: Provider;
   timestamp: number | null = null;
   server: string | null = null;
   uri: string | null = null;

@@ -1,19 +1,21 @@
-import type { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import type { IMail } from './../../types/interfaces/IMail.interface';
-import type { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import type { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import type { IMailersendError } from './IMailersendError.interface';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
+
+import { HttpTransporter } from '@transporters/http.transporter';
+
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddress } from '@interfaces/IAddress.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
+
 import type { HttpResult } from '@services/http.service';
 
-import { SendingError } from '../../core/sending-error.class';
-import { SendingResponse } from '../../core/sending-response.class';
+import { Debug } from '@decorators/debug.decorator';
 
-import { Debug } from '../../types/decorators/debug.decorator';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
-import { PROVIDER } from '@enums/provider.enum';
-import { RENDER_ENGINE } from '@enums/render-engine.enum';
-
-import { HttpTransporter } from './../http.transporter';
+import type { IMailersendError } from './IMailersendError.interface';
 
 /**
  * Mailersend transporter — sends via the Mailersend API (https://api.mailersend.com/v1/email).
@@ -69,14 +71,14 @@ export class MailersendTransporter extends HttpTransporter {
     return output;
   }
 
-  address(recipient: string | IAddressable): IAddressB {
+  address(recipient: string | IAddressable): IAddress {
     if (typeof recipient === 'string') {
       return { email: recipient };
     }
-    return recipient as IAddressB;
+    return recipient as IAddress;
   }
 
-  addresses(recipients: Array<string | IAddressable>): Array<IAddressB> {
+  addresses(recipients: Array<string | IAddressable>): Array<IAddress> {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 

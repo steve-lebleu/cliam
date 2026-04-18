@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 import { ATTACHMENT_DISPOSITION } from '@enums/attachment-disposition.enum';
 import { ATTACHMENT_MIME_TYPE } from '@enums/attachment-mime-type.enum';
-import { BUFFER_MIME_TYPE } from '@enums/buffer-mime-type.enum';
+import { BUFFER_MIME_TYPE } from '@typings/buffer-mime-type.type';
 
 import { recipient } from '@schemas/recipient.schema';
 

@@ -1,4 +1,4 @@
-import { PROVIDER } from '@enums/provider.enum';
+import { PROVIDER } from '@typings/provider.type';
 import { HttpClient } from '@services/http.service';
 import { registerTransporter } from '../transporter.registry';
 import { MailgunTransporter } from './mailgun.class';

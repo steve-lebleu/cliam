@@ -1,10 +1,10 @@
-import type { PROVIDER } from './../enums/provider.enum';
+import type { Provider } from '@typings/provider.type';
 
 /**
  * Define mail sending uniform response properties.
  */
 export interface ISendingResponse {
-  provider?: PROVIDER;
+  provider?: Provider;
   timestamp: number | null;
   server: string | null;
   uri: string | null;

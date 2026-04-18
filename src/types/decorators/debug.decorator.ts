@@ -1,5 +1,5 @@
 import { Container } from '@services/container.service';
-import { PROVIDER } from '@enums/provider.enum';
+import { PROVIDER } from '@typings/provider.type';
 
 /**
  * @description Applies sandbox mode overrides to the build() output when Container.configuration.sandbox is true.
