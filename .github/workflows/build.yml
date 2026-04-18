@@ -35,6 +35,7 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
+          echo RESEND_API_KEY = "${{ secrets.RESEND_API_KEY }}" >> .env
       - name: Build
         run: bun run build
       - name: Execute units tests

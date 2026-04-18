@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '18.19.0'
       - name: Install NPM dependencies
-        run: npm i typescript@5.3.3 -g && npm i
+        run: npm i typescript@6.0.3 -g && npm i
       - name: Create .env file
         run: |
           touch .env
@@ -43,6 +43,7 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
+          echo RESEND_API_KEY = "${{ secrets.RESEND_API_KEY }}" >> .env
       - name: Create .cliamrc.js file
         run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
       - name: Compile Typescript files
@@ -94,7 +95,7 @@ jobs:
           node-version: '18.19.0'
           registry-url: 'https://registry.npmjs.org'
       - name: Install NPM dependencies
-        run: npm i typescript@5.3.3 -g && npm i
+        run: npm i typescript@6.0.3 -g && npm i
       - name: Create .env file
         run: |
           touch .env
@@ -114,6 +115,7 @@ jobs:
           echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
           echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
           echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
+          echo RESEND_API_KEY = "${{ secrets.RESEND_API_KEY }}" >> .env
       - name: Create .cliamrc.js file
         run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
       - name: Compile Typescript files with declarations
