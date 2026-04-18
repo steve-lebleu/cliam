@@ -29,6 +29,7 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 - [Getting started](#getting-started)
 - [Beneficiary use cases](#beneficiary-use-cases)
 - [Supported web API providers](#supported-web-api-providers)
+- [Upgrading to v3](#upgrading-to-v3)
 - [Licence](#licence)
 - [Documentation](https://github.com/steve-lebleu/cliam/wiki)
 
@@ -138,7 +139,7 @@ import 'cliam/providers/sendgrid';
 // import 'cliam/providers/smtp'; // add others as needed
 ```
 
-Available sub-paths: `cliam/providers/brevo`, `cliam/providers/mailersend`, `cliam/providers/mailgun`, `cliam/providers/mailjet`, `cliam/providers/mandrill`, `cliam/providers/postmark`, `cliam/providers/sendgrid`, `cliam/providers/sendinblue`, `cliam/providers/sparkpost`, `cliam/providers/smtp`.
+Available sub-paths: `cliam/providers/brevo`, `cliam/providers/mailersend`, `cliam/providers/mailgun`, `cliam/providers/mailjet`, `cliam/providers/mandrill`, `cliam/providers/postmark`, `cliam/providers/resend`, `cliam/providers/sendgrid`, `cliam/providers/sparkpost`, `cliam/providers/smtp`.
 
 If a transporter is configured but its provider was never imported, Cliam throws at send time with a clear message.
 
@@ -227,6 +228,34 @@ The same: fallback on a SMTP server. In two minutes you're ready and your mailin
         <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="300px" hspace="15" /></a></td>
     </tr>
 </table>
+
+<h2 id="upgrading-to-v3">> Upgrading to v3</h2>
+
+### What's new
+
+- **Resend** is now a supported provider (`cliam/providers/resend`, `provider: 'resend'`).
+
+### Breaking changes
+
+**`inlineImages` removed from `IPayload`**
+
+The `inlineImages` field no longer exists. Inline images must be passed as attachments via the `content` array.
+
+**`sendinblue` provider removed**
+
+`sendinblue` has been removed — it was already an alias for `brevo`. Update your configuration:
+
+```diff
+- provider: 'sendinblue'
++ provider: 'brevo'
+```
+
+and update any selective import:
+
+```diff
+- import 'cliam/providers/sendinblue';
++ import 'cliam/providers/brevo';
+```
 
 <h2 id="licence">> Licence</h2>
 
