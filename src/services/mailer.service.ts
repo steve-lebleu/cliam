@@ -61,21 +61,24 @@ class Mailer {
   }
 
   /**
-   * @description Get the render engine to use for the current mailer instance according to the setup.
+   * @description Infer the render engine from the transporter configuration and payload content.
+   *
+   * SMTP: content present → self, otherwise → cliam
+   * Web API: content present → self, template configured → provider, otherwise → cliam
    *
    * @param event Event name
    * @param payload payload
    */
    private setRenderEngine(event: string, payload: IPayload): void {
-    if(!this.transporter.configuration.provider) {
-      if (payload.renderEngine === RENDER_ENGINE.provider) {
-        throw new Error(`Render engine cannot be 'provider' with a SMTP email sending. Please use 'self' or 'cliam'`);
-      }
-      this.renderEngine = payload.renderEngine ? payload.renderEngine : payload.content ? RENDER_ENGINE.self : RENDER_ENGINE.cliam;
+    if (payload.content) {
+      this.renderEngine = RENDER_ENGINE.self;
+      return;
     }
-    if (this.transporter.configuration.provider) {
-      this.renderEngine = payload.renderEngine ? payload.renderEngine : payload.content ? RENDER_ENGINE.self : this.getTemplateId(event) ? RENDER_ENGINE.provider : RENDER_ENGINE.cliam;
+    if (this.transporter.configuration.provider && this.getTemplateId(event)) {
+      this.renderEngine = RENDER_ENGINE.provider;
+      return;
     }
+    this.renderEngine = RENDER_ENGINE.cliam;
   }
 
   /**

@@ -41,7 +41,7 @@ describe('Transporters', () => {
         const mailer = new Mailer(Container.transporters[transporter]);
 
         const event = 'user.welcome';
-        const payload = requestPayload('self', transporter );
+        const payload = requestPayload(transporter);
 
         mailer.setAddresses(payload);
         mailer.setRenderEngine(event, payload);
@@ -58,7 +58,7 @@ describe('Transporters', () => {
         const stub = sinon.stub(mailer, 'getTemplateId').callsFake(() => null);
 
         const event = 'user.welcome';
-        const payload = requestPayload( 'cliam', transporter );
+        const payload = requestPayload(transporter);
         delete payload.content;
 
         mailer.setAddresses(payload);
@@ -75,15 +75,15 @@ describe('Transporters', () => {
       if (!['hosting-smtp'].includes(transporter)) {
         it(`${transporter}::build should give the output using provider render engine`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
-  
+
           const event = 'user.welcome';
-          const payload = requestPayload( 'provider', transporter );
-          
+          const payload = requestPayload(transporter);
+
           delete payload.content;
-  
+
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
-  
+
           const result = mailer.transporter.build( mailer.getMail('user.welcome', payload ) );
 
           expect(result).to.be.an('object');
@@ -95,7 +95,7 @@ describe('Transporters', () => {
         it(`${transporter}::address should returns a string`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( 'cliam', transporter );
+          const payload = requestPayload(transporter);
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.address(payload.meta.from);
@@ -105,7 +105,7 @@ describe('Transporters', () => {
         it(`${transporter}::address should returns an object`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( 'cliam', transporter );
+          const payload = requestPayload(transporter);
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.address(payload.meta.from);
@@ -117,7 +117,7 @@ describe('Transporters', () => {
         it(`${transporter}::addresses should returns an array of strings`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( 'cliam', transporter );
+          const payload = requestPayload(transporter);
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.addresses(payload.meta.to);
@@ -128,7 +128,7 @@ describe('Transporters', () => {
         it(`${transporter}::addresses should returns an array of objects`, () => {
           const mailer = new Mailer(Container.transporters[transporter]);
           const event = 'user.welcome';
-          const payload = requestPayload( 'cliam', transporter );
+          const payload = requestPayload(transporter);
           mailer.setAddresses(payload);
           mailer.setRenderEngine(event, payload);
           const result = mailer.transporter.addresses(payload.meta.to);
@@ -153,7 +153,7 @@ describe('Transporters', () => {
         const mailer = new Mailer(Container.transporters[transporter]);
         const stub = sinon.stub(mailer.transporter.transporter, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
         const event = 'user.welcome';
-        const payload = requestPayload( 'cliam', transporter );
+        const payload = requestPayload(transporter);
         payload.meta.to = [ { email: 'john.doe@test.com' } ];
         delete payload.content;
         mailer.setAddresses(payload);

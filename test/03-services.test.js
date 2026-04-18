@@ -49,34 +49,32 @@ describe('Services', () => {
     });
 
     describe('::setRenderEngine', () => {
-      it('should set the renderEngine as \'self\' when provider is not defined and payload.renderEngine is self', (done) => {
-        const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload('self');
-        mailer.setRenderEngine('user.welcome', payload);
-        expect(mailer.renderEngine).to.be.equals('self');
-        done();
-      });
-
-      it('should set the renderEngine as \'self\' when provider is not defined and payload.renderEngine is not provided and payload has a content', (done) => {
+      it('should infer \'self\' when content is present (SMTP)', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
-        delete payload.renderEngine;
         mailer.setRenderEngine('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('self');
         done();
       });
 
-      it('should set the renderEngine as \'cliam\' when provider is not defined and payload.renderEngine is not provided and payload has no content', (done) => {
+      it('should infer \'cliam\' when content is absent and no provider (SMTP)', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
         const payload = requestPayload();
         delete payload.content;
-        delete payload.renderEngine;
         mailer.setRenderEngine('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('cliam');
         done();
       });
 
-      it('should set the renderEngine as \'provider\' when provider is defined and payload.renderEngine is \'provider\'', (done) => {
+      it('should infer \'self\' when content is present (web API)', (done) => {
+        const mailer = new Mailer(Container.transporters['postmark-api']);
+        const payload = requestPayload();
+        mailer.setRenderEngine('user.welcome', payload);
+        expect(mailer.renderEngine).to.be.equals('self');
+        done();
+      });
+
+      it('should infer \'provider\' when content is absent and a template mapping exists in the configuration', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         delete payload.content;
@@ -84,41 +82,29 @@ describe('Services', () => {
         expect(mailer.renderEngine).to.be.equals('provider');
         done();
       });
-      it('should set the renderEngine as \'provider\' when provider is defined, payload.renderEngine is not provided and a template mapping can be found in the configuration', (done) => {
-        const mailer = new Mailer(Container.transporters['postmark-api']);
-        const payload = requestPayload();
-        delete payload.content;
-        delete payload.renderEngine;
-        mailer.setRenderEngine('user.welcome', payload);
-        expect(mailer.renderEngine).to.be.equals('provider');
-        done();
-      });
 
-      it('should set the renderEngine as \'self\' when provider is defined, a template mapping cannot be found in the options and payload has a content', (done) => {
+      it('should infer \'self\' when content is present even if a template mapping exists', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
-        delete payload.renderEngine;
-        mailer.setRenderEngine('user.notfound', payload);
+        mailer.setRenderEngine('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('self');
         done();
       });
 
-      it('should set the renderEngine as \'cliam\' when provider is defined, a template mapping cannot be found in the options and payload has no content', (done) => {
+      it('should infer \'cliam\' when content is absent and no template mapping exists', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
-        delete payload.renderEngine;
         delete payload.content;
         mailer.setRenderEngine('user.notfound', payload);
         expect(mailer.renderEngine).to.be.equals('cliam');
         done();
       });
 
-      it('should call ::getTemplateId to determine if there is a template mapping in the transporter options', (done) => {
+      it('should call ::getTemplateId to check for a template mapping when content is absent', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const spy = sinon.spy(mailer, 'getTemplateId');
         const payload = requestPayload();
         delete payload.content;
-        delete payload.renderEngine;
         mailer.setRenderEngine('user.welcome', payload);
         sinon.assert.callCount(spy, 1);
         spy.restore();
@@ -194,7 +180,7 @@ describe('Services', () => {
 
       it('should set text value as body when the render engine is \'self\'', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload('self');
+        const payload = requestPayload();
         mailer.setRenderEngine('user.welcome', payload);
         const result = mailer.getMail('user.welcome', payload);
         expect(mailer.renderEngine).to.be.equals('self');
@@ -204,7 +190,7 @@ describe('Services', () => {
 
       it('should set text value as body when the render engine is \'cliam\'', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload('cliam');
+        const payload = requestPayload();
         delete payload.content;
         mailer.setRenderEngine('user.welcome', payload);
         const result = mailer.getMail('user.welcome', payload);
@@ -284,7 +270,7 @@ describe('Services', () => {
 
       it('should returns text and html from the current payload when the template is rendered by the client (self) and has text and html defined', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload('self');
+        const payload = requestPayload();
         payload.content = [];
         payload.content.push({ type: 'text/plain', value: 'avalue' }, { type: 'text/html', value: '<p>anothervalue</p>' });
         
@@ -301,7 +287,7 @@ describe('Services', () => {
 
       it('should returns html from the current payload and generates text part from render engine when the template is rendered by the client (self) and exposes only HTML buffer', (done) => {
         const mailer = new Mailer(Container.transporters['hosting-smtp']);
-        const payload = requestPayload('self');
+        const payload = requestPayload();
         payload.content = [];
         payload.content.push({ type: 'text/html', value: '<p>anothervalue</p>' });
         
@@ -381,7 +367,7 @@ describe('Services', () => {
       });
 
       it('should call the transporter.build method', (done) => {
-        const payload = JSON.parse( JSON.stringify( requestPayload('provider', 'postmark-api') ) );
+        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
         delete payload.content;
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const buildSpy = sinon.spy(mailer.transporter, 'build');
@@ -394,7 +380,7 @@ describe('Services', () => {
       it('should call the transporter.send method', (done) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const sendSpy = sinon.spy(mailer.transporter, 'send');
-        const payload = JSON.parse( JSON.stringify( requestPayload('provider', 'postmark-api') ) );
+        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
         delete payload.content;
         mailer.send('user.welcome', payload);
         sendSpy.restore();
@@ -403,7 +389,7 @@ describe('Services', () => {
       });
 
       it('should success with a Promise<SendingResponse>', async () => {
-        const payload = JSON.parse( JSON.stringify( requestPayload('provider', 'postmark-api') ) );
+        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const sendStub = sinon.stub(mailer.transporter, 'send').callsFake(() => Promise.resolve(new SendingResponse()));
         payload.meta.to = [ { email: 'john.doe@test.com' } ];
@@ -415,7 +401,7 @@ describe('Services', () => {
 
       it('should fails with a Promise<SendingError>', async () => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
-        const payload = JSON.parse( JSON.stringify( requestPayload('provider', 'postmark-api') ) );
+        const payload = JSON.parse( JSON.stringify( requestPayload('postmark-api') ) );
         payload.meta.to = undefined;
         const result = await mailer.send('user.welcome', payload);
         expect(result).to.be.instanceOf(SendingError);

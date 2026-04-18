@@ -63,7 +63,7 @@ export class MandrillTransporter extends Transporter {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           template_content: [payload.data],
-          template_name: payload.meta.templateId || templateId
+          template_name: templateId
         });
         break;
       case RENDER_ENGINE.cliam:

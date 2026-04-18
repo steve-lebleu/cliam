@@ -34,7 +34,7 @@ describe('Cliam', () => {
       describe('RenderEngine::cliam', () => {
         Object.keys(EVENT).forEach((event, idx) => {
           it(event, async () => {
-            const payload = JSON.parse( JSON.stringify( requestPayload('cliam', transporter) ) );
+            const payload = JSON.parse( JSON.stringify( requestPayload(transporter) ) );
             const stub = sinon.stub(Cliam.mailers[transporter], 'getTemplateId').returns(null);
             delete payload.content;
             const response = await Cliam.mail(event, payload);
@@ -47,7 +47,7 @@ describe('Cliam', () => {
       describe('RenderEngine::self', () => {
         Object.keys(EVENT).forEach((event, idx) => {
           it(event, async () => {
-            const payload = JSON.parse( JSON.stringify( requestPayload('self', transporter) ) );
+            const payload = JSON.parse( JSON.stringify( requestPayload(transporter) ) );
             delete payload.data;
             const response = await Cliam.mail(event, payload);
             expect(response.statusCode).to.be.eqls(202);
@@ -59,7 +59,7 @@ describe('Cliam', () => {
         if (!['hosting-smtp'].includes(transporter)) {
           Object.keys(EVENT).forEach((event, idx) => {
             it(event, async () => {
-              const payload = JSON.parse( JSON.stringify( requestPayload('provider', transporter) ) );
+              const payload = JSON.parse( JSON.stringify( requestPayload(transporter) ) );
               delete payload.content;
               const response = await Cliam.mail(event, payload);
               expect(response.statusCode).to.be.eqls(202);

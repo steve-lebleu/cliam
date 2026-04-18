@@ -1,7 +1,6 @@
 import { IAttachment } from './IAttachment.interface';
 import { IAddressable } from './addresses/IAddressable.interface';
 import { IBuffer } from './IBuffer.interface';
-import { RENDER_ENGINE } from '../enums/render-engine.enum';
 
 /**
  * Define a payload schema type
@@ -14,20 +13,9 @@ export interface IPayload {
   transporterId?: string;
 
   /**
-   * @description Render engine to use for the current mail request
-   */
-  renderEngine: RENDER_ENGINE;
-
-  /**
    * @description Meta data for email sending
    */
   meta: {
-
-    /**
-     * @description Template id to use
-     * @deprecated The template is retrieved regarding the action and the compilation type
-     */
-    templateId?: string;
 
     /**
      * @description From address object

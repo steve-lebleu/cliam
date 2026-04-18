@@ -62,7 +62,7 @@ export class SendgridTransporter extends Transporter {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
           dynamic_template_data: payload.data,
-          templateId: payload.meta.templateId || templateId
+          templateId
         });
         break;
       case RENDER_ENGINE.cliam:
