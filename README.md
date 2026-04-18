@@ -205,29 +205,28 @@ The same: fallback on a SMTP server. In two minutes you're ready and your mailin
 
 <h2 id="supported-web-api-providers">> Supported web API providers</h2>
 
-<p>
-  <a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="240px" hspace="15" /></a>
-  <a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="240px" hspace="15" /></a>
-  <a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="240px" hspace="15" /></a>
-</p>
-
-<p>
-  <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
-  <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
-  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
-</p>
-
-<p>
-  <a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="240px" hspace="15" /></a>
-  <a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15" /></a>
-  <a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="240px" hspace="15" /></a>
-</p>
-
-<!--
-<p>
-  <a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="240px" hspace="15" /></a>
-</p>
--->
+<table>
+    <tr align="center">
+        <td valign="middle"><a href="https://www.resend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/resend.png" alt="Resend" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="300px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="300px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="300px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="300px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="300px" hspace="15" /></a></td>
+    </tr>
+</table>
 
 <h2 id="licence">> Licence</h2>
 
