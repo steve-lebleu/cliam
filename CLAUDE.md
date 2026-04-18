@@ -15,7 +15,7 @@ npm run ci:test
 ./node_modules/.bin/mocha ./test/00-bootstrap.test.js --exit --reporter spec --timeout 5000 --env test
 
 # Compile TypeScript
-npx tsc
+npm run build
 
 # Generate TypeDoc documentation
 npm run doc:typedoc

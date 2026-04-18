@@ -44,6 +44,7 @@
     "commitLimit": false
   },
   "scripts": {
+    "build": "./node_modules/.bin/tsc",
     "ci:test": "nyc --reporter=lcov --report-dir=./reports/coverage npm-run-all -s test:*",
     "test": "nyc --reporter=html --report-dir=./reports/nyc-coverage npm-run-all -s test:*",
     "test:unit": "./node_modules/.bin/mocha ./test/00-bootstrap.test.js --exit --reporter spec --timeout 5000 --env test",
