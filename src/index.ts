@@ -1,6 +1,4 @@
-import { Cliam } from './classes/cliam.class';
-
-export { Cliam } ;
+export { Cliam } from './classes/cliam.class';
 export { SendingResponse } from './classes/sending-response.class';
 export { SendingError } from './classes/sending-error.class';
 export { EVENT } from './types/enums/event.enum';
@@ -9,7 +7,8 @@ export { ATTACHMENT_MIME_TYPE } from './types/enums/attachment-mime-type.enum';
 export { ATTACHMENT_DISPOSITION } from './types/enums/attachment-disposition.enum';
 export { BUFFER_MIME_TYPE } from './types/enums/buffer-mime-type.enum';
 
-// Type exports
+export type { IClientConfiguration } from './classes/client-configuration.class';
+export type { ITransporterConfiguration } from './transporters/ITransporterConfiguration.interface';
 export type { Event } from './types/types/event.type';
 export type { Provider } from './types/types/provider.type';
 export type { IPayload } from './types/interfaces/IPayload.interface';

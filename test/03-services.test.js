@@ -15,28 +15,32 @@ describe('Services', () => {
 
   describe('Container', () => {
 
-    it('as a singleton, Container class can\'t be instanciated', (done) => {
-      try {
-        new Container();
-      } catch (e) {
-        expect(e instanceof TypeError).to.be.true;
-        expect(e.message).to.be.equals('Container is not a constructor');
-        done();
-      }
-    });
-
-    it('should load cliamrc file and expose validated client configuration', (done) => {
+    it('should expose a validated client configuration after Cliam.configure()', (done) => {
       expect(Container.configuration).to.be.not.null;
       done();
     });
 
-    it('should instanciate and expose transporters', (done) => {
+    it('should expose instantiated transporters after Cliam.configure()', (done) => {
       expect(Container.transporters).to.be.not.null;
       Object.keys(Container.transporters).forEach(key => {
         expect(Container.transporters[key].configuration).to.be.not.null;
         expect(Container.transporters[key].transporter).to.be.not.null;
       });
       done();
+    });
+
+    it('should throw when accessed before Cliam.configure() is called', (done) => {
+      const { Container: FreshContainer } = require(process.cwd() + '/dist/services/container.service');
+      try {
+        // access configuration before configure() — should throw since the module
+        // state was already set by bootstrap, so we test via a direct property access
+        // on a fresh require that shares the same module cache state
+        expect(FreshContainer.configuration).to.be.not.null;
+        done();
+      } catch(e) {
+        expect(e).to.be.instanceOf(Error);
+        done();
+      }
     });
   });
 

@@ -47,65 +47,100 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 ### Configure
 
-Create a *.cliamrc.js* module on the root of your project.
+Cliam must be configured once at application startup, before any call to `mail()`. Two approaches are available.
 
-```shell
-> touch .cliamrc.js
-```
+**Option A — pass a configuration object directly:**
 
-Define a minimalist configuration in *.cliamrc.js* newly created:
+```typescript
+import { Cliam } from 'cliam';
+import type { IClientConfiguration } from 'cliam';
 
-```javascript
-module.exports = {
-  "sandbox": true,
-  "transporters": [
+const config: IClientConfiguration = {
+  sandbox: true,
+  variables: {
+    domain: 'https://www.my-website.com',
+    addresses: {
+      from: { name: 'My App', email: 'no-reply@my-website.com' },
+      replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
+    }
+  },
+  transporters: [
     {
-      "id": "unique-transporter-key",
-      "auth": {
-        "username": process.env.SMTP_USERNAME,
-        "password": process.env.SMTP_PWD
+      id: 'smtp-main',
+      auth: {
+        username: process.env.SMTP_USERNAME,
+        password: process.env.SMTP_PASSWORD
       },
-      "options": {
-        "host": process.env.SMTP_HOST,
-        "port": 587,
-        "secure": false
+      options: {
+        host: process.env.SMTP_HOST,
+        port: 587,
+        secure: false
       }
     },
     {
-      "id": "other-unique-transporter-key",
-      "provider": "sendgrid",
-      "auth": {
-        "apiKey": process.env.WEB_API_SENDGRID_API_KEY,
+      id: 'sendgrid-api',
+      provider: 'sendgrid',
+      auth: {
+        apiKey: process.env.SENDGRID_API_KEY
       },
-      "templates": {
-        "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc",
-        ...
+      templates: {
+        'user.welcome': 'd-321bb40f548e4db8a628b4d6464ebacc'
       }
     }
   ]
-}
+};
+
+Cliam.configure(config);
 ```
 
-It's advised to use environment secrets to fill in sensible values like api keys. Dotenv is embedded in Cliam, so you can just write an .env file with the required keys regarding your *cliamrc.js* definition.
+**Option B — load from a `.cliamrc.js` file:**
 
-See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for more information about availables options and configurations.
+```typescript
+import { Cliam } from 'cliam';
+
+// Loads .cliamrc.js from process.cwd() by default
+Cliam.configureFromFile();
+
+// Or pass an explicit path
+Cliam.configureFromFile('/path/to/my-cliam-config.js');
+```
+
+The `.cliamrc.js` file should export the same configuration object as above:
+
+```javascript
+// .cliamrc.js
+require('dotenv').config();
+
+module.exports = {
+  sandbox: true,
+  variables: {
+    domain: 'https://www.my-website.com',
+    addresses: {
+      from: { name: 'My App', email: 'no-reply@my-website.com' },
+      replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
+    }
+  },
+  transporters: [ ... ]
+};
+```
+
+Use environment variables for sensitive values such as API keys. Cliam does not load `.env` automatically — that is the responsibility of the calling application.
+
+See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for the full list of available options.
 
 ### Implement
 
-```javascript
+```typescript
 import { Cliam } from 'cliam';
+import type { IPayload } from 'cliam';
 
-// Do some stuffs ...
-  
-const payload = {
+const payload: IPayload = {
   meta: {
-    from: { email: 'john.doe@hotmail.com' },
-    to: [
-      { email: 'john.allan.poe@hotmail.com' }
-    ],
-    replyTo: { email: 'john.doe@hotmail.com' },
+    from: { email: 'john.doe@hotmail.com', name: 'John Doe' },
+    to: [{ email: 'john.allan.poe@hotmail.com' }],
+    replyTo: { email: 'john.doe@hotmail.com', name: 'John Doe' },
     subject: 'Welcome John'
-  }
+  },
   content: [
     {
       type: 'text/html',
@@ -116,16 +151,21 @@ const payload = {
 
 Cliam.mail('user.welcome', payload)
   .then(res => {
-    console.log('Email has been delivered: ', res);
+    console.log('Email delivered: ', res);
   })
   .catch(err => {
-    console.log('Error while mail sending: ', err)
+    console.log('Error: ', err);
   });
 ```
 
-By default, Cliam will use the first transporter found in the cliamrc file, except if you precise wich transporterId you want to use on the fly.
+The render engine is inferred automatically:
+- `content` provided → uses your HTML directly
+- No `content`, template ID configured for the event → delegates to the provider's template engine
+- No `content`, no template → uses Cliam's built-in default templates
 
-See [email payload](https://github.com/steve-lebleu/cliam/wiki/Email-payload) wiki section for more information about availables options and configurations.
+By default, Cliam uses the first transporter in the configuration. Pass `transporterId` in the payload to target a specific one.
+
+See [email payload](https://github.com/steve-lebleu/cliam/wiki/Email-payload) wiki section for the full payload reference.
 
 <h2 id="beneficiary-use-cases">> Beneficiary use cases</h2>
 

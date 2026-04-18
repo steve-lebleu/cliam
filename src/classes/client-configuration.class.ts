@@ -2,6 +2,19 @@ import { IPlaceholder } from './../types/interfaces/IPlaceholder.interface';
 import { IAddressable } from './../types/interfaces/addresses/IAddressable.interface';
 import { ITransporterConfiguration } from '../transporters/ITransporterConfiguration.interface';
 
+export interface IClientConfiguration {
+  sandbox?: boolean
+  variables: {
+    domain: string
+    addresses: {
+      from: IAddressable
+      replyTo: IAddressable
+    }
+  }
+  placeholders?: IPlaceholder
+  transporters: ITransporterConfiguration[]
+}
+
 /**
  * @description Representation of cliamrc file
  */

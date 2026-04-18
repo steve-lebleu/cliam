@@ -50,9 +50,7 @@
     "doc:typedoc": "typedoc --name 'Cliam documentation' --defaultCategory 'Test' --categorizeByGroup true --out ./docs/typedoc ./src"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
     "color": "^4.2.3",
-    "dotenv": "^16.4.1",
     "hbs": "4.2.0",
     "html-to-text": "^8.1.0",
     "joi": "^17.12.0",
@@ -70,6 +68,7 @@
   },
   "devDependencies": {
     "@types/hbs": "^4.0.4",
+    "dotenv": "^16.4.1",
     "@types/node": "^20.11.6",
     "@types/node-mailjet": "^3.3.12",
     "@types/nodemailer": "^6.4.14",

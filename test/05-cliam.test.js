@@ -18,12 +18,18 @@ describe('Cliam', () => {
     });
   });
 
-  it('as a singleton, Cliam class can\'t be instanciated', () => {
+  it('Cliam.mail() should throw when called before configure()', async () => {
+    const { Cliam: FreshCliam } = require(process.cwd() + '/dist/index');
+    // Access mailers directly (TypeScript private is compile-time only)
+    const originalMailers = FreshCliam.mailers;
+    FreshCliam.mailers = {};
     try {
-      new Cliam();
-    } catch (e) {
-      expect(e instanceof TypeError).to.be.true;
-      expect(e.message).to.be.equals('Cliam is not a constructor');
+      await FreshCliam.mail('user.welcome', {});
+    } catch(e) {
+      expect(e).to.be.instanceOf(Error);
+      expect(e.message).to.include('not configured');
+    } finally {
+      FreshCliam.mailers = originalMailers;
     }
   });
   

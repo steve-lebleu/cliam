@@ -1,63 +1,61 @@
+import { existsSync } from 'node:fs';
+
 import { Container } from './../services/container.service';
+import { IClientConfiguration } from './client-configuration.class';
 import { Event } from './../types/types/event.type';
 import { IPayload } from './../types/interfaces/IPayload.interface';
 import { SendingResponse } from './sending-response.class';
 import { SendingError } from './sending-error.class';
 import { Mailer } from './../services/mailer.service';
 
-/**
- * @summary Main class of cliam project. The Cliam class act as entry point and open wrapped method via mail.
- *
- * @public
- */
-class Cliam {
-
-  /**
-   * @description
-   */
-  private static instance: Cliam = null;
-
-  /**
-   * @description
-   */
-  private mailers: { [id:string]: Mailer } = {};
+export class Cliam {
+  private static mailers: { [id: string]: Mailer } = {};
 
   private constructor() {}
 
   /**
-   * @description Cliam instance getter
-   * 
-   * @return {Cliam} Cliam instance
+   * @description Configure Cliam from a plain configuration object.
    */
-  static get(): Cliam {
-    if (!Cliam.instance) {
-      Cliam.instance = new Cliam();
-      Object.keys(Container.transporters).forEach(key => {
-        if (!Cliam.instance.mailers[key]) {
-          Cliam.instance.mailers[key] = new Mailer(Container.transporters[key]);
-        }
-      });
-    }
-    return Cliam.instance;
+  static configure(config: IClientConfiguration): void {
+    Container.configure(config);
+    Cliam.mailers = {};
+
+    Object.keys(Container.transporters).forEach(key => {
+      Cliam.mailers[key] = new Mailer(Container.transporters[key]);
+    });
   }
 
   /**
-   * @description Send an email
-   * 
-   * @param event Transactional event as string or EVENT
-   * @param payload Email payload
-   * 
-   * @returns {Promise<SendingResponse|SendingError>} Agnostic result of mail sending
+   * @description Configure Cliam by loading a .js configuration file.
+   * Defaults to .cliamrc.js at process.cwd() when no path is provided.
    */
-  async mail(event: Event|string, payload: IPayload): Promise<SendingResponse|SendingError> {
-    const key = payload.transporterId || Object.keys(Container.transporters).shift();
-    if (!this.mailers[key]) {
-      throw new Error('transporterId not found in cliamrc configuration');
+  static configureFromFile(path?: string): void {
+    const filePath = path ?? `${process.cwd()}/.cliamrc.js`;
+
+    if (!existsSync(filePath)) {
+      throw new Error(`Cliam configuration file not found: ${filePath}`);
     }
-    return this.mailers[key].send(event, payload);
+
+    delete require.cache[require.resolve(filePath)];
+
+    const config = require(filePath);
+    Cliam.configure(config);
+  }
+
+  /**
+   * @description Send an email.
+   */
+  static async mail(event: Event | string, payload: IPayload): Promise<SendingResponse | SendingError> {
+    if (Object.keys(Cliam.mailers).length === 0) {
+      throw new Error('Cliam is not configured. Call Cliam.configure() or Cliam.configureFromFile() first.');
+    }
+
+    const key = payload.transporterId || Object.keys(Container.transporters).shift();
+
+    if (!Cliam.mailers[key]) {
+      throw new Error(`transporterId "${key}" not found in configuration`);
+    }
+
+    return Cliam.mailers[key].send(event, payload);
   }
 }
-
-const cliam = Cliam.get() as { mail: (event: Event|string, payload: IPayload) => Promise<SendingResponse | SendingError> };
-
-export { cliam as Cliam }
