@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Copy .env file
-        run: cp .env.local .env
+        run: cp .local.env .env
       - name: Copy .cliamrc.js file
         run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
       - name: Build
