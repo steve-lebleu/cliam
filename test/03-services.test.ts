@@ -322,10 +322,12 @@ describe('Services', () => {
       it('should set the render engine before to send email', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const setRenderEngineSpy = sinon.spy(mailer, 'setRenderEngine');
+        const sendStub = sinon.stub(mailer.transporter, 'send').resolves(new SendingResponse());
         const payload = JSON.parse(JSON.stringify(requestPayload()));
         delete payload.content;
         mailer.send('user.welcome', payload);
         setRenderEngineSpy.restore();
+        sendStub.restore();
         sinon.assert.callCount(setRenderEngineSpy, 1);
         done();
       });
@@ -333,9 +335,11 @@ describe('Services', () => {
       it('should set the the addresses before to send email', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const setAddressesSpy = sinon.spy(mailer, 'setAddresses');
+        const sendStub = sinon.stub(mailer.transporter, 'send').resolves(new SendingResponse());
         const payload = JSON.parse(JSON.stringify(requestPayload()));
         mailer.send('user.welcome', payload);
         setAddressesSpy.restore();
+        sendStub.restore();
         sinon.assert.callCount(setAddressesSpy, 1);
         done();
       });
@@ -363,20 +367,22 @@ describe('Services', () => {
         delete payload.content;
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const buildSpy = sinon.spy(mailer.transporter, 'build');
+        const sendStub = sinon.stub(mailer.transporter, 'send').resolves(new SendingResponse());
         mailer.send('user.welcome', payload);
         buildSpy.restore();
+        sendStub.restore();
         sinon.assert.callCount(buildSpy, 1);
         done();
       });
 
       it('should call the transporter.send method', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
-        const sendSpy = sinon.spy(mailer.transporter, 'send');
+        const sendStub = sinon.stub(mailer.transporter, 'send').resolves(new SendingResponse());
         const payload = JSON.parse(JSON.stringify(requestPayload('postmark-api')));
         delete payload.content;
         mailer.send('user.welcome', payload);
-        sendSpy.restore();
-        sinon.assert.callCount(sendSpy, 1);
+        sendStub.restore();
+        sinon.assert.callCount(sendStub, 1);
         done();
       });
 
