@@ -129,6 +129,8 @@ export class SparkpostTransporter extends HttpTransporter<ISparkpostBody> {
   }
 
   error(result: HttpFailure<ISparkpostError>): SendingError {
-    return new SendingError(result.data.statusCode, result.data.errors[0].message, [result.data.errors[0]?.description ?? '']);
+    const { statusCode, errors } = result.data;
+
+    return new SendingError(statusCode, errors[0]?.message ?? 'Unknown error', [errors[0]?.description ?? '']);
   }
 }
