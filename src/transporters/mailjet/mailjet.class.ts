@@ -14,6 +14,8 @@ import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { IMailjetError } from './IMailjetError.interface';
 import type { IMailjetAddress } from './IMailjetAddress.interface';
+import type { IMailjetMessage } from './IMailjetBody.interface';
+import type { IMailjetResponse } from './IMailjetResponse.interface';
 
 /**
  * Mailjet transporter — sends via the Mailjet Send API v3.1.
@@ -25,7 +27,7 @@ export class MailjetTransporter extends HttpTransporter {
   build({ ...args }: IMail): Record<string, unknown> {
     const { payload, templateId, body, renderEngine } = args;
 
-    const message: Record<string, unknown> = {
+    const message: IMailjetMessage = {
       From: this.address(payload.meta.from),
       To: this.addresses(payload.meta.to),
       ReplyTo: this.address(payload.meta.replyTo),
@@ -50,21 +52,19 @@ export class MailjetTransporter extends HttpTransporter {
     }
 
     if (typeof payload.meta.cc !== 'undefined') {
-      Object.assign(message, { Cc: this.addresses(payload.meta.cc) });
+      message.Cc = this.addresses(payload.meta.cc);
     }
 
     if (typeof payload.meta.bcc !== 'undefined') {
-      Object.assign(message, { Bcc: this.addresses(payload.meta.bcc) });
+      message.Bcc = this.addresses(payload.meta.bcc);
     }
 
     if (typeof payload.meta.attachments !== 'undefined') {
-      Object.assign(message, {
-        Attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
-          ContentType: attachment.type,
-          Filename: attachment.filename,
-          Base64Content: attachment.content,
-        })),
-      });
+      message.Attachments = payload.meta.attachments.map((attachment: IAttachment) => ({
+        ContentType: attachment.type,
+        Filename: attachment.filename,
+        Base64Content: attachment.content,
+      }));
     }
 
     return { Messages: [message] };
@@ -74,6 +74,7 @@ export class MailjetTransporter extends HttpTransporter {
     if (typeof recipient === 'string') {
       return { Email: recipient };
     }
+
     return typeof recipient.name !== 'undefined' ? { Email: recipient.email, Name: recipient.name } : { Email: recipient.email };
   }
 
@@ -82,11 +83,16 @@ export class MailjetTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<{ Messages: Array<{ Status: string }> }>('v3.1/send', body);
-    return this.response(result.data);
-  }
+     const result = await this.httpClient.post<IMailjetResponse | IMailjetError>('v3.1/send', body);
 
-  response(response: { Messages: Array<{ Status: string }> }): SendingResponse {
+     if (result.status >= 400) {
+       return Promise.reject(this.error(result.data as IMailjetError));
+     }
+
+     return this.response(result.data as IMailjetResponse);
+   }
+
+  response(response: IMailjetResponse): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.mailjet)
       .set('server', null)
@@ -100,6 +106,6 @@ export class MailjetTransporter extends HttpTransporter {
   }
 
   error(error: IMailjetError): SendingError {
-    return new SendingError(error.statusCode, error.ErrorMessage, [error.ErrorMessage]);
+    return new SendingError(error.StatusCode, error.ErrorMessage, error.ErrorRelatedTo);
   }
 }

@@ -17,7 +17,7 @@ const Debug = (provider: Provider) => {
             Object.assign(output, { headers: { 'X-Sib-Sandbox': 'drop' } });
             break;
           case PROVIDER.mailgun:
-            Object.assign(output, { testmode: true });
+            Object.assign(output, { 'o:testmode': 'yes' });
             break;
           case PROVIDER.mailjet:
             Object.assign(output, {

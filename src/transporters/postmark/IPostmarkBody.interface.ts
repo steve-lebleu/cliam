@@ -1,15 +1,20 @@
-import type { IAttachment } from '@interfaces/IAttachment.interface';
+export interface IPostmarkAttachment {
+  ContentTransferEncoding: string;
+  Content: string;
+  Name: string;
+  Cid: string;
+}
 
 export interface IPostmarkBody {
-  from: string;
-  to: Array<string>;
-  replyTo: string;
-  subject: string;
-  templateModel?: Record<string, unknown>;
-  templateId?: string;
-  text?: string;
-  html?: string;
-  cc?: Array<string>;
-  bcc?: Array<string>;
-  attachments?: Array<IAttachment>
+  From: string;
+  To: string;
+  ReplyTo: string;
+  Subject: string;
+  TextBody?: string;
+  HtmlBody?: string;
+  TemplateId?: number;
+  TemplateModel?: Record<string, unknown>;
+  Cc?: string;
+  Bcc?: string;
+  Attachments?: IPostmarkAttachment[];
 }

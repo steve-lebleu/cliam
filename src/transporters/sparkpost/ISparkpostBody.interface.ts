@@ -1,22 +1,25 @@
-import type { IAttachment } from '@interfaces/IAttachment.interface';
-import type { IAddress } from '@interfaces/IAddress.interface';
-
+import type { IAddressable } from '@interfaces/IAddressable.interface';
 import type { ISparkpostAddress } from './ISparkpostAddress.interface';
 
+export interface ISparkpostAttachment {
+  name: string;
+  type?: string;
+  data: string;
+}
+
 export interface ISparkpostBody {
-  content: {
-    attachments?: IAttachment[]
-    headers?: {
-      CC?: string[]
-    },
-    from: IAddress;
-    html?: string;
-    reply_to: string;
-    subject: string;
-    template_id?: string;
-    text?: string;
-    use_draft_template?: boolean;
-  },
   recipients: ISparkpostAddress[];
+  content: {
+    from: string | IAddressable;
+    subject: string;
+    reply_to: string;
+    html?: string;
+    text?: string;
+    template_id?: string;
+    use_draft_template?: boolean;
+    headers?: { CC?: string[] };
+    attachments?: ISparkpostAttachment[];
+  };
   substitution_data?: Record<string, unknown>;
+  options?: { sandbox: boolean };
 }

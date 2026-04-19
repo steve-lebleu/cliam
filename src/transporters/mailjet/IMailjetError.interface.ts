@@ -1,4 +1,7 @@
 export interface IMailjetError {
-  statusCode: number;
+  ErrorIdentifier: string;
+  ErrorCode: string;
+  StatusCode: number;
   ErrorMessage: string;
+  ErrorRelatedTo: string[];
 }

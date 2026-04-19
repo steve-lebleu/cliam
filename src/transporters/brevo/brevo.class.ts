@@ -82,8 +82,13 @@ export class BrevoTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<IBrevoResponse>('smtp/email', body);
-    return this.response(result.data);
+    const result = await this.httpClient.post('smtp/email', body);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as IBrevoError));
+    }
+
+    return this.response(result.data as IBrevoResponse);
   }
 
   response(response: IBrevoResponse): SendingResponse {

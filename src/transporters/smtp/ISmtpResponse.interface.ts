@@ -1,7 +1,7 @@
 /**
  * @description
  */
-export interface ISMTPResponse {
+export interface ISmtpResponse {
   accepted?: string|string[];
   rejected?: string|string[];
   envelopeTime?: number;

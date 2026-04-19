@@ -110,8 +110,14 @@ export class SesTransporter extends HttpTransporter {
       accessKeyId: this.configuration.auth.apiKey!,
       secretAccessKey: this.configuration.auth.apiSecret!,
     });
-    const result = await this.httpClient.post<ISesResponse>('v2/email/outbound-emails', body, authHeaders);
-    return this.response(result.data);
+
+    const result = await this.httpClient.post<ISesResponse | ISesError>('v2/email/outbound-emails', body, authHeaders);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as ISesError));
+    }
+
+    return this.response(result.data as ISesResponse);
   }
 
   response(response: ISesResponse): SendingResponse {

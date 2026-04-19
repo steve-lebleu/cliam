@@ -1,19 +1,21 @@
-import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IResendAttachment } from './IResendAttachment.interface';
 
 export interface IResendBody {
   from: string;
   to: string | string[];
   subject: string;
+  reply_to?: string | string[];
+  html?: string;
+  text?: string;
   cc?: string | string[];
   bcc?: string | string[];
-  replyTo?: string | string[];
-  html: string;
-  text?: string;
   headers?: Record<string, string>;
-  attachments?: IAttachment[];
-  tags?: Record<string, string>[];
+  scheduled_at?: string;
+  topic_id?: string;
+  attachments?: IResendAttachment[];
+  tags?: Array<{ name: string; value: string }>;
   template?: {
     id: string;
-    variables?: Record<string, string|number>;
-  }
+    variables?: Record<string, string | number>;
+  };
 }

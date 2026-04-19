@@ -1,8 +1,6 @@
 export interface IMandrillError {
-  status: string,
-  code: number,
-  name: string,
-  message: string,
-  statusCode: number,
-  ErrorMessage: string
+  status: string;
+  code: number;
+  name: string;
+  message: string;
 }

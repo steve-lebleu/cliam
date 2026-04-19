@@ -1,18 +1,19 @@
 export default (transporter: string) => {
   switch (transporter) {
     case 'mailjet-api':
-      return { statusCode: 500, ErrorMessage: 'error message' };
+      return { ErrorIdentifier: 'uuid', ErrorCode: 'mj-0004', StatusCode: 400, ErrorMessage: 'error message', ErrorRelatedTo: [] };
     case 'mailgun-api':
-      return { status: 400, type: 'BadRequest', details: 'Invalid domain' };
+      return { message: 'Invalid domain' };
     case 'mandrill-api':
-      return { code: -1, name: 'ValidationError', message: 'Validation error' };
+      return { status: 'error', code: -1, name: 'ValidationError', message: 'Validation error' };
     case 'mailersend-api':
       return { name: 'MailersendError', statusCode: 422, body: { message: 'Unprocessable Entity', errors: 'errors' } };
     case 'brevo-api':
       return { code: 400, message: '400' };
     case 'sendgrid-api':
+      return { errors: [{ message: 'Invalid email address', field: 'to', help: null }] };
     case 'postmark-api':
-      return new Error('Dummy error');
+      return { ErrorCode: 400, Message: 'Bad Request' };
     case 'hosting-smtp':
       return Object.assign(new Error('Invalid address'), { responseCode: 550, code: 'EENVELOPE', response: '550 Invalid address' });
     case 'resend-api':

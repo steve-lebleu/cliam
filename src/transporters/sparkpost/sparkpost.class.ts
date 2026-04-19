@@ -103,8 +103,13 @@ export class SparkpostTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<ISparkpostResponse>('v1/transmissions', body);
-    return this.response(result.data);
+    const result = await this.httpClient.post<ISparkpostResponse | ISparkpostError>('v1/transmissions', body);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as ISparkpostError));
+    }
+
+    return this.response(result.data as ISparkpostResponse);
   }
 
   response(response: ISparkpostResponse): SendingResponse {

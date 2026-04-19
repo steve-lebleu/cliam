@@ -88,19 +88,27 @@ export class MandrillTransporter extends HttpTransporter {
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const isTemplate = 'template_name' in body;
     const endpoint = isTemplate ? 'messages/send-template' : 'messages/send';
-    const payload = isTemplate ? body : body;
-    const result = await this.httpClient.post<IMandrillResponse[]>(endpoint, {
+
+    const result = await this.httpClient.post<IMandrillResponse[] | IMandrillError>(endpoint, {
       key: this.configuration.auth.apiKey,
-      ...payload,
+      ...body,
     });
-    return this.response(result.data);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as IMandrillError));
+    }
+
+    const responses = result.data as IMandrillResponse[];
+    const rejected = responses.find(r => r.status === 'rejected' || r.status === 'invalid');
+
+    if (rejected) {
+      return Promise.reject(this.error({ status: 'error', code: 400, name: rejected.status, message: `${rejected.reject_reason} (email: ${rejected.email})` }));
+    }
+
+    return this.response(responses);
   }
 
   response(response: IMandrillResponse[]): SendingResponse {
-    const rejected = response.filter(r => r.status === 'rejected' || r.status === 'invalid');
-    if (rejected.length) {
-      throw { statusCode: 400, statusText: rejected[0].status, message: `${rejected[0].reject_reason} (email: ${rejected[0].email})` };
-    }
     return new SendingResponse()
       .set('provider', PROVIDER.mandrill)
       .set('server', null)

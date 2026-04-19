@@ -9,11 +9,10 @@ import type { IAddressable } from '@interfaces/IAddressable.interface';
 import type { ISendingError } from '@interfaces/ISendingError.interface';
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
-import type { IGmailError } from './IGmailError.interface';
 import type { IInfomaniakError } from './IInformaniakError.interface';
 import type { ISmtpTransport } from './ISmtpTransport.interface';
-import type { ISMTPError } from './ISMTPError.interface';
-import type { ISMTPResponse } from './ISMTPResponse.interface';
+import type { ISmtpError } from './ISmtpError.interface';
+import type { ISmtpResponse } from './ISmtpResponse.interface';
 
 /**
  * Set a Nodemailer SMTP transporter for mail sending.
@@ -90,12 +89,21 @@ export class SmtpTransporter extends Transporter {
     return [...recipients].map( (recipient: string | IAddressable) => this.address(recipient) );
   }
 
+  async send(body: Record<string, unknown>): Promise<SendingResponse> {
+    try {
+      const info = await this.transport.sendMail(body);
+      return this.response(info);
+    } catch (err: unknown) {
+      return Promise.reject(this.error(err as Error | ISmtpError | IInfomaniakError));
+    }
+  }
+
   /**
    * @description Format API response
    *
    * @param response Response from Nodemailer SMTP API
    */
-  response(response: ISMTPResponse): SendingResponse {
+  response(response: ISmtpResponse): SendingResponse {
     const incoming = response;
     const res = new SendingResponse();
 
@@ -119,7 +127,7 @@ export class SmtpTransporter extends Transporter {
    *
    * @fixme Non managed error with smtp.gmail.com and secure true : error have a different pattern and this regError.exec(error.response)[0] not working
    */
-  error(error: Error | IGmailError | IInfomaniakError | ISMTPError): SendingError {
+  error(error: Error | ISmtpError | IInfomaniakError | ISmtpError): SendingError {
     if (error instanceof TypeError) {
       return new SendingError(417, error.name, [error.message]);
     }
@@ -131,7 +139,7 @@ export class SmtpTransporter extends Transporter {
     };
 
     if (this.transport.options?.host === 'smtp.gmail.com') {
-      const e = error as IGmailError;
+      const e = error as ISmtpError;
 
       const regError = /[A-Z]{1}[a-z\s\W]+\./g;
       const matchError = regError.exec(e.response)?.[0];
@@ -150,14 +158,5 @@ export class SmtpTransporter extends Transporter {
     }
 
     return new SendingError(output.statusCode, output.statusText, output.errors)
-  }
-
-  async send(body: Record<string, unknown>): Promise<SendingResponse | SendingError> {
-    try {
-      const info = await this.transport.sendMail(body);
-      return this.response(info);
-    } catch (err: unknown) {
-      return this.error(err as Error | IGmailError | IInfomaniakError | ISMTPError);
-    }
   }
 }

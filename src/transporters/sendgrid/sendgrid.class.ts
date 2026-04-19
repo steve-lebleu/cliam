@@ -78,7 +78,12 @@ export class SendgridTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post('v3/mail/send', body);
+    const result = await this.httpClient.post<ISendgridError>('v3/mail/send', body);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data));
+    }
+
     return this.response(result);
   }
 
@@ -96,10 +101,7 @@ export class SendgridTransporter extends HttpTransporter {
   }
 
   error(error: ISendgridError): SendingError {
-    return new SendingError(
-      (error as any).code || (error as any).statusCode,
-      (error as any).name || (error as any).message,
-      (error as any).response?.body?.errors ?? [(error as any).message],
-    );
+    const first = error.errors?.[0];
+    return new SendingError(400, first?.message ?? 'Unknown error', error.errors.map(e => e.message));
   }
 }

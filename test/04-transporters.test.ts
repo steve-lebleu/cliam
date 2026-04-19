@@ -138,7 +138,7 @@ describe('Transporters', () => {
 
         let stub: sinon.SinonStub;
         if (HTTP_TRANSPORTERS.includes(transporter)) {
-          const method = transporter === 'mailgun-api' ? 'postForm' : 'post';
+          const method = transporter === 'mailgun-api' ? 'postFormData' : 'post';
           const data = transporter === 'mandrill-api' ? [] : transporter === 'sparkpost-api' ? { results: {} } : {};
           stub = sinon.stub((mailer.transporter as unknown as HttpTransporter).httpClient, method).resolves({ status: 202, headers: {}, data });
         } else {

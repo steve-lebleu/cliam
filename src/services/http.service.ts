@@ -22,6 +22,7 @@ export class HttpClient {
       headers,
       retry,
       timeout,
+      throwHttpErrors: false,
     });
   }
 
@@ -44,6 +45,11 @@ export class HttpClient {
 
     const response = await this.instance.post(path, { body: form, headers });
 
+    return this.normalize<T>(response);
+  }
+
+  async postFormData<T = unknown>(path: string, form: FormData, headers?: Record<string, string>): Promise<HttpResult<T>> {
+    const response = await this.instance.post(path, { body: form, headers });
     return this.normalize<T>(response);
   }
 

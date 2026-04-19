@@ -1,11 +1,9 @@
+export interface ISendgridErrorDetail {
+  message: string;
+  field?: string | null;
+  help?: string;
+}
+
 export interface ISendgridError {
-  statusCode?: number;
-  code?: number;
-  name?: string;
-  message?: string;
-  response?: {
-    body: {
-      errors: string[]
-    }
-  }
+  errors: ISendgridErrorDetail[];
 }

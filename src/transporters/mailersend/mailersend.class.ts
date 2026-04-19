@@ -16,6 +16,7 @@ import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import type { IMailersendError } from './IMailersendError.interface';
+import type { IMailersendResponse } from './IMailersendResponse.interface';
 
 /**
  * Mailersend transporter — sends via the Mailersend API (https://api.mailersend.com/v1/email).
@@ -84,6 +85,11 @@ export class MailersendTransporter extends HttpTransporter {
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const result = await this.httpClient.post('email', body);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as IMailersendError));
+    }
+
     return this.response(result);
   }
 

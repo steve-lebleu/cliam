@@ -5,6 +5,7 @@ import { HttpTransporter } from '@transporters/http.transporter';
 
 import { Debug } from '@utils/debug.util';
 
+import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
@@ -12,6 +13,7 @@ import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
 import type { IMailgunError } from './IMailgunError.interface';
+import type { IMailgunResponse } from './IMailgunResponse.interface';
 
 /**
  * Mailgun transporter — sends via the Mailgun Messages API.
@@ -20,10 +22,10 @@ import type { IMailgunError } from './IMailgunError.interface';
  */
 export class MailgunTransporter extends HttpTransporter {
   @Debug('mailgun')
-  build({ ...args }: IMail): Record<string, string | string[]> {
+  build({ ...args }: IMail): Record<string, unknown> {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output: Record<string, string | string[]> = {
+    const output: Record<string, unknown> = {
       from: this.address(payload.meta.from),
       to: this.addresses(payload.meta.to),
       'h:Reply-To': this.address(payload.meta.replyTo),
@@ -54,6 +56,16 @@ export class MailgunTransporter extends HttpTransporter {
       Object.assign(output, { bcc: this.addresses(payload.meta.bcc) });
     }
 
+    if (typeof payload.meta.attachments !== 'undefined') {
+      Object.assign(output, {
+        attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
+          content: attachment.content,
+          filename: attachment.filename,
+          type: attachment.type,
+        })),
+      });
+    }
+
     return output;
   }
 
@@ -70,11 +82,34 @@ export class MailgunTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.postForm<{ id: string; message: string }>('messages', body as Record<string, string | string[]>);
-    return this.response(result.data);
+    const { attachments, ...fields } = body;
+    const form = new FormData();
+
+    for (const [key, value] of Object.entries(fields)) {
+      if (Array.isArray(value)) {
+        for (const v of value) form.append(key, v as string);
+      } else if (value != null) {
+        form.append(key, value as string);
+      }
+    }
+
+    if (Array.isArray(attachments)) {
+      for (const att of attachments as Array<{ content: string; filename: string; type?: string }>) {
+        const bytes = Uint8Array.from(atob(att.content), c => c.charCodeAt(0));
+        form.append('attachment', new Blob([bytes], { type: att.type ?? 'application/octet-stream' }), att.filename);
+      }
+    }
+
+    const result = await this.httpClient.postFormData<IMailgunResponse | IMailgunError>('messages', form);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as IMailgunError));
+    }
+
+    return this.response(result.data as IMailgunResponse);
   }
 
-  response(response: Record<string, unknown>): SendingResponse {
+  response(response: IMailgunResponse): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.mailgun)
       .set('server', null)
@@ -87,7 +122,8 @@ export class MailgunTransporter extends HttpTransporter {
       .set('statusMessage', response.message as string);
   }
 
-  error(error: IMailgunError): SendingError {
-    return new SendingError(error.status, error.type, [error.details]);
+  error(error: IMailgunError | string): SendingError {
+    const message = typeof error === 'string' ? error : error.message;
+    return new SendingError(500, message, [message]);
   }
 }

@@ -83,8 +83,13 @@ export class PostmarkTransporter extends HttpTransporter {
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const endpoint = 'TemplateId' in body ? 'email/withTemplate' : 'email';
-    const result = await this.httpClient.post<IPostmarkResponse>(endpoint, body);
-    return this.response(result.data);
+    const result = await this.httpClient.post<IPostmarkResponse | IPostmarkError>(endpoint, body);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as IPostmarkError));
+    }
+
+    return this.response(result.data as IPostmarkResponse);
   }
 
   response(response: IPostmarkResponse): SendingResponse {
@@ -101,10 +106,6 @@ export class PostmarkTransporter extends HttpTransporter {
   }
 
   error(error: IPostmarkError): SendingError {
-    return new SendingError(
-      (error as any).statusCode || (error as any).code,
-      (error as any).name || (error as any).message,
-      (error as any).response?.body?.errors ?? [(error as any).message],
-    );
+    return new SendingError(error.ErrorCode, error.Message, [error.Message]);
   }
 }

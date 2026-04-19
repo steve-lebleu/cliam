@@ -42,5 +42,5 @@ export abstract class Transporter {
    *
    * @param body The transporter engine specific request body
    */
-  abstract send(body: Record<string, unknown>): Promise<SendingResponse | SendingError>;
+  abstract send(body: Record<string, unknown>): Promise<SendingResponse>;
 }

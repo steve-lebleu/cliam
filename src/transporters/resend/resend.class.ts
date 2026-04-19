@@ -35,8 +35,10 @@ export class ResendTransporter extends HttpTransporter {
     switch (renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
-          template_id: templateId,
-          record: payload.data,
+          template: {
+            id: templateId,
+            variables: payload.data,
+          },
         });
         break;
       case RENDER_ENGINE.cliam:
@@ -61,6 +63,7 @@ export class ResendTransporter extends HttpTransporter {
         attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
           filename: attachment.filename,
           content: attachment.content,
+          content_type: attachment.type,
         })),
       });
     }
@@ -80,8 +83,13 @@ export class ResendTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<IResendResponse>('emails', body);
-    return this.response(result.data);
+    const result = await this.httpClient.post<IResendResponse | IResendError>('emails', body);
+
+    if (result.status >= 400) {
+      return Promise.reject(this.error(result.data as IResendError));
+    }
+
+    return this.response(result.data as IResendResponse);
   }
 
   response(response: IResendResponse): SendingResponse {
