@@ -77,11 +77,12 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
     if (typeof recipient === 'string') {
       return recipient;
     }
+
     return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : recipient.email;
   }
 
   addresses(recipients: Array<string | IAddressable>): string[] {
-    return [...recipients].map((r: string | IAddressable) => this.address(r));
+    return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
   async send(body: IPostmarkBody): Promise<SendingResponse> {
@@ -96,19 +97,23 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
   }
 
   response(result: HttpSuccess<IPostmarkResponse>): SendingResponse {
+    const { MessageID, Message, SubmittedAt } = result.data;
+
     return new SendingResponse()
       .set('provider', PROVIDER.postmark)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
-      .set('timestamp', Date.now())
-      .set('messageId', result.data.MessageID)
-      .set('body', result.data.Message)
+      .set('timestamp', SubmittedAt)
+      .set('messageId', MessageID)
+      .set('body', Message)
       .set('statusCode', result.status)
-      .set('statusMessage', result.data.SubmittedAt);
+      .set('statusMessage', null);
   }
 
   error(result: HttpFailure<IPostmarkError>): SendingError {
-    return new SendingError(result.data.ErrorCode, result.data.Message, [result.data.Message]);
+    const { ErrorCode, Message } = result.data;
+
+    return new SendingError(ErrorCode, Message, [Message]);
   }
 }
