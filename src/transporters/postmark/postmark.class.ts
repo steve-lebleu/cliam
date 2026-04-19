@@ -65,7 +65,7 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
           ContentTransferEncoding: 'base64',
           Content: attachment.content,
           Name: attachment.filename,
-          Cid: `cid:${attachment.filename}`,
+          ContentID: `cid:${attachment.filename}`,
         })),
       });
     }

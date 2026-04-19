@@ -2,7 +2,7 @@ export interface IPostmarkAttachment {
   ContentTransferEncoding: string;
   Content: string;
   Name: string;
-  Cid: string;
+  ContentID: string;
 }
 
 export interface IPostmarkBody {

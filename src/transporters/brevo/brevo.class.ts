@@ -96,20 +96,23 @@ export class BrevoTransporter extends HttpTransporter<IBrevoBody> {
   }
 
   response(result: HttpSuccess<IBrevoResponse>): SendingResponse {
+    const { messageId, envelope } = result.data;
+
     return new SendingResponse()
       .set('provider', PROVIDER.brevo)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', result.data.messageId)
-      .set('body', result.data.envelope)
+      .set('messageId', messageId)
+      .set('body', envelope)
       .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 
   error(result: HttpFailure<IBrevoError>): SendingError {
-    const match = /[0-9]+/.exec(result.data.message);
-    return new SendingError(match ? Number.parseInt(match[0], 10) : 500, result.data.name, [result.data.message]);
+    const { name, message } = result.data;
+
+    return new SendingError(result.status, name, [message]);
   }
 }
