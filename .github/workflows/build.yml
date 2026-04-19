@@ -34,8 +34,13 @@ jobs:
           path: |
             reports
           retention-days: 3
-      - name: Publish to coveralls.io
+      - name: Publish coverage to coveralls.io
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./reports/coverage/lcov.info
+      - name: Publish coverage to Qlty
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: ./reports/coverage/lcov.info
