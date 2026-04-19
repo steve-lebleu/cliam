@@ -50,7 +50,7 @@ To improve and facilitate the implementation, the flexibility and the maintenanc
 
 Cliam must be configured once at application startup, before any call to `mail()`. Two approaches are available.
 
-**Option A — pass a configuration object directly:**
+**Option A - Pass a configuration object directly:**
 
 ```typescript
 import { Cliam } from 'cliam';
@@ -94,7 +94,7 @@ const config: IClientConfiguration = {
 Cliam.configure(config);
 ```
 
-**Option B — load from a `.cliamrc.js` file:**
+**Option B - Load from a `.cliamrc.js` file:**
 
 ```typescript
 import { Cliam } from 'cliam';
@@ -109,7 +109,6 @@ Cliam.configureFromFile('/path/to/my-cliam-config.js');
 The `.cliamrc.js` file should export the same configuration object as above:
 
 ```javascript
-// .cliamrc.js
 require('dotenv').config();
 
 module.exports = {
@@ -139,7 +138,19 @@ import 'cliam/providers/sendgrid';
 // import 'cliam/providers/smtp'; // add others as needed
 ```
 
-Available sub-paths: `cliam/providers/brevo`, `cliam/providers/mailersend`, `cliam/providers/mailgun`, `cliam/providers/mailjet`, `cliam/providers/mandrill`, `cliam/providers/postmark`, `cliam/providers/resend`, `cliam/providers/sendgrid`, `cliam/providers/ses`, `cliam/providers/sparkpost`, `cliam/providers/smtp`.
+Available sub-paths:
+
+- `cliam/providers/brevo`
+- `cliam/providers/mailersend`
+- `cliam/providers/mailgun`
+- `cliam/providers/mailjet`
+- `cliam/providers/mandrill`
+- `cliam/providers/postmark`
+- `cliam/providers/resend`
+- `cliam/providers/sendgrid`
+- `cliam/providers/ses`
+- `cliam/providers/sparkpost`
+- `cliam/providers/smtp`
 
 If a transporter is configured but its provider was never imported, Cliam throws at send time with a clear message.
 
@@ -208,24 +219,24 @@ The same: fallback on a SMTP server. In two minutes you're ready and your mailin
 
 <table>
     <tr align="center">
-        <td valign="middle"><a href="https://www.resend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/resend.png" alt="Resend" width="300px" hspace="15" /></a></td>
-        <td valign="middle"><a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://www.resend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/resend.png" alt="Resend" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="320px" hspace="15" /></a></td>
     </tr>
     <tr align="center">
-        <td valign="middle"><a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="300px" hspace="15" /></a></td>
-        <td valign="middle"><a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="320px" hspace="15" /></a></td>
     </tr>
     <tr align="center">
-        <td valign="middle"><a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="300px" hspace="15" /></a></td>
-        <td valign="middle"><a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="320px" hspace="15" /></a></td>
     </tr>
     <tr align="center">
-        <td valign="middle"><a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="300px" hspace="15" /></a></td>
-        <td valign="middle"><a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="320px" hspace="15" /></a></td>
     </tr>
     <tr align="center">
-        <td valign="middle"><a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="300px" hspace="15" /></a></td>
-        <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="300px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="320px" hspace="15" /></a></td>
     </tr>
 </table>
 
