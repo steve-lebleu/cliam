@@ -33,7 +33,7 @@ const Debug = (provider: Provider) => {
           case PROVIDER.postmark:
             output.to = 'John Doe test@blackhole.postmarkapp.com';
             if (output.cc) output.cc = 'John Doe test@blackhole.postmarkapp.com';
-            if (output.bcc) output.bcc = ['John Doe test@blackhole.postmarkapp.com';
+            if (output.bcc) output.bcc = 'John Doe test@blackhole.postmarkapp.com';
             break;
           case PROVIDER.sendgrid:
             Object.assign(output, { mail_settings: { sandbox_mode: { enable: true } } });
