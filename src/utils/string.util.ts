@@ -47,7 +47,7 @@ const base64Encode = (path: string): string => {
  * @param path
  */
 const base64Decode = (stream: Buffer, path: string): void => {
-  writeFileSync(path, stream.toString());
+  writeFileSync(path, stream.toString('ascii'));
 };
 
 /**
