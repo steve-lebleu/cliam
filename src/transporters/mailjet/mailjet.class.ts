@@ -88,13 +88,13 @@ export class MailjetTransporter extends HttpTransporter<IMailjetBody> {
     const result = await this.httpClient.post<IMailjetBody, IMailjetResponse, IMailjetError>('v3.1/send', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      throw this.error(result.data);
     }
 
     const msg = result.data.Messages?.[0];
 
     if (msg?.Status === 'error' && msg.Errors?.length) {
-      return Promise.reject(this.error(msg.Errors[0]));
+      throw this.error(msg.Errors[0]);
     }
 
     return this.response(result);

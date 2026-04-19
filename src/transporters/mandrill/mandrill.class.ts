@@ -98,13 +98,13 @@ export class MandrillTransporter extends HttpTransporter<IMandrillBody> {
     });
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      throw this.error(result.data);
     }
 
     const rejected = result.data.find(r => r.status === 'rejected' || r.status === 'invalid');
 
     if (rejected) {
-      return Promise.reject(this.error({ status: 'error', code: 400, name: rejected.status, message: `${rejected.reject_reason} (email: ${rejected.email})` }));
+      throw this.error({ status: 'error', code: 400, name: rejected.status, message: `${rejected.reject_reason} (email: ${rejected.email})` });
     }
 
     return this.response(result);

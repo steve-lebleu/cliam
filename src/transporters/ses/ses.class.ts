@@ -111,7 +111,7 @@ export class SesTransporter extends HttpTransporter<ISesBody> {
     const result = await this.httpClient.post<ISesBody, ISesResponse, ISesError>('v2/email/outbound-emails', body, authHeaders);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

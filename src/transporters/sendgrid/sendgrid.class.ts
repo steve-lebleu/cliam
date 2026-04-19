@@ -82,7 +82,7 @@ export class SendgridTransporter extends HttpTransporter<ISendgridBody> {
     const result = await this.httpClient.post<ISendgridBody, null, ISendgridError>('v3/mail/send', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

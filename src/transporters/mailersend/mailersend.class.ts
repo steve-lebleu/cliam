@@ -88,7 +88,7 @@ export class MailersendTransporter extends HttpTransporter<IMailersendBody> {
     const result = await this.httpClient.post<IMailersendBody, IMailersendResponse, IMailersendError>('email', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

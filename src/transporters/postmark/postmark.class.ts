@@ -89,7 +89,7 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
     const result = await this.httpClient.post<IPostmarkBody, IPostmarkResponse, IPostmarkError>(endpoint, body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

@@ -88,7 +88,7 @@ export class SmtpTransporter extends Transporter<ISmtpBody> {
       const info = await this.transport.sendMail(body);
       return this.response(info);
     } catch (err: unknown) {
-      return Promise.reject(this.error(err as Error | ISmtpError | IInfomaniakError));
+      throw this.error(err as Error | ISmtpError | IInfomaniakError);
     }
   }
 

@@ -89,7 +89,7 @@ export class BrevoTransporter extends HttpTransporter<IBrevoBody> {
     const result = await this.httpClient.post<IBrevoBody, IBrevoResponse, IBrevoError>('smtp/email', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

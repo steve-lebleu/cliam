@@ -109,7 +109,7 @@ export class SparkpostTransporter extends HttpTransporter<ISparkpostBody> {
     const result = await this.httpClient.post<ISparkpostBody, ISparkpostResponse, ISparkpostError>('v1/transmissions', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

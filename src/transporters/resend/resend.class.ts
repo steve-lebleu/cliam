@@ -89,7 +89,7 @@ export class ResendTransporter extends HttpTransporter<IResendBody> {
     const result = await this.httpClient.post<IResendBody, IResendResponse, IResendError>('emails', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);

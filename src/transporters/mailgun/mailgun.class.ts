@@ -106,7 +106,7 @@ export class MailgunTransporter extends HttpTransporter<IMailgunBody> {
     const result = await this.httpClient.postFormData<IMailgunResponse, IMailgunError>('messages', form);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result));
+      throw this.error(result);
     }
 
     return this.response(result);
