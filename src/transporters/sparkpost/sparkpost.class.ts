@@ -78,7 +78,7 @@ export class SparkpostTransporter extends HttpTransporter<ISparkpostBody> {
       output.recipients = [...output.recipients, ...bcc];
     }
 
-    if (cc.length > 0 && bcc.length > 0) {
+    if (cc.length > 0) {
       Object.assign(output.content, {
         headers: { CC: cc.map((r: ISparkpostAddress) => r.address) },
       });
@@ -116,14 +116,16 @@ export class SparkpostTransporter extends HttpTransporter<ISparkpostBody> {
   }
 
   response(result: HttpSuccess<ISparkpostResponse>): SendingResponse {
+    const { results } = result.data;
+
     return new SendingResponse()
       .set('provider', PROVIDER.sparkpost)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', result.data.results.id)
-      .set('body', { accepted: result.data.results.total_accepted_recipients, rejected: result.data.results.total_rejected_recipients })
+      .set('messageId', results.id)
+      .set('body', { accepted: results.total_accepted_recipients, rejected: results.total_rejected_recipients })
       .set('statusCode', result.status)
       .set('statusMessage', null);
   }
