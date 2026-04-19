@@ -6,7 +6,7 @@ import type { ITransporterConfiguration } from './ITransporterConfiguration.inte
 /**
  * @summary Base class for all Transporter classes
  */
-export abstract class Transporter {
+export abstract class Transporter<TBody> {
   /**
    * @description Initial transporter configuration options defined in cliamrc
    */
@@ -35,12 +35,12 @@ export abstract class Transporter {
    *
    * @param args IMail interface arguments
    */
-  abstract build({ ...args }: IMail): Record<string, unknown>;
+  abstract build({ ...args }: IMail): TBody;
 
   /**
    * @description Method in charge to send the email through the transporter engine
    *
    * @param body The transporter engine specific request body
    */
-  abstract send(body: Record<string, unknown>): Promise<SendingResponse>;
+  abstract send(body: TBody): Promise<SendingResponse>;
 }

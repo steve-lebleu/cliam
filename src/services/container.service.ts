@@ -8,7 +8,7 @@ import type { IClientConfiguration } from '@interfaces/IClientConfiguration.inte
 import { configurationSchema } from '@validations/configuration.validation';
 
 let _configuration: ClientConfiguration | null = null;
-let _transporters: { [id: string]: Transporter } | null = null;
+let _transporters: { [id: string]: Transporter<any> } | null = null;
 
 /**
  * @description The Container acts as initiator and configuration provider through a module pattern.
@@ -25,7 +25,8 @@ export const Container = {
     return _configuration;
   },
 
-  get transporters(): { [id: string]: Transporter } {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get transporters(): { [id: string]: Transporter<any> } {
     if (!_transporters) {
       throw new Error('Cliam is not configured. Call Cliam.configure() or Cliam.configureFromFile() first.');
     }
@@ -44,8 +45,9 @@ export const Container = {
 
     const { transporters, variables } = _configuration;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _transporters = transporters
-      .reduce((result: { [id: string]: Transporter }, transporterDefinition) => {
+      .reduce((result: { [id: string]: Transporter<any> }, transporterDefinition) => {
         result[transporterDefinition.id] = TransporterFactory.get(variables, transporterDefinition);
         return result;
       }, {});

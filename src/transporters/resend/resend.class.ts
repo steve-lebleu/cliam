@@ -3,7 +3,7 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
-import type { HttpSuccess } from '@services/http.service';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
 import { Debug } from '@utils/debug.util';
 
@@ -14,6 +14,7 @@ import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
+import type { IResendBody } from './IResendBody.interface';
 import type { IResendError } from './IResendError.interface';
 import type { IResendResponse } from './IResendResponse.interface';
 
@@ -22,12 +23,12 @@ import type { IResendResponse } from './IResendResponse.interface';
  *
  * @see https://resend.com/docs/api-reference/emails/send-email
  */
-export class ResendTransporter extends HttpTransporter {
+export class ResendTransporter extends HttpTransporter<IResendBody> {
   @Debug('resend')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): IResendBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output: Record<string, unknown> = {
+    const output: IResendBody = {
       from: this.address(payload.meta.from),
       to: this.addresses(payload.meta.to),
       subject: payload.meta.subject,
@@ -84,11 +85,11 @@ export class ResendTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<Record<string, unknown>, IResendResponse, IResendError>('emails', body);
+  async send(body: IResendBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<IResendBody, IResendResponse, IResendError>('emails', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      return Promise.reject(this.error(result));
     }
 
     return this.response(result);
@@ -107,7 +108,7 @@ export class ResendTransporter extends HttpTransporter {
       .set('statusMessage', null);
   }
 
-  error(error: IResendError): SendingError {
-    return new SendingError(error.statusCode ?? 500, error.name, [error.message]);
+  error(result: HttpFailure<IResendError>): SendingError {
+    return new SendingError(result.data.statusCode ?? result.status, result.data.name, [result.data.message]);
   }
 }

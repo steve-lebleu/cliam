@@ -3,7 +3,7 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
-import type { HttpSuccess } from '@services/http.service';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
@@ -14,6 +14,7 @@ import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
+import type { IPostmarkBody } from './IPostmarkBody.interface';
 import type { IPostmarkError } from './IPostmarkError.interface';
 import type { IPostmarkResponse } from './IPostmarkResponse.interface';
 
@@ -22,12 +23,12 @@ import type { IPostmarkResponse } from './IPostmarkResponse.interface';
  *
  * @see https://postmarkapp.com/developer/api/email-api
  */
-export class PostmarkTransporter extends HttpTransporter {
+export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
   @Debug('postmark')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): IPostmarkBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output: Record<string, unknown> = {
+    const output: IPostmarkBody = {
       From: this.address(payload.meta.from),
       To: this.addresses(payload.meta.to).join(','),
       ReplyTo: this.address(payload.meta.replyTo),
@@ -83,12 +84,12 @@ export class PostmarkTransporter extends HttpTransporter {
     return [...recipients].map((r: string | IAddressable) => this.address(r));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
+  async send(body: IPostmarkBody): Promise<SendingResponse> {
     const endpoint = 'TemplateId' in body ? 'email/withTemplate' : 'email';
-    const result = await this.httpClient.post<Record<string, unknown>, IPostmarkResponse, IPostmarkError>(endpoint, body);
+    const result = await this.httpClient.post<IPostmarkBody, IPostmarkResponse, IPostmarkError>(endpoint, body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      return Promise.reject(this.error(result));
     }
 
     return this.response(result);
@@ -107,7 +108,7 @@ export class PostmarkTransporter extends HttpTransporter {
       .set('statusMessage', result.data.SubmittedAt);
   }
 
-  error(error: IPostmarkError): SendingError {
-    return new SendingError(error.ErrorCode, error.Message, [error.Message]);
+  error(result: HttpFailure<IPostmarkError>): SendingError {
+    return new SendingError(result.data.ErrorCode, result.data.Message, [result.data.Message]);
   }
 }

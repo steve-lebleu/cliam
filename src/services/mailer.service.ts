@@ -29,9 +29,9 @@ class Mailer {
   /**
    * @description Transporter instance
    */
-  transporter!: Transporter;
+  transporter!: Transporter<any>;
 
-  constructor(transporter: Transporter) {
+  constructor(transporter: Transporter<any>) {
     this.transporter = transporter;
   }
 

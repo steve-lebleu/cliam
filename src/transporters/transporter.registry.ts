@@ -4,15 +4,18 @@ import type { ITransporterConfiguration } from './ITransporterConfiguration.inte
 import type { Transporter } from './transporter.class';
 
 export type TransporterVars = { domain: string; addresses: { from: IAddressable; replyTo: IAddressable } };
-export type TransporterCreator = (vars: TransporterVars, args: ITransporterConfiguration) => Transporter;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TransporterCreator = (vars: TransporterVars, args: ITransporterConfiguration) => Transporter<any>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const registry = new Map<Provider | 'smtp', TransporterCreator>();
 
 export function registerTransporter(key: Provider | 'smtp', creator: TransporterCreator): void {
   registry.set(key, creator);
 }
 
-export function resolveTransporter(key: Provider | 'smtp', vars: TransporterVars, args: ITransporterConfiguration): Transporter {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function resolveTransporter(key: Provider | 'smtp', vars: TransporterVars, args: ITransporterConfiguration): Transporter<any> {
   const creator = registry.get(key);
 
   if (!creator) {

@@ -16,7 +16,7 @@ import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { IMailjetError } from './IMailjetError.interface';
 import type { IMailjetAddress } from './IMailjetAddress.interface';
-import type { IMailjetMessage } from './IMailjetBody.interface';
+import type { IMailjetBody, IMailjetMessage } from './IMailjetBody.interface';
 import type { IMailjetResponse } from './IMailjetResponse.interface';
 
 /**
@@ -24,9 +24,9 @@ import type { IMailjetResponse } from './IMailjetResponse.interface';
  *
  * @see https://dev.mailjet.com/email/guides/
  */
-export class MailjetTransporter extends HttpTransporter {
+export class MailjetTransporter extends HttpTransporter<IMailjetBody> {
   @Debug('mailjet')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): IMailjetBody {
     const { payload, templateId, body, renderEngine } = args;
 
     const message: IMailjetMessage = {
@@ -69,7 +69,7 @@ export class MailjetTransporter extends HttpTransporter {
       }));
     }
 
-    return { Messages: [message] };
+    return { Messages: [message] } as IMailjetBody;
   }
 
   address(recipient: string | IAddressable): IMailjetAddress {
@@ -84,8 +84,8 @@ export class MailjetTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<Record<string, unknown>, IMailjetResponse, IMailjetError>('v3.1/send', body);
+  async send(body: IMailjetBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<IMailjetBody, IMailjetResponse, IMailjetError>('v3.1/send', body);
 
     if (!result.ok) {
       return Promise.reject(this.error(result.data));

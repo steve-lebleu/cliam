@@ -3,7 +3,7 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
-import type { HttpSuccess } from '@services/http.service';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
 import { Debug } from '@utils/debug.util';
 
@@ -15,6 +15,7 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { ISparkpostAddress } from './ISparkpostAddress.interface';
+import type { ISparkpostBody } from './ISparkpostBody.interface';
 import type { ISparkpostError } from './ISparkpostError.interface';
 import type { ISparkpostResponse } from './ISparkpostResponse.interface';
 
@@ -23,15 +24,15 @@ import type { ISparkpostResponse } from './ISparkpostResponse.interface';
  *
  * @see https://developers.sparkpost.com/api/transmissions/
  */
-export class SparkpostTransporter extends HttpTransporter {
+export class SparkpostTransporter extends HttpTransporter<ISparkpostBody> {
   @Debug('sparkpost')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): ISparkpostBody {
     const { payload, templateId, body, renderEngine } = args;
 
     let cc: ISparkpostAddress[] = [];
     let bcc: ISparkpostAddress[] = [];
 
-    const output: Record<string, unknown> = {
+    const output: ISparkpostBody = {
       recipients: this.addresses(payload.meta.to),
       content: {
         from: payload.meta.from,
@@ -64,7 +65,7 @@ export class SparkpostTransporter extends HttpTransporter {
         Object.assign(addr, { header_to: typeof primary === 'string' ? primary : (primary as IAddressable).email });
         return addr;
       });
-      (output.recipients as ISparkpostAddress[]) = [...(output.recipients as ISparkpostAddress[]), ...cc];
+      output.recipients = [...output.recipients, ...cc];
     }
 
     if (typeof payload.meta.bcc !== 'undefined') {
@@ -74,17 +75,17 @@ export class SparkpostTransporter extends HttpTransporter {
         Object.assign(addr, { header_to: typeof primary === 'string' ? primary : (primary as IAddressable).email });
         return addr;
       });
-      (output.recipients as ISparkpostAddress[]) = [...(output.recipients as ISparkpostAddress[]), ...bcc];
+      output.recipients = [...output.recipients, ...bcc];
     }
 
     if (cc.length > 0 && bcc.length > 0) {
-      Object.assign(output.content as Record<string, unknown>, {
+      Object.assign(output.content, {
         headers: { CC: cc.map((r: ISparkpostAddress) => r.address) },
       });
     }
 
     if (typeof payload.meta.attachments !== 'undefined') {
-      Object.assign(output.content as Record<string, unknown>, {
+      Object.assign(output.content, {
         attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
           name: attachment.filename,
           type: attachment.type,
@@ -104,11 +105,11 @@ export class SparkpostTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<Record<string, unknown>, ISparkpostResponse, ISparkpostError>('v1/transmissions', body);
+  async send(body: ISparkpostBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<ISparkpostBody, ISparkpostResponse, ISparkpostError>('v1/transmissions', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      return Promise.reject(this.error(result));
     }
 
     return this.response(result);
@@ -127,7 +128,7 @@ export class SparkpostTransporter extends HttpTransporter {
       .set('statusMessage', null);
   }
 
-  error(error: ISparkpostError): SendingError {
-    return new SendingError(error.statusCode, error.errors[0].message, [error.errors[0]?.description ?? '']);
+  error(result: HttpFailure<ISparkpostError>): SendingError {
+    return new SendingError(result.data.statusCode, result.data.errors[0].message, [result.data.errors[0]?.description ?? '']);
   }
 }

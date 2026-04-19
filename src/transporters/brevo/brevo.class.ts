@@ -3,7 +3,7 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
-import type { HttpSuccess } from '@services/http.service';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
 import { Debug } from '@utils/debug.util';
 
@@ -15,6 +15,7 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
+import type { IBrevoBody } from './IBrevoBody.interface';
 import type { IBrevoError } from './IBrevoError.interface';
 import type { IBrevoResponse } from './IBrevoResponse.interface';
 
@@ -24,12 +25,12 @@ import type { IBrevoResponse } from './IBrevoResponse.interface';
  * @see https://app.brevo.com/
  * @see https://developers.brevo.com/reference/sendtransacemail
  */
-export class BrevoTransporter extends HttpTransporter {
+export class BrevoTransporter extends HttpTransporter<IBrevoBody> {
   @Debug('brevo')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): IBrevoBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output: Record<string, unknown> = {
+    const output: IBrevoBody = {
       to: this.addresses(payload.meta.to),
       sender: this.address(payload.meta.from),
       replyTo: this.address(payload.meta.replyTo),
@@ -84,11 +85,11 @@ export class BrevoTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<Record<string, unknown>, IBrevoResponse, IBrevoError>('smtp/email', body);
+  async send(body: IBrevoBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<IBrevoBody, IBrevoResponse, IBrevoError>('smtp/email', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      return Promise.reject(this.error(result));
     }
 
     return this.response(result);
@@ -107,8 +108,8 @@ export class BrevoTransporter extends HttpTransporter {
       .set('statusMessage', null);
   }
 
-  error(error: IBrevoError): SendingError {
-    const match = /[0-9]+/.exec(error.message);
-    return new SendingError(match ? Number.parseInt(match[0], 10) : 500, error.name, [error.message]);
+  error(result: HttpFailure<IBrevoError>): SendingError {
+    const match = /[0-9]+/.exec(result.data.message);
+    return new SendingError(match ? Number.parseInt(match[0], 10) : 500, result.data.name, [result.data.message]);
   }
 }

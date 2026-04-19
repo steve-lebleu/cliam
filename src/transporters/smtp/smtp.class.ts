@@ -10,6 +10,7 @@ import type { ISendingError } from '@interfaces/ISendingError.interface';
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
 import type { IInfomaniakError } from './IInformaniakError.interface';
+import type { ISmtpBody } from './ISmtpBody.interface';
 import type { ISmtpTransport } from './ISmtpTransport.interface';
 import type { ISmtpError } from './ISmtpError.interface';
 import type { ISmtpResponse } from './ISmtpResponse.interface';
@@ -21,7 +22,7 @@ import type { ISmtpResponse } from './ISmtpResponse.interface';
  *
  * @see https://nodemailer.com/smtp/
  */
-export class SmtpTransporter extends Transporter {
+export class SmtpTransporter extends Transporter<ISmtpBody> {
   protected readonly transport: ISmtpTransport;
 
   constructor(transport: ISmtpTransport, configuration: ITransporterConfiguration) {
@@ -29,40 +30,33 @@ export class SmtpTransporter extends Transporter {
     this.transport = transport;
   }
 
-  build({...args }: IMail): Record<string,unknown> {
+  build({ ...args }: IMail): ISmtpBody {
     const { payload, body } = args;
 
-    const output = {
+    const output: ISmtpBody = {
       from: this.address(payload.meta.from),
       to: this.addresses(payload.meta.to),
       replyTo: this.address(payload.meta.replyTo),
-      subject: payload.meta.subject
+      subject: payload.meta.subject,
+      text: body?.text,
+      html: body?.html,
     };
 
-    if (typeof(payload.meta.cc) !== 'undefined') {
-      Object.assign(output, { cc: this.addresses(payload.meta.cc) });
+    if (typeof payload.meta.cc !== 'undefined') {
+      output.cc = this.addresses(payload.meta.cc);
     }
 
-    if (typeof(payload.meta.bcc) !== 'undefined') {
-      Object.assign(output, { bcc: this.addresses(payload.meta.bcc) });
+    if (typeof payload.meta.bcc !== 'undefined') {
+      output.bcc = this.addresses(payload.meta.bcc);
     }
 
-    if (typeof(payload.meta.attachments) !== 'undefined') {
-      Object.assign(output, {
-        attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
-          return {
-            filename: attachment.filename,
-            content: attachment.content,
-            encoding: 'base64'
-          };
-        })
-      });
+    if (typeof payload.meta.attachments !== 'undefined') {
+      output.attachments = payload.meta.attachments.map((attachment: IAttachment) => ({
+        filename: attachment.filename,
+        content: attachment.content,
+        encoding: 'base64' as const,
+      }));
     }
-
-    Object.assign(output, {
-      text: body?.text,
-      html: body?.html
-    });
 
     return output;
   }
@@ -89,7 +83,7 @@ export class SmtpTransporter extends Transporter {
     return [...recipients].map( (recipient: string | IAddressable) => this.address(recipient) );
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
+  async send(body: ISmtpBody): Promise<SendingResponse> {
     try {
       const info = await this.transport.sendMail(body);
       return this.response(info);

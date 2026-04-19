@@ -8,13 +8,14 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
-import type { HttpSuccess } from '@services/http.service';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
 import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
+import type { IMailersendBody } from './IMailersendBody.interface';
 import type { IMailersendError } from './IMailersendError.interface';
 import type { IMailersendResponse } from './IMailersendResponse.interface';
 
@@ -24,12 +25,12 @@ import type { IMailersendResponse } from './IMailersendResponse.interface';
  * @see https://app.mailersend.com/
  * @see https://developers.mailersend.com/api/v1/email.html
  */
-export class MailersendTransporter extends HttpTransporter {
+export class MailersendTransporter extends HttpTransporter<IMailersendBody> {
   @Debug('mailersend')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): IMailersendBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output: Record<string, unknown> = {
+    const output: IMailersendBody = {
       from: this.address(payload.meta.from),
       to: this.addresses(payload.meta.to),
       subject: payload.meta.subject,
@@ -83,11 +84,11 @@ export class MailersendTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<Record<string, unknown>, IMailersendResponse, IMailersendError>('email', body);
+  async send(body: IMailersendBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<IMailersendBody, IMailersendResponse, IMailersendError>('email', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      return Promise.reject(this.error(result));
     }
 
     return this.response(result);
@@ -106,7 +107,7 @@ export class MailersendTransporter extends HttpTransporter {
       .set('statusMessage', null);
   }
 
-  error(error: IMailersendError): SendingError {
-    return new SendingError(error.statusCode, error.body.message, [error.body.errors]);
+  error(result: HttpFailure<IMailersendError>): SendingError {
+    return new SendingError(result.data.statusCode, result.data.body.message, [result.data.body.errors]);
   }
 }

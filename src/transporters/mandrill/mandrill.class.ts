@@ -15,6 +15,7 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
+import type { IMandrillBody, IMandrillMessage } from './IMandrillBody.interface';
 import type { IMandrillError } from './IMandrillError.interface';
 import type { IMandrillResponse } from './IMandrillResponse.interface';
 
@@ -23,9 +24,9 @@ import type { IMandrillResponse } from './IMandrillResponse.interface';
  *
  * @see https://mailchimp.com/developer/transactional/api/messages/
  */
-export class MandrillTransporter extends HttpTransporter {
+export class MandrillTransporter extends HttpTransporter<IMandrillBody> {
   @Debug('mandrill')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): IMandrillBody {
     const { payload, templateId, body, renderEngine } = args;
 
     const message: Record<string, unknown> = {
@@ -45,7 +46,7 @@ export class MandrillTransporter extends HttpTransporter {
           template_name: templateId,
           template_content: [payload.data],
           message,
-        };
+        } as unknown as IMandrillBody;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(message, { text: body?.text, html: body?.html });
@@ -70,7 +71,7 @@ export class MandrillTransporter extends HttpTransporter {
       });
     }
 
-    return { message };
+    return { message } as unknown as IMandrillBody;
   }
 
   address(recipient: string | IAddressable, type?: string): string | IAddress {
@@ -87,7 +88,7 @@ export class MandrillTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient, type));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
+  async send(body: IMandrillBody): Promise<SendingResponse> {
     const isTemplate = 'template_name' in body;
     const endpoint = isTemplate ? 'messages/send-template' : 'messages/send';
 

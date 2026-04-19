@@ -1,7 +1,7 @@
 import { SendingError } from '@core/sending-error.class';
 import { SendingResponse } from '@core/sending-response.class';
 
-import type { HttpSuccess } from '@services/http.service';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
@@ -14,6 +14,7 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
+import type { ISendgridBody } from './ISendgridBody.interface';
 import type { ISendgridError } from './ISendgridError.interface';
 
 /**
@@ -21,15 +22,15 @@ import type { ISendgridError } from './ISendgridError.interface';
  *
  * @see https://docs.sendgrid.com/api-reference/mail-send/mail-send
  */
-export class SendgridTransporter extends HttpTransporter {
+export class SendgridTransporter extends HttpTransporter<ISendgridBody> {
   @Debug('sendgrid')
-  build({ ...args }: IMail): Record<string, unknown> {
+  build({ ...args }: IMail): ISendgridBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output: Record<string, unknown> = {
-      from: this.address(payload.meta.from, 'from'),
-      personalizations: [{ to: this.addresses(payload.meta.to) }],
-      reply_to: this.address(payload.meta.replyTo),
+    const output: ISendgridBody = {
+      from: this.address(payload.meta.from, 'from') as string,
+      personalizations: [{ to: this.addresses(payload.meta.to) as IAddress[] }],
+      reply_to: this.address(payload.meta.replyTo) as IAddress,
       subject: payload.meta.subject,
     };
 
@@ -52,11 +53,11 @@ export class SendgridTransporter extends HttpTransporter {
     }
 
     if (typeof payload.meta.cc !== 'undefined') {
-      Object.assign((output.personalizations as Array<Record<string, unknown>>)[0], { cc: this.addresses(payload.meta.cc) });
+      output.personalizations[0].cc = this.addresses(payload.meta.cc) as IAddress[];
     }
 
     if (typeof payload.meta.bcc !== 'undefined') {
-      Object.assign((output.personalizations as Array<Record<string, unknown>>)[0], { bcc: this.addresses(payload.meta.bcc) });
+      output.personalizations[0].bcc = this.addresses(payload.meta.bcc) as IAddress[];
     }
 
     if (typeof payload.meta.attachments !== 'undefined') {
@@ -77,11 +78,11 @@ export class SendgridTransporter extends HttpTransporter {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<Record<string, unknown>, null, ISendgridError>('v3/mail/send', body);
+  async send(body: ISendgridBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<ISendgridBody, null, ISendgridError>('v3/mail/send', body);
 
     if (!result.ok) {
-      return Promise.reject(this.error(result.data));
+      return Promise.reject(this.error(result));
     }
 
     return this.response(result);
@@ -100,8 +101,8 @@ export class SendgridTransporter extends HttpTransporter {
       .set('statusMessage', null);
   }
 
-  error(error: ISendgridError): SendingError {
-    const first = error.errors?.[0];
-    return new SendingError(400, first?.message ?? 'Unknown error', error.errors.map(e => e.message));
+  error(result: HttpFailure<ISendgridError>): SendingError {
+    const first = result.data.errors?.[0];
+    return new SendingError(result.status, first?.message ?? 'Unknown error', result.data.errors.map(e => e.message));
   }
 }
