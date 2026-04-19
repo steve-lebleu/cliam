@@ -15,7 +15,7 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
-import type { IMandrillBody, IMandrillMessage } from './IMandrillBody.interface';
+import type { IMandrillBody } from './IMandrillBody.interface';
 import type { IMandrillError } from './IMandrillError.interface';
 import type { IMandrillResponse } from './IMandrillResponse.interface';
 
