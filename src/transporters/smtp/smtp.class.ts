@@ -121,15 +121,15 @@ export class SmtpTransporter extends Transporter<ISmtpBody> {
    *
    * @fixme Non managed error with smtp.gmail.com and secure true : error have a different pattern and this regError.exec(error.response)[0] not working
    */
-  error(error: Error | ISmtpError | IInfomaniakError | ISmtpError): SendingError {
+  error(error: Error | ISmtpError | IInfomaniakError): SendingError {
     if (error instanceof TypeError) {
       return new SendingError(417, error.name, [error.message]);
     }
 
     const output: ISendingError = {
-      errors: [],
-      statusCode: 0,
-      statusText: '',
+      errors: ['Unknown error'],
+      statusCode: 500,
+      statusText: 'SMTP Error',
     };
 
     if (this.transport.options?.host === 'smtp.gmail.com') {
@@ -149,6 +149,10 @@ export class SmtpTransporter extends Transporter<ISmtpBody> {
       output.errors = [e.response];
       output.statusText = e.responseCode.toString();
       output.statusCode = Number(e.code);
+    }
+
+    if (error instanceof Error) {
+      output.errors = [error.message];
     }
 
     return new SendingError(output.statusCode, output.statusText, output.errors)
