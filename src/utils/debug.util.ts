@@ -26,14 +26,14 @@ const Debug = (provider: Provider) => {
             });
             break;
           case PROVIDER.mailersend:
-            output.to = ['John Doe test@blackhole.mailersend.com'];
-            if (output.cc) output.cc = ['John Doe test@blackhole.mailersend.com'];
-            if (output.bcc) output.bcc = ['John Doe test@blackhole.mailersend.com'];
+            output.to = [{ email: 'test@blackhole.mailersend.com', name: 'John Doe' }];
+            if (output.cc) output.cc = [{ email: 'test@blackhole.mailersend.com', name: 'John Doe' }];
+            if (output.bcc) output.bcc = [{ email: 'test@blackhole.mailersend.com', name: 'John Doe' }];
             break;
           case PROVIDER.postmark:
-            output.to = ['John Doe test@blackhole.postmarkapp.com'];
-            if (output.cc) output.cc = ['John Doe test@blackhole.postmarkapp.com'];
-            if (output.bcc) output.bcc = ['John Doe test@blackhole.postmarkapp.com'];
+            output.to = 'John Doe test@blackhole.postmarkapp.com';
+            if (output.cc) output.cc = 'John Doe test@blackhole.postmarkapp.com';
+            if (output.bcc) output.bcc = ['John Doe test@blackhole.postmarkapp.com';
             break;
           case PROVIDER.sendgrid:
             Object.assign(output, { mail_settings: { sandbox_mode: { enable: true } } });
