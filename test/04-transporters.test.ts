@@ -14,18 +14,18 @@ const HTTP_TRANSPORTERS = ['brevo-api', 'mailersend-api', 'mailgun-api', 'mailje
 
 describe('Transporters', () => {
 
+  it("transporterFactory can't be instanciated", () => {
+    try {
+      new (TransporterFactory as any)();
+    } catch (e: any) {
+      expect(e instanceof TypeError).to.be.true;
+      expect(e.message).to.be.equals('TransporterFactory is not a constructor');
+    }
+  });
+
   transporters.forEach((transporter) => {
 
     describe(transporter, () => {
-
-      it("transporterFactory can't be instanciated", () => {
-        try {
-          new (TransporterFactory as any)();
-        } catch (e: any) {
-          expect(e instanceof TypeError).to.be.true;
-          expect(e.message).to.be.equals('TransporterFactory is not a constructor');
-        }
-      });
 
       it(`${transporter} should exposes ITransporter interface members`, (done: any) => {
         const mailer = new Mailer(Container.transporters[transporter]);
@@ -128,7 +128,33 @@ describe('Transporters', () => {
         expect(result).to.be.instanceOf(SendingError);
       });
 
-      it(`${transporter}::send should call internally the send method`, () => {
+      if (HTTP_TRANSPORTERS.includes(transporter)) {
+        it(`${transporter}::send should reject with SendingError on failure`, async () => {
+          const mailer = new Mailer(Container.transporters[transporter]);
+          const payload = requestPayload(transporter);
+          payload.meta.to = [{ email: 'john.doe@test.com' }];
+          delete payload.content;
+          mailer.setAddresses(payload);
+          mailer.setRenderEngine('user.welcome', payload);
+
+          const raw = errorPayload(transporter) as any;
+          const data = 'data' in raw ? raw.data : raw;
+          const method = transporter === 'mailgun-api' ? 'postFormData' : 'post';
+          const stub = sinon.stub((mailer.transporter as unknown as HttpTransporter).httpClient, method)
+            .resolves({ ok: false, status: 400, headers: {}, data });
+
+          try {
+            await mailer.transporter.send(mailer.transporter.build(mailer.getMail('user.welcome', payload)));
+            expect.fail('should have rejected');
+          } catch (e) {
+            expect(e).to.be.instanceOf(SendingError);
+          } finally {
+            stub.restore();
+          }
+        });
+      }
+
+      it(`${transporter}::send should call internally the send method`, async () => {
         const mailer = new Mailer(Container.transporters[transporter]);
         const payload = requestPayload(transporter);
         payload.meta.to = [{ email: 'john.doe@test.com' }];
@@ -139,13 +165,13 @@ describe('Transporters', () => {
         let stub: sinon.SinonStub;
         if (HTTP_TRANSPORTERS.includes(transporter)) {
           const method = transporter === 'mailgun-api' ? 'postFormData' : 'post';
-          const data = transporter === 'mandrill-api' ? [] : transporter === 'sparkpost-api' ? { results: {} } : {};
+          const data = transporter === 'mandrill-api' ? [] : transporter === 'sparkpost-api' ? { results: { id: 'id', total_accepted_recipients: 1, total_rejected_recipients: 0 } } : {};
           stub = sinon.stub((mailer.transporter as unknown as HttpTransporter).httpClient, method).resolves({ ok: true, status: 202, headers: {}, data });
         } else {
           stub = sinon.stub((mailer.transporter as any).transport, 'sendMail').callsFake(() => Promise.resolve(new SendingResponse()));
         }
 
-        mailer.transporter.send(mailer.transporter.build(mailer.getMail('user.welcome', payload)));
+        await mailer.transporter.send(mailer.transporter.build(mailer.getMail('user.welcome', payload)));
         stub.restore();
         sinon.assert.callCount(stub, 1);
       });

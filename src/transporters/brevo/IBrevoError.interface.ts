@@ -1,4 +1,5 @@
-export interface IBrevoError extends Error {
-  code: string
-  message: string
+export interface IBrevoError {
+  name: string;
+  code: string;
+  message: string;
 }
