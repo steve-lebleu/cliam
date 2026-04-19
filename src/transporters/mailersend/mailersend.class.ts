@@ -10,7 +10,7 @@ import type { IAddressable } from '@interfaces/IAddressable.interface';
 
 import type { HttpResult } from '@services/http.service';
 
-import { Debug } from '@decorators/debug.decorator';
+import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';

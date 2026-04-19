@@ -3,8 +3,6 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { Transporter } from '@transporters/transporter.class';
 
-import { Debug } from '@decorators/debug.decorator';
-
 import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
@@ -32,7 +30,6 @@ export class SmtpTransporter extends Transporter {
     this.transport = transport;
   }
 
-  @Debug('smtp')
   build({...args }: IMail): Record<string,unknown> {
     const { payload, body } = args;
 

@@ -6,7 +6,7 @@ import { HttpTransporter } from '@transporters/http.transporter';
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
-import { Debug } from '@decorators/debug.decorator';
+import { Debug } from '@utils/debug.util';
 
 import type { IAttachment } from '@interfaces/IAttachment.interface';
 import type { IMail } from '@interfaces/IMail.interface';

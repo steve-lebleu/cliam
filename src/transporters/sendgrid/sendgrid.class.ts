@@ -8,7 +8,7 @@ import { HttpTransporter } from '@transporters/http.transporter';
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
-import { Debug } from '@decorators/debug.decorator';
+import { Debug } from '@utils/debug.util';
 
 import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';

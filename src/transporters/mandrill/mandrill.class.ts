@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import { Debug } from '@utils/debug.util';
+
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
@@ -20,6 +22,7 @@ import type { IMandrillResponse } from './IMandrillResponse.interface';
  * @see https://mailchimp.com/developer/transactional/api/messages/
  */
 export class MandrillTransporter extends HttpTransporter {
+  @Debug('mandrill')
   build({ ...args }: IMail): Record<string, unknown> {
     const { payload, templateId, body, renderEngine } = args;
 
