@@ -27,4 +27,5 @@ import './transporters/mandrill';
 import './transporters/postmark';
 import './transporters/sendgrid';
 import './transporters/resend';
+import './transporters/ses';
 import './transporters/sparkpost';

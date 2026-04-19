@@ -224,6 +224,35 @@ module.exports = {
       }
     },
     {
+      "id": "ses-api",
+      "provider": "ses",
+      "auth": {
+        "apiKey": process.env.AWS_ACCESS_KEY_ID,
+        "apiSecret": process.env.AWS_SECRET_ACCESS_KEY,
+      },
+      "options": {
+        "region": "us-east-1"
+      },
+      "templates": {
+        "default": "my-ses-template",
+        "event.subscribe": "my-ses-template",
+        "event.unsubscribe": "my-ses-template",
+        "event.updated": "my-ses-template",
+        "user.bye": "my-ses-template",
+        "user.confirm": "my-ses-template",
+        "user.contact": "my-ses-template",
+        "user.invite": "my-ses-template",
+        "user.progress": "my-ses-template",
+        "user.survey": "my-ses-template",
+        "user.welcome": "my-ses-template",
+        "order.invoice": "my-ses-template",
+        "order.progress": "my-ses-template",
+        "order.shipped": "my-ses-template",
+        "password.request": "my-ses-template",
+        "password.updated": "my-ses-template"
+      }
+    },
+    {
       "id": "sparkpost-api",
       "provider": "sparkpost",
       "auth": {

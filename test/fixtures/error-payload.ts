@@ -17,6 +17,8 @@ export default (transporter: string) => {
       return Object.assign(new Error('Invalid address'), { responseCode: 550, code: 'EENVELOPE', response: '550 Invalid address' });
     case 'resend-api':
       return { name: 'validation_error', message: 'Invalid email address', statusCode: 422 };
+    case 'ses-api':
+      return { __type: 'MessageRejected', message: 'Email address is not verified.' };
     case 'sparkpost-api':
       return { statusCode: 400, errors: [{ message: 'error', description: 'description' }] };
   }

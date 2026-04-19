@@ -111,14 +111,26 @@ export const configurationSchema = Joi.object({
                 is: Joi.any().valid(PROVIDER.resend).required(),
                 then: Joi.string().regex(/^re_[a-zA-Z0-9]{32}$/)
               },
+              {
+                is: Joi.any().valid(PROVIDER.ses).required(),
+                then: Joi.string().regex(/^(AKIA|ASIA)[A-Z0-9]{16}$/)
+              },
             ]
           }).concat(Joi.string().when('...provider', {
             is: Joi.exist(),
             then: Joi.string().required()
           })),
           apiSecret: Joi.string().when('...provider', {
-            is: Joi.any().valid(PROVIDER.mailjet).required(),
-            then: Joi.string().regex(/^[a-z-0-9]{32}$/),
+            switch: [
+              {
+                is: Joi.any().valid(PROVIDER.mailjet).required(),
+                then: Joi.string().regex(/^[a-z-0-9]{32}$/).required()
+              },
+              {
+                is: Joi.any().valid(PROVIDER.ses).required(),
+                then: Joi.string().regex(/^[A-Za-z0-9/+=]{40}$/).required()
+              }
+            ]
           })
         }).xor('username', 'apiKey').xor('password', 'apiKey').required(),
         options: Joi.object().when('provider', {

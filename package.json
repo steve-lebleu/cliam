@@ -70,6 +70,10 @@
       "import": "./dist/transporters/resend/index.js",
       "types": "./dist/transporters/resend/index.d.ts"
     },
+    "./providers/ses": {
+      "import": "./dist/transporters/ses/index.js",
+      "types": "./dist/transporters/ses/index.d.ts"
+    },
     "./providers/sparkpost": {
       "import": "./dist/transporters/sparkpost/index.js",
       "types": "./dist/transporters/sparkpost/index.d.ts"

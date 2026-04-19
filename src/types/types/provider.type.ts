@@ -7,6 +7,7 @@ export const PROVIDER = {
   postmark: 'postmark',
   sendgrid: 'sendgrid',
   resend: 'resend',
+  ses: 'ses',
   sparkpost: 'sparkpost'
 } as const;
 

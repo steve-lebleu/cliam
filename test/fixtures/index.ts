@@ -14,6 +14,7 @@ export const transporters: string[] = [
   'postmark-api',
   'sendgrid-api',
   'resend-api',
+  'ses-api',
   'sparkpost-api',
   'hosting-smtp'
 ];

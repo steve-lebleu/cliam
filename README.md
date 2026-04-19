@@ -139,7 +139,7 @@ import 'cliam/providers/sendgrid';
 // import 'cliam/providers/smtp'; // add others as needed
 ```
 
-Available sub-paths: `cliam/providers/brevo`, `cliam/providers/mailersend`, `cliam/providers/mailgun`, `cliam/providers/mailjet`, `cliam/providers/mandrill`, `cliam/providers/postmark`, `cliam/providers/resend`, `cliam/providers/sendgrid`, `cliam/providers/sparkpost`, `cliam/providers/smtp`.
+Available sub-paths: `cliam/providers/brevo`, `cliam/providers/mailersend`, `cliam/providers/mailgun`, `cliam/providers/mailjet`, `cliam/providers/mandrill`, `cliam/providers/postmark`, `cliam/providers/resend`, `cliam/providers/sendgrid`, `cliam/providers/ses`, `cliam/providers/sparkpost`, `cliam/providers/smtp`.
 
 If a transporter is configured but its provider was never imported, Cliam throws at send time with a clear message.
 

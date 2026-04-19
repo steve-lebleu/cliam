@@ -1,18 +1,18 @@
 import type { IAddressable } from '@/types/interfaces/IAddressable.interface';
-import type { PROVIDER } from '@enums/provider.enum';
+import type { Provider } from '@typings/provider.type';
 import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 import type { Transporter } from './transporter.class';
 
 export type TransporterVars = { domain: string; addresses: { from: IAddressable; replyTo: IAddressable } };
 export type TransporterCreator = (vars: TransporterVars, args: ITransporterConfiguration) => Transporter;
 
-const registry = new Map<PROVIDER | 'smtp', TransporterCreator>();
+const registry = new Map<Provider | 'smtp', TransporterCreator>();
 
-export function registerTransporter(key: PROVIDER | 'smtp', creator: TransporterCreator): void {
+export function registerTransporter(key: Provider | 'smtp', creator: TransporterCreator): void {
   registry.set(key, creator);
 }
 
-export function resolveTransporter(key: PROVIDER | 'smtp', vars: TransporterVars, args: ITransporterConfiguration): Transporter {
+export function resolveTransporter(key: Provider | 'smtp', vars: TransporterVars, args: ITransporterConfiguration): Transporter {
   const creator = registry.get(key);
 
   if (!creator) {

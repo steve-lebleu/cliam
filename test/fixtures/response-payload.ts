@@ -18,6 +18,8 @@ export default (transporter: string): HttpResult | Record<string, unknown> | unk
       return { To: 'test@test.com', SubmittedAt: '2021-01-01T00:00:00Z', MessageID: 'id', ErrorCode: 0, Message: 'OK' };
     case 'resend-api':
       return { id: 'id', object: 'email', from: 'test@test.com', to: ['test@test.com'], created_at: '2024-01-01T00:00:00Z' };
+    case 'ses-api':
+      return { MessageId: '0102017e8c0e123456-abc' };
     case 'sparkpost-api':
       return { results: { id: 'id', total_accepted_recipients: 1, total_rejected_recipients: 0 } };
     case 'hosting-smtp':
