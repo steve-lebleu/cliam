@@ -8,11 +8,11 @@
 
 # Transactional emails with a kick
 
-Agnostic transactional email sending in Node.js environment :boom: :muscle: :pill:
+Agnostic transactional email sending in Node.js environment
 
 ## > Why ?
 
-To improve and facilitate the implementation, flexibility and maintenance of transactional emailing tasks.
+To improve and facilitate the implementation, the flexibility and the maintenance of transactional emailing tasks.
 
 ## > Features
 
@@ -131,10 +131,10 @@ See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configura
 
 ### Optional provider loading
 
-By default `import { Cliam } from 'cliam'` registers all supported providers. If you use a bundler and want to reduce your bundle size, import from `cliam/core` and load only the providers you actually use:
+By default `import { Cliam } from 'cliam'` registers all supported providers. If you use a bundler and want to reduce your bundle size, import from `cliam` and load only the providers you actually use:
 
 ```typescript
-import { Cliam } from 'cliam/core';
+import { Cliam } from 'cliam';
 import 'cliam/providers/sendgrid';
 // import 'cliam/providers/smtp'; // add others as needed
 ```

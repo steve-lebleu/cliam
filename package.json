@@ -4,8 +4,9 @@
   "engines": {
     "node": ">=18.19.0"
   },
+  "files": ["dist"],
   "author": "Steve Lebleu",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0",
   "description": "Agnostic transactional email sending in Node.js environment",
   "keywords": [
     "node",
@@ -24,6 +25,8 @@
     "mailjet",
     "mailgun",
     "postmark",
+    "sendgrid",
+    "ses",
     "smtp"
   ],
   "main": "./dist/index.js",

@@ -13,29 +13,16 @@ jobs:
           key: bun-modules-${{ hashfiles('**/bun.lockb') }}
       - name: Github checkout
         uses: actions/checkout@v4
-      - name: Setup Bun
+      - name: Setup Bun environment
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - name: Install dependencies
         run: bun install
-      - name: Create .env file
-        run: |
-          touch .env
-          echo BREVO_API_KEY = "${{ secrets.BREVO_API_KEY }}" >> .env
-          echo EMAIL_FROM = "${{ secrets.EMAIL_FROM }}" >> .env
-          echo EMAIL_REPLY_TO = "${{ secrets.EMAIL_REPLY_TO }}" >> .env
-          echo EMAIL_TO = "${{ secrets.EMAIL_TO }}" >> .env
-          echo MAILERSEND_API_KEY = "${{ secrets.MAILERSEND_API_KEY }}" >> .env
-          echo MAILGUN_API_KEY = "${{ secrets.MAILGUN_API_KEY }}" >> .env
-          echo MAILJET_API_KEY = "${{ secrets.MAILJET_API_KEY }}" >> .env
-          echo MAILJET_TOKEN = "${{ secrets.MAILJET_TOKEN }}" >> .env
-          echo MANDRILL_API_KEY = "${{ secrets.MANDRILL_API_KEY }}" >> .env
-          echo POSTMARK_API_KEY = "${{ secrets.POSTMARK_API_KEY }}" >> .env
-          echo SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}" >> .env
-          echo SMTP_HOST = "${{ secrets.SMTP_HOST }}" >> .env
-          echo SMTP_USERNAME = "${{ secrets.SMTP_USERNAME }}" >> .env
-          echo SMTP_PASSWORD = "${{ secrets.SMTP_PASSWORD }}" >> .env
-          echo SPARKPOST_API_KEY = "${{ secrets.SPARKPOST_API_KEY }}" >> .env
-          echo RESEND_API_KEY = "${{ secrets.RESEND_API_KEY }}" >> .env
+      - name: Copy .env file
+        run: cp .env.local .env
+      - name: Copy .cliamrc.js file
+        run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
       - name: Build
         run: bun run build
       - name: Execute units tests
