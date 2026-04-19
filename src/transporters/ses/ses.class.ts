@@ -1,7 +1,7 @@
 import { SendingError } from '@core/sending-error.class';
 import { SendingResponse } from '@core/sending-response.class';
 
-import type { HttpClient } from '@services/http.service';
+import type { HttpClient, HttpSuccess } from '@services/http.service';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
@@ -111,25 +111,25 @@ export class SesTransporter extends HttpTransporter {
       secretAccessKey: this.configuration.auth.apiSecret!,
     });
 
-    const result = await this.httpClient.post<ISesResponse | ISesError>('v2/email/outbound-emails', body, authHeaders);
+    const result = await this.httpClient.post<Record<string, unknown>, ISesResponse, ISesError>('v2/email/outbound-emails', body, authHeaders);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as ISesError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    return this.response(result.data as ISesResponse);
+    return this.response(result);
   }
 
-  response(response: ISesResponse): SendingResponse {
+  response(result: HttpSuccess<ISesResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.ses)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response?.MessageId ?? null)
-      .set('body', response?.MessageId ?? null)
-      .set('statusCode', 200)
+      .set('messageId', result.data.MessageId)
+      .set('body', null)
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { PROVIDER } from '@typings/provider.type';
 import { RENDER_ENGINE } from '@typings/render-engine.type';
 
@@ -83,26 +85,26 @@ export class PostmarkTransporter extends HttpTransporter {
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
     const endpoint = 'TemplateId' in body ? 'email/withTemplate' : 'email';
-    const result = await this.httpClient.post<IPostmarkResponse | IPostmarkError>(endpoint, body);
+    const result = await this.httpClient.post<Record<string, unknown>, IPostmarkResponse, IPostmarkError>(endpoint, body);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as IPostmarkError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    return this.response(result.data as IPostmarkResponse);
+    return this.response(result);
   }
 
-  response(response: IPostmarkResponse): SendingResponse {
+  response(result: HttpSuccess<IPostmarkResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.postmark)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response.MessageID)
-      .set('body', response.Message)
-      .set('statusCode', 202)
-      .set('statusMessage', null);
+      .set('messageId', result.data.MessageID)
+      .set('body', result.data.Message)
+      .set('statusCode', result.status)
+      .set('statusMessage', result.data.SubmittedAt);
   }
 
   error(error: IPostmarkError): SendingError {

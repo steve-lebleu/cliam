@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
@@ -89,35 +91,34 @@ export class MandrillTransporter extends HttpTransporter {
     const isTemplate = 'template_name' in body;
     const endpoint = isTemplate ? 'messages/send-template' : 'messages/send';
 
-    const result = await this.httpClient.post<IMandrillResponse[] | IMandrillError>(endpoint, {
+    const result = await this.httpClient.post<Record<string, unknown>, IMandrillResponse[], IMandrillError>(endpoint, {
       key: this.configuration.auth.apiKey,
       ...body,
     });
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as IMandrillError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    const responses = result.data as IMandrillResponse[];
-    const rejected = responses.find(r => r.status === 'rejected' || r.status === 'invalid');
+    const rejected = result.data.find(r => r.status === 'rejected' || r.status === 'invalid');
 
     if (rejected) {
       return Promise.reject(this.error({ status: 'error', code: 400, name: rejected.status, message: `${rejected.reject_reason} (email: ${rejected.email})` }));
     }
 
-    return this.response(responses);
+    return this.response(result);
   }
 
-  response(response: IMandrillResponse[]): SendingResponse {
+  response(result: HttpSuccess<IMandrillResponse[]>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.mandrill)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response[0]?._id ?? null)
-      .set('body', response[0]?.status ?? null)
-      .set('statusCode', 202)
+      .set('messageId', result.data[0]?._id ?? null)
+      .set('body', result.data[0]?.status ?? null)
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

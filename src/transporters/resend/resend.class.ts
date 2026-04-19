@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
@@ -83,25 +85,25 @@ export class ResendTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<IResendResponse | IResendError>('emails', body);
+    const result = await this.httpClient.post<Record<string, unknown>, IResendResponse, IResendError>('emails', body);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as IResendError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    return this.response(result.data as IResendResponse);
+    return this.response(result);
   }
 
-  response(response: IResendResponse): SendingResponse {
+  response(result: HttpSuccess<IResendResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.resend)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response.id)
-      .set('body', response.id)
-      .set('statusCode', 202)
+      .set('messageId', result.data.id)
+      .set('body', null)
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
@@ -74,6 +76,7 @@ export class BrevoTransporter extends HttpTransporter {
     if (typeof recipient === 'string') {
       return { email: recipient };
     }
+
     return recipient as IAddress;
   }
 
@@ -82,25 +85,25 @@ export class BrevoTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post('smtp/email', body);
+    const result = await this.httpClient.post<Record<string, unknown>, IBrevoResponse, IBrevoError>('smtp/email', body);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as IBrevoError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    return this.response(result.data as IBrevoResponse);
+    return this.response(result);
   }
 
-  response(response: IBrevoResponse): SendingResponse {
+  response(result: HttpSuccess<IBrevoResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.brevo)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response.messageId)
-      .set('body', response.messageId)
-      .set('statusCode', 202)
+      .set('messageId', result.data.messageId)
+      .set('body', result.data.envelope)
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

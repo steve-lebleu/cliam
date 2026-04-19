@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { Debug } from '@utils/debug.util';
 
 import type { IAttachment } from '@interfaces/IAttachment.interface';
@@ -100,26 +102,26 @@ export class MailgunTransporter extends HttpTransporter {
       }
     }
 
-    const result = await this.httpClient.postFormData<IMailgunResponse | IMailgunError>('messages', form);
+    const result = await this.httpClient.postFormData<IMailgunResponse, IMailgunError>('messages', form);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as IMailgunError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    return this.response(result.data as IMailgunResponse);
+    return this.response(result);
   }
 
-  response(response: IMailgunResponse): SendingResponse {
+  response(result: HttpSuccess<IMailgunResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.mailgun)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', null)
-      .set('body', response)
-      .set('statusCode', 202)
-      .set('statusMessage', response.message as string);
+      .set('messageId', result.data.id)
+      .set('body', null)
+      .set('statusCode', result.status)
+      .set('statusMessage', result.data.message);
   }
 
   error(error: IMailgunError | string): SendingError {

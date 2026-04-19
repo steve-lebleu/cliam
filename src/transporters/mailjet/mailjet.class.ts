@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
@@ -83,26 +85,33 @@ export class MailjetTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-     const result = await this.httpClient.post<IMailjetResponse | IMailjetError>('v3.1/send', body);
+    const result = await this.httpClient.post<Record<string, unknown>, IMailjetResponse, IMailjetError>('v3.1/send', body);
 
-     if (result.status >= 400) {
-       return Promise.reject(this.error(result.data as IMailjetError));
-     }
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
+    }
 
-     return this.response(result.data as IMailjetResponse);
-   }
+    const msg = result.data.Messages?.[0];
 
-  response(response: IMailjetResponse): SendingResponse {
+    if (msg?.Status === 'error' && msg.Errors?.length) {
+      return Promise.reject(this.error(msg.Errors[0]));
+    }
+
+    return this.response(result);
+  }
+
+  response(result: HttpSuccess<IMailjetResponse>): SendingResponse {
+    const msg = result.data.Messages?.[0];
     return new SendingResponse()
       .set('provider', PROVIDER.mailjet)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', null)
+      .set('messageId', msg?.To?.[0]?.MessageID ?? null)
       .set('body', null)
-      .set('statusCode', 202)
-      .set('statusMessage', response.Messages?.[0]?.Status ?? null);
+      .set('statusCode', result.status)
+      .set('statusMessage', msg?.Status ?? null);
   }
 
   error(error: IMailjetError): SendingError {

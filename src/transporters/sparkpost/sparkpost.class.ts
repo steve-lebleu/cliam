@@ -3,6 +3,8 @@ import { SendingResponse } from '@core/sending-response.class';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
+import type { HttpSuccess } from '@services/http.service';
+
 import { Debug } from '@utils/debug.util';
 
 import { PROVIDER } from '@typings/provider.type';
@@ -103,25 +105,25 @@ export class SparkpostTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<ISparkpostResponse | ISparkpostError>('v1/transmissions', body);
+    const result = await this.httpClient.post<Record<string, unknown>, ISparkpostResponse, ISparkpostError>('v1/transmissions', body);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as ISparkpostError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
-    return this.response(result.data as ISparkpostResponse);
+    return this.response(result);
   }
 
-  response(response: ISparkpostResponse): SendingResponse {
+  response(result: HttpSuccess<ISparkpostResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.sparkpost)
       .set('server', null)
       .set('uri', null)
       .set('headers', null)
       .set('timestamp', Date.now())
-      .set('messageId', response.results.id)
-      .set('body', null)
-      .set('statusCode', 202)
+      .set('messageId', result.data.results.id)
+      .set('body', { accepted: result.data.results.total_accepted_recipients, rejected: result.data.results.total_rejected_recipients })
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

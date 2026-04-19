@@ -1,7 +1,7 @@
 import { SendingError } from '@core/sending-error.class';
 import { SendingResponse } from '@core/sending-response.class';
 
-import type { HttpResult } from '@services/http.service';
+import type { HttpSuccess } from '@services/http.service';
 
 import { HttpTransporter } from '@transporters/http.transporter';
 
@@ -78,16 +78,16 @@ export class SendgridTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post<ISendgridError>('v3/mail/send', body);
+    const result = await this.httpClient.post<Record<string, unknown>, null, ISendgridError>('v3/mail/send', body);
 
-    if (result.status >= 400) {
+    if (!result.ok) {
       return Promise.reject(this.error(result.data));
     }
 
     return this.response(result);
   }
 
-  response(result: HttpResult): SendingResponse {
+  response(result: HttpSuccess<null>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.sendgrid)
       .set('server', result.headers.server ?? null)
@@ -96,7 +96,7 @@ export class SendgridTransporter extends HttpTransporter {
       .set('timestamp', Date.now())
       .set('messageId', result.headers['x-message-id'] ?? null)
       .set('body', null)
-      .set('statusCode', 202)
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

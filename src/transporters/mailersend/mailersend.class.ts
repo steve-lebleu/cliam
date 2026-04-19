@@ -8,7 +8,7 @@ import type { IMail } from '@interfaces/IMail.interface';
 import type { IAddress } from '@interfaces/IAddress.interface';
 import type { IAddressable } from '@interfaces/IAddressable.interface';
 
-import type { HttpResult } from '@services/http.service';
+import type { HttpSuccess } from '@services/http.service';
 
 import { Debug } from '@utils/debug.util';
 
@@ -84,16 +84,16 @@ export class MailersendTransporter extends HttpTransporter {
   }
 
   async send(body: Record<string, unknown>): Promise<SendingResponse> {
-    const result = await this.httpClient.post('email', body);
+    const result = await this.httpClient.post<Record<string, unknown>, IMailersendResponse, IMailersendError>('email', body);
 
-    if (result.status >= 400) {
-      return Promise.reject(this.error(result.data as IMailersendError));
+    if (!result.ok) {
+      return Promise.reject(this.error(result.data));
     }
 
     return this.response(result);
   }
 
-  response(result: HttpResult): SendingResponse {
+  response(result: HttpSuccess<IMailersendResponse>): SendingResponse {
     return new SendingResponse()
       .set('provider', PROVIDER.mailersend)
       .set('server', result.headers.server ?? null)
@@ -102,7 +102,7 @@ export class MailersendTransporter extends HttpTransporter {
       .set('timestamp', Date.now())
       .set('messageId', result.headers['x-message-id'] ?? null)
       .set('body', null)
-      .set('statusCode', 202)
+      .set('statusCode', result.status)
       .set('statusMessage', null);
   }
 

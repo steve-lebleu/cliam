@@ -7,11 +7,9 @@ export type HttpClientConfig = {
   timeout?: number;
 };
 
-export type HttpResult<T = unknown> = {
-  status: number;
-  headers: Record<string, string>;
-  data: T;
-};
+export type HttpSuccess<U> = { ok: true; status: number; headers: Record<string, string>; data: U };
+export type HttpFailure<W> = { ok: false; status: number; headers: Record<string, string>; data: W };
+export type HttpResult<U = unknown, W = unknown> = HttpSuccess<U> | HttpFailure<W>;
 
 export class HttpClient {
   private readonly instance: KyInstance;
@@ -26,13 +24,12 @@ export class HttpClient {
     });
   }
 
-  async post<T = unknown>(path: string, body: unknown, headers?: Record<string, string>): Promise<HttpResult<T>> {
+  async post<T = unknown, U = unknown, W = unknown>(path: string, body: T, headers?: Record<string, string>): Promise<HttpResult<U, W>> {
     const response = await this.instance.post(path, { json: body, headers });
-
-    return this.normalize<T>(response);
+    return this.normalize<U, W>(response);
   }
 
-  async postForm<T = unknown>(path: string, body: Record<string, string | string[]>, headers?: Record<string, string>): Promise<HttpResult<T>> {
+  async postForm<T extends Record<string, string | string[]> = Record<string, string | string[]>, U = unknown, W = unknown>(path: string, body: T, headers?: Record<string, string>): Promise<HttpResult<U, W>> {
     const form = new FormData();
 
     for (const [key, value] of Object.entries(body)) {
@@ -44,22 +41,24 @@ export class HttpClient {
     }
 
     const response = await this.instance.post(path, { body: form, headers });
-
-    return this.normalize<T>(response);
+    return this.normalize<U, W>(response);
   }
 
-  async postFormData<T = unknown>(path: string, form: FormData, headers?: Record<string, string>): Promise<HttpResult<T>> {
+  async postFormData<U = unknown, W = unknown>(path: string, form: FormData, headers?: Record<string, string>): Promise<HttpResult<U, W>> {
     const response = await this.instance.post(path, { body: form, headers });
-    return this.normalize<T>(response);
+    return this.normalize<U, W>(response);
   }
 
-  private async normalize<T>(response: Response): Promise<HttpResult<T>> {
+  private async normalize<U, W>(response: Response): Promise<HttpResult<U, W>> {
     const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
+    const status = response.status;
+    const headers = Object.fromEntries(response.headers.entries());
 
-    return {
-      status: response.status,
-      headers: Object.fromEntries(response.headers.entries()),
-      data: text ? JSON.parse(text) as T : null as T,
-    };
+    if (status >= 400) {
+      return { ok: false, status, headers, data: data as W };
+    }
+
+    return { ok: true, status, headers, data: data as U };
   }
 }
