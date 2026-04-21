@@ -118,7 +118,7 @@ describe('Services', () => {
         delete payload.meta.from;
         expect(payload.meta.from).to.be.undefined;
         mailer.setAddresses(payload);
-        expect(payload.meta.from).to.be.equals(Container.configuration.variables.addresses.from);
+        expect(payload.meta.from).to.be.equals(Container.configuration.defaults.addresses.from);
         done();
       });
 
@@ -137,7 +137,7 @@ describe('Services', () => {
         delete payload.meta.replyTo;
         expect(payload.meta.replyTo).to.be.undefined;
         mailer.setAddresses(payload);
-        expect(payload.meta.replyTo).to.be.equals(Container.configuration.variables.addresses.replyTo);
+        expect(payload.meta.replyTo).to.be.equals(Container.configuration.defaults.addresses.replyTo);
         done();
       });
 

@@ -22,40 +22,40 @@ describe('Client configuration', () => {
     });
   });
 
-  describe('.variables', () => {
+  describe('.defaults', () => {
     beforeEach(() => { payload = JSON.parse(JSON.stringify(cliamrc)); });
 
     describe('.addresses', () => {
       ['from', 'replyTo'].forEach(property => {
         it(`error - ${property}.name is required`, (done: any) => {
           const base = JSON.parse(JSON.stringify(cliamrc));
-          Object.assign(base.variables.addresses, { [property]: { name: null, email: 'example@john.doe.com' } });
+          Object.assign(base.defaults.addresses, { [property]: { name: null, email: 'example@john.doe.com' } });
           const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.name" must be a string`);
+          expect(error.details[0].message).to.be.eqls(`"defaults.addresses.${property}.name" must be a string`);
           done();
         });
 
         it(`error - ${property}.name should be less than or equal to 48 chars`, (done: any) => {
           const base = JSON.parse(JSON.stringify(cliamrc));
-          Object.assign(base.variables.addresses, { [property]: { name: chance.string({ length: 49 }), email: 'example@john.doe.com' } });
+          Object.assign(base.defaults.addresses, { [property]: { name: chance.string({ length: 49 }), email: 'example@john.doe.com' } });
           const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.name" length must be less than or equal to 48 characters long`);
+          expect(error.details[0].message).to.be.eqls(`"defaults.addresses.${property}.name" length must be less than or equal to 48 characters long`);
           done();
         });
 
         it(`error - ${property}.email is required`, (done: any) => {
           const base = JSON.parse(JSON.stringify(cliamrc));
-          Object.assign(base.variables.addresses, { [property]: { name: 'Yoda', email: null } });
+          Object.assign(base.defaults.addresses, { [property]: { name: 'Yoda', email: null } });
           const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.email" must be a string`);
+          expect(error.details[0].message).to.be.eqls(`"defaults.addresses.${property}.email" must be a string`);
           done();
         });
 
         it(`error - ${property}.email should be a valid email address`, (done: any) => {
           const base = JSON.parse(JSON.stringify(cliamrc));
-          Object.assign(base.variables.addresses, { [property]: { name: 'Yoda', email: 'Yoda' } });
+          Object.assign(base.defaults.addresses, { [property]: { name: 'Yoda', email: 'Yoda' } });
           const error = configurationSchema.validate(base, { abortEarly: true, allowUnknown: false })?.error;
-          expect(error.details[0].message).to.be.eqls(`"variables.addresses.${property}.email" must be a valid email`);
+          expect(error.details[0].message).to.be.eqls(`"defaults.addresses.${property}.email" must be a valid email`);
           done();
         });
       });

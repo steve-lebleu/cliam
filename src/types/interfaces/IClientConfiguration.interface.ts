@@ -5,7 +5,7 @@ import type { ITransporterConfiguration } from '@transporters/ITransporterConfig
 
 export interface IClientConfiguration {
   sandbox?: boolean;
-  variables: IDefaults;
+  defaults: IDefaults;
   placeholders?: IPlaceholder;
   transporters: ITransporterConfiguration[];
 }

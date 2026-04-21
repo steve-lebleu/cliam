@@ -2,7 +2,7 @@ require('dotenv').config();
 
 module.exports = {
   "sandbox": true,
-  "variables": {
+  "defaults": {
     "addresses": {
       "from": {
         "name": "John Doe",

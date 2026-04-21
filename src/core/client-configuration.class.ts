@@ -1,5 +1,5 @@
 import type { IPlaceholder } from '@interfaces/IPlaceholder.interface';
-import type { IDefaults } from '@/types/interfaces/IDefaults.interface';
+import type { IDefaults } from '@interfaces/IDefaults.interface';
 
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
@@ -13,9 +13,9 @@ export class ClientConfiguration {
   sandbox?: boolean;
 
   /**
-   * @description Values used by Cliam to send emails
+   * @description Default values used by Cliam to send emails
    */
-  variables!: IDefaults;
+  defaults!: IDefaults;
 
   /**
    * @description Values used by render engine as placeholder values in templates

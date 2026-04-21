@@ -12,7 +12,7 @@ import { SOCIAL_NETWORK } from '@typings/social-network.type';
 
 export const configurationSchema = Joi.object({
   sandbox: Joi.boolean().default(false),
-  variables: Joi.object({
+  defaults: Joi.object({
     addresses: Joi.object({
       from: Joi.object({
         email: Joi.string().email().required(),

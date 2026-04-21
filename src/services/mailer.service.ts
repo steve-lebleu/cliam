@@ -63,8 +63,8 @@ class Mailer {
    * @param payload
    */
   private setAddresses(payload: IPayload): void {
-    payload.meta.from = payload.meta.from ?? Container.configuration.variables.addresses.from;
-    payload.meta.replyTo = payload.meta.replyTo ?? Container.configuration.variables.addresses.replyTo;
+    payload.meta.from = payload.meta.from ?? Container.configuration.defaults.addresses.from;
+    payload.meta.replyTo = payload.meta.replyTo ?? Container.configuration.defaults.addresses.replyTo;
   }
 
   /**
