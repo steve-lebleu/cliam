@@ -112,7 +112,6 @@ describe('Services', () => {
     });
 
     describe('::setAddresses', () => {
-
       it('should set from address with the cliamrc one if not present in on fly payload', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
@@ -167,7 +166,7 @@ describe('Services', () => {
         }
       });
 
-      it('should returns object with payload, templateId, renderEngine, body and origin properties', (done: any) => {
+      it('should returns object with payload, templateId, renderEngine, and body properties', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const payload = requestPayload();
         const result = mailer.getMail('user.welcome', payload);
@@ -175,7 +174,6 @@ describe('Services', () => {
         expect(result).to.haveOwnProperty('templateId');
         expect(result).to.haveOwnProperty('renderEngine');
         expect(result).to.haveOwnProperty('body');
-        expect(result).to.haveOwnProperty('origin');
         done();
       });
 
@@ -212,17 +210,7 @@ describe('Services', () => {
       });
     });
 
-    describe('::getOrigin', () => {
-      it('should return the origin value from Container.configuration.variables.domain', (done: any) => {
-        const mailer = new Mailer(Container.transporters['postmark-api']);
-        const origin = mailer.getOrigin();
-        expect(origin).to.be.equals(Container.configuration.variables.domain);
-        done();
-      });
-    });
-
     describe('::getTemplateId', () => {
-
       it('should returns null', (done: any) => {
         const mailer = new Mailer(Container.transporters['postmark-api']);
         const templateId = mailer.getTemplateId('user.notfound');

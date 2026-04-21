@@ -102,6 +102,7 @@ export class MailjetTransporter extends HttpTransporter<IMailjetBody> {
 
   response(result: HttpSuccess<IMailjetResponse>): SendingResponse {
     const msg = result.data.Messages?.[0];
+
     return new SendingResponse()
       .set('provider', PROVIDER.mailjet)
       .set('server', null)
@@ -115,6 +116,10 @@ export class MailjetTransporter extends HttpTransporter<IMailjetBody> {
   }
 
   error(error: IMailjetError): SendingError {
+    if (typeof error === 'string') {
+      return new SendingError(500, error, []);
+    }
+
     return new SendingError(error.StatusCode, error.ErrorMessage, error.ErrorRelatedTo);
   }
 }

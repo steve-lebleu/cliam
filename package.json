@@ -37,6 +37,10 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./core": {
+      "import": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    },
     "./providers/smtp": {
       "import": "./dist/transporters/smtp/index.js",
       "types": "./dist/transporters/smtp/index.d.ts"
@@ -80,6 +84,10 @@
     "./providers/sparkpost": {
       "import": "./dist/transporters/sparkpost/index.js",
       "types": "./dist/transporters/sparkpost/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
     }
   },
   "homepage": "https://github.com/steve-lebleu/cliam#readme",

@@ -130,7 +130,9 @@ export class SesTransporter extends HttpTransporter<ISesBody> {
       .set('statusMessage', null);
   }
 
-  error(result: HttpFailure<ISesError>): SendingError {
-    return new SendingError(result.status, result.data.__type ?? 'SesError', [result.data.message]);
+  error(error: HttpFailure<ISesError>): SendingError {
+    const { status, data: { __type, message } } = error;
+
+    return new SendingError(status, __type ?? 'SesError', [message]);
   }
 }

@@ -95,19 +95,24 @@ export class MailersendTransporter extends HttpTransporter<IMailersendBody> {
   }
 
   response(result: HttpSuccess<IMailersendResponse>): SendingResponse {
+    const { headers, data } = result;
+    const { statusCode = null, body = null } = data ?? {};
+
     return new SendingResponse()
       .set('provider', PROVIDER.mailersend)
-      .set('server', result.headers.server ?? null)
+      .set('server', headers.server ?? null)
       .set('uri', null)
-      .set('headers', JSON.stringify(result.headers))
+      .set('headers', JSON.stringify(headers))
       .set('timestamp', Date.now())
-      .set('messageId', result.headers['x-message-id'] ?? null)
-      .set('body', null)
-      .set('statusCode', result.status)
+      .set('messageId', headers['x-message-id'] ?? null)
+      .set('body', body)
+      .set('statusCode', statusCode)
       .set('statusMessage', null);
   }
 
   error(result: HttpFailure<IMailersendError>): SendingError {
-    return new SendingError(result.data.statusCode, result.data.body.message, [result.data.body.errors]);
+    const { status, data: { message } } = result;
+
+    return new SendingError(status, '', [message]);
   }
 }

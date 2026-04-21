@@ -32,7 +32,6 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
       From: this.address(payload.meta.from),
       To: this.addresses(payload.meta.to).join(','),
       ReplyTo: this.address(payload.meta.replyTo),
-      Subject: payload.meta.subject,
     };
 
     switch (renderEngine.valueOf()) {
@@ -45,6 +44,7 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
+          Subject: payload.meta.subject,
           TextBody: body?.text,
           HtmlBody: body?.html,
         });
@@ -101,9 +101,9 @@ export class PostmarkTransporter extends HttpTransporter<IPostmarkBody> {
 
     return new SendingResponse()
       .set('provider', PROVIDER.postmark)
-      .set('server', null)
+      .set('server', result.headers['x-postmark-server'])
       .set('uri', null)
-      .set('headers', null)
+      .set('headers', result.headers)
       .set('timestamp', SubmittedAt)
       .set('messageId', MessageID)
       .set('body', Message)

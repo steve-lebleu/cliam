@@ -106,15 +106,7 @@ class Mailer {
       templateId: this.getTemplateId(event),
       renderEngine: this.renderEngine,
       body: (RENDER_ENGINE.self === this.renderEngine || RENDER_ENGINE.cliam === this.renderEngine) ? this.getCompiled(event, payload) : null,
-      origin: this.getOrigin()
     }
-  }
-
-  /**
-   * @description Get the origin domain to use in the setup of the current mailer instance. This is used by some web API providers such mailgun.
-   */
-  private getOrigin(): string {
-    return Container.configuration.variables.domain;
   }
 
   /**

@@ -28,16 +28,16 @@ export class SendgridTransporter extends HttpTransporter<ISendgridBody> {
     const { payload, templateId, body, renderEngine } = args;
 
     const output: ISendgridBody = {
-      from: this.address(payload.meta.from, 'from') as string,
-      personalizations: [{ to: this.addresses(payload.meta.to) as IAddress[] }],
-      reply_to: this.address(payload.meta.replyTo) as IAddress,
+      from: this.address(payload.meta.from),
+      personalizations: [{ to: this.addresses(payload.meta.to) }],
+      reply_to: this.address(payload.meta.replyTo),
       subject: payload.meta.subject,
     };
 
     switch (renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
-          dynamic_template_data: payload.data,
+          substitutions: payload.data,
           template_id: templateId,
         });
         break;
@@ -67,14 +67,15 @@ export class SendgridTransporter extends HttpTransporter<ISendgridBody> {
     return output;
   }
 
-  address(recipient: string | IAddressable, type?: string): string | IAddress {
+  address(recipient: string | IAddressable): IAddress {
     if (typeof recipient === 'string') {
-      return type === 'from' ? recipient : { email: recipient };
+      return { email: recipient };
     }
-    return type === 'from' ? recipient.email : { email: recipient.email, name: recipient.name };
+
+    return { email: recipient.email, name: recipient?.name };
   }
 
-  addresses(recipients: Array<string | IAddressable>): Array<string | IAddress> {
+  addresses(recipients: Array<string | IAddressable>): Array<IAddress> {
     return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
@@ -89,20 +90,23 @@ export class SendgridTransporter extends HttpTransporter<ISendgridBody> {
   }
 
   response(result: HttpSuccess<null>): SendingResponse {
+    const { status, headers } = result;
+
     return new SendingResponse()
       .set('provider', PROVIDER.sendgrid)
-      .set('server', result.headers.server ?? null)
+      .set('server', headers.server ?? null)
       .set('uri', null)
-      .set('headers', JSON.stringify(result.headers))
+      .set('headers', headers)
       .set('timestamp', Date.now())
-      .set('messageId', result.headers['x-message-id'] ?? null)
+      .set('messageId', headers['x-message-id'] ?? null)
       .set('body', null)
-      .set('statusCode', result.status)
+      .set('statusCode', status)
       .set('statusMessage', null);
   }
 
-  error(result: HttpFailure<ISendgridError>): SendingError {
-    const first = result.data.errors?.[0];
-    return new SendingError(result.status, first?.message ?? 'Unknown error', result.data.errors.map(e => e.message));
+  error(error: HttpFailure<ISendgridError>): SendingError {
+    const { status, data: { errors } } = error;
+
+    return new SendingError(status, status === 400 ? 'Bad request' : 'Unknown error', errors.map(e => `${e.field}: ${e.message}`));
   }
 }

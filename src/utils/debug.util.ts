@@ -21,8 +21,7 @@ const Debug = (provider: Provider) => {
             break;
           case PROVIDER.mailjet:
             Object.assign(output, {
-              SandboxMode: true,
-              mail_settings: { sandbox_mode: { enable: true } },
+              SandboxMode: true
             });
             break;
           case PROVIDER.mailersend:

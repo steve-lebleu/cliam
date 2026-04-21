@@ -12,7 +12,6 @@ describe('Client configuration', () => {
   let payload: any;
 
   describe('.sandbox', () => {
-
     beforeEach(() => { payload = JSON.parse(JSON.stringify(cliamrc)); });
 
     it('success - let sandbox inactive by default', (done: any) => {
@@ -24,32 +23,10 @@ describe('Client configuration', () => {
   });
 
   describe('.variables', () => {
-
     beforeEach(() => { payload = JSON.parse(JSON.stringify(cliamrc)); });
 
-    describe('.domain', () => {
-
-      it('should give an error when domain is required', (done: any) => {
-        payload.variables.domain = undefined;
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error).to.be.an('error');
-        expect(error?.details[0].message).to.be.eqls('"variables.domain" is required');
-        done();
-      });
-
-      it('error - should be a valid uri', (done: any) => {
-        payload.variables.domain = 'Yoda';
-        const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;
-        expect(error).to.be.an('error');
-        expect(error?.details[0].message).to.be.eqls('"variables.domain" must be a valid uri');
-        done();
-      });
-    });
-
     describe('.addresses', () => {
-
       ['from', 'replyTo'].forEach(property => {
-
         it(`error - ${property}.name is required`, (done: any) => {
           const base = JSON.parse(JSON.stringify(cliamrc));
           Object.assign(base.variables.addresses, { [property]: { name: null, email: 'example@john.doe.com' } });
@@ -86,11 +63,9 @@ describe('Client configuration', () => {
   });
 
   describe('.placeholders', () => {
-
     beforeEach(() => { payload = JSON.parse(JSON.stringify(cliamrc)); });
 
     describe('.company', () => {
-
       it('error - is required', (done: any) => {
         payload.placeholders.company = undefined;
         const error = configurationSchema.validate(payload, { abortEarly: true, allowUnknown: false })?.error;

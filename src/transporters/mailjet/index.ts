@@ -4,7 +4,7 @@ import { registerTransporter } from '@transporters/transporter.registry';
 import { MailjetTransporter } from './mailjet.class';
 
 registerTransporter(PROVIDER.mailjet, (_vars, args) => {
-  const credentials = btoa(`${args.auth.apiKey!}:${args.auth.apiSecret!}`);
+  const credentials = Buffer.from(`${args.auth.apiKey?.trim()}:${args.auth.apiSecret?.trim()}`).toString('base64');
 
   return new MailjetTransporter(
     new HttpClient({

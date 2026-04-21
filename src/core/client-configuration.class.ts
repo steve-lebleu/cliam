@@ -1,5 +1,6 @@
 import type { IPlaceholder } from '@interfaces/IPlaceholder.interface';
-import type { IAddressable } from '@interfaces/IAddressable.interface';
+import type { IDefaults } from '@/types/interfaces/IDefaults.interface';
+
 import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
 /**
@@ -14,13 +15,7 @@ export class ClientConfiguration {
   /**
    * @description Values used by Cliam to send emails
    */
-  variables!: {
-    domain: string
-    addresses: {
-      from: IAddressable,
-      replyTo: IAddressable
-    };
-  }
+  variables!: IDefaults;
 
   /**
    * @description Values used by render engine as placeholder values in templates

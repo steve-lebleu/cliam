@@ -8,13 +8,13 @@ export interface ISendgridPersonalization {
 }
 
 export interface ISendgridBody {
-  from: string;
+  from: IAddress;
   personalizations: ISendgridPersonalization[];
   reply_to: IAddress;
   subject: string;
   content?: Array<{ type: string; value: string }>;
   template_id?: string;
-  dynamic_template_data?: Record<string, unknown>;
+  substitutions?: Record<string, unknown>;
   attachments?: IAttachment[];
   mail_settings?: { sandbox_mode: { enable: boolean } };
 }

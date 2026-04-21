@@ -27,6 +27,7 @@ To improve and facilitate the implementation, the flexibility and the maintenanc
 
 - [Requirements](#requirements)
 - [Getting started](#getting-started)
+- [Selective imports](#selective-imports)
 - [Beneficiary use cases](#beneficiary-use-cases)
 - [Supported web API providers](#supported-web-api-providers)
 - [Upgrading to v3](#upgrading-to-v3)
@@ -128,29 +129,47 @@ Use environment variables for sensitive values such as API keys. Cliam does not 
 
 See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for the full list of available options.
 
-### Optional provider loading
+### Selective imports
 
-By default `import { Cliam } from 'cliam'` registers all supported providers. If you use a bundler and want to reduce your bundle size, import from `cliam` and load only the providers you actually use:
+The default entry point registers all supported providers at import time:
 
 ```typescript
-import { Cliam } from 'cliam';
+import { Cliam } from 'cliam'; // all providers loaded
+```
+
+If you use a bundler and want to reduce your bundle size, import the core and load only the providers you actually use:
+
+```typescript
+import { Cliam } from 'cliam/core';
 import 'cliam/providers/sendgrid';
 // import 'cliam/providers/smtp'; // add others as needed
 ```
 
+Types and enums are available separately, without pulling in any runtime code:
+
+```typescript
+import type { IPayload, IClientConfiguration } from 'cliam/types';
+import { EVENT, PROVIDER } from 'cliam/types';
+```
+
 Available sub-paths:
 
-- `cliam/providers/brevo`
-- `cliam/providers/mailersend`
-- `cliam/providers/mailgun`
-- `cliam/providers/mailjet`
-- `cliam/providers/mandrill`
-- `cliam/providers/postmark`
-- `cliam/providers/resend`
-- `cliam/providers/sendgrid`
-- `cliam/providers/ses`
-- `cliam/providers/sparkpost`
-- `cliam/providers/smtp`
+| Sub-path | Exports |
+|---|---|
+| `cliam` | `Cliam`, `SendingResponse`, `SendingError`, all types — registers all providers |
+| `cliam/core` | `Cliam`, `SendingResponse`, `SendingError` — no providers registered |
+| `cliam/types` | All interfaces, enums and types — no runtime code |
+| `cliam/providers/brevo` | Side-effect: registers the Brevo transporter |
+| `cliam/providers/mailersend` | Side-effect: registers the Mailersend transporter |
+| `cliam/providers/mailgun` | Side-effect: registers the Mailgun transporter |
+| `cliam/providers/mailjet` | Side-effect: registers the Mailjet transporter |
+| `cliam/providers/mandrill` | Side-effect: registers the Mandrill transporter |
+| `cliam/providers/postmark` | Side-effect: registers the Postmark transporter |
+| `cliam/providers/resend` | Side-effect: registers the Resend transporter |
+| `cliam/providers/sendgrid` | Side-effect: registers the Sendgrid transporter |
+| `cliam/providers/ses` | Side-effect: registers the Amazon SES transporter |
+| `cliam/providers/sparkpost` | Side-effect: registers the Sparkpost transporter |
+| `cliam/providers/smtp` | Side-effect: registers the SMTP transporter |
 
 If a transporter is configured but its provider was never imported, Cliam throws at send time with a clear message.
 

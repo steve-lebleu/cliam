@@ -6,7 +6,6 @@ import type { IAddressable } from './IAddressable.interface';
  * Define a payload schema type
  */
 export interface IPayload {
-
   /**
    * @description Unique transporter id reference
    */
@@ -16,7 +15,6 @@ export interface IPayload {
    * @description Meta data for email sending
    */
   meta: {
-
     /**
      * @description From address object
      */
@@ -56,7 +54,7 @@ export interface IPayload {
   /**
    * @description Variables to use when template is compilated
    */
-  data?: Record<string,unknown>;
+  data?: Record<string, unknown>;
 
   /**
    * @description Email stream contents to send

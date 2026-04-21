@@ -96,19 +96,23 @@ export class ResendTransporter extends HttpTransporter<IResendBody> {
   }
 
   response(result: HttpSuccess<IResendResponse>): SendingResponse {
+    const { headers, status, data } = result;
+
     return new SendingResponse()
       .set('provider', PROVIDER.resend)
-      .set('server', null)
+      .set('server', headers.server)
       .set('uri', null)
-      .set('headers', null)
+      .set('headers', headers)
       .set('timestamp', Date.now())
-      .set('messageId', result.data.id)
+      .set('messageId', data.id)
       .set('body', null)
-      .set('statusCode', result.status)
+      .set('statusCode', status)
       .set('statusMessage', null);
   }
 
-  error(result: HttpFailure<IResendError>): SendingError {
-    return new SendingError(result.data.statusCode ?? result.status, result.data.name, [result.data.message]);
+  error(error: HttpFailure<IResendError>): SendingError {
+    const { status, data: { name, message, statusCode } } = error;
+
+    return new SendingError(statusCode ?? status, name, [message]);
   }
 }

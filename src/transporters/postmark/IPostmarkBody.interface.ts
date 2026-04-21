@@ -9,7 +9,7 @@ export interface IPostmarkBody {
   From: string;
   To: string;
   ReplyTo: string;
-  Subject: string;
+  Subject?: string;
   TextBody?: string;
   HtmlBody?: string;
   TemplateId?: number;

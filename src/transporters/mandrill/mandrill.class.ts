@@ -111,19 +111,23 @@ export class MandrillTransporter extends HttpTransporter<IMandrillBody> {
   }
 
   response(result: HttpSuccess<IMandrillResponse[]>): SendingResponse {
+    const { headers, status, data } = result;
+
     return new SendingResponse()
       .set('provider', PROVIDER.mandrill)
       .set('server', null)
       .set('uri', null)
-      .set('headers', null)
+      .set('headers', headers)
       .set('timestamp', Date.now())
-      .set('messageId', result.data[0]?._id ?? null)
-      .set('body', result.data[0]?.status ?? null)
-      .set('statusCode', result.status)
+      .set('messageId', data[0]?._id ?? null)
+      .set('body', data[0]?.status ?? null)
+      .set('statusCode', status)
       .set('statusMessage', null);
   }
 
   error(error: IMandrillError): SendingError {
-    return new SendingError(error.code, error.name, [error.message]);
+    const { code, name, message } = error;
+
+    return new SendingError(code, name, [message]);
   }
 }

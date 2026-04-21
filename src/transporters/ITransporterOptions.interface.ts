@@ -6,4 +6,5 @@ export interface ITransporterOptions {
   port?: number;
   secure?: boolean;
   region?: string;
+  domain?: string;
 }

@@ -25,7 +25,6 @@ export const Container = {
     return _configuration;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get transporters(): { [id: string]: Transporter<any> } {
     if (!_transporters) {
       throw new Error('Cliam is not configured. Call Cliam.configure() or Cliam.configureFromFile() first.');
@@ -45,7 +44,6 @@ export const Container = {
 
     const { transporters, variables } = _configuration;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _transporters = transporters
       .reduce((result: { [id: string]: Transporter<any> }, transporterDefinition) => {
         result[transporterDefinition.id] = TransporterFactory.get(variables, transporterDefinition);

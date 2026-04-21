@@ -3,7 +3,6 @@ require('dotenv').config();
 module.exports = {
   "sandbox": true,
   "variables": {
-    "domain": "https://www.my-website.com",
     "addresses": {
       "from": {
         "name": "John Doe",
@@ -151,7 +150,9 @@ module.exports = {
       "auth": {
         "apiKey": process.env.MAILGUN_API_KEY,
       },
-      "options": {},
+      "options": {
+        "domain": "mg.my-website.com"
+      },
       "templates": {
         "default": "welcome",
         "event.subscribe": "welcome",

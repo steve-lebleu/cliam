@@ -30,9 +30,4 @@ export interface IMail {
    * @description Content of the email as HTML and plain text
    */
   body: { text: string, html: string } | null;
-
-  /**
-   * @description Origin domain to use for the current sending
-   */
-  origin: string;
 }

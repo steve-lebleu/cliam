@@ -144,11 +144,11 @@ export class SmtpTransporter extends Transporter<ISmtpBody> {
     }
 
     if (this.transport.options?.host === 'mail.infomaniak.com') {
-      const e = error as IInfomaniakError;
+      const { responseCode, command, code, response } = error as IInfomaniakError;
 
-      output.errors = [e.response];
-      output.statusText = e.responseCode.toString();
-      output.statusCode = Number(e.code);
+      output.statusCode = responseCode ?? 500;
+      output.statusText = `${command}:${code}`;
+      output.errors = [response];
     }
 
     if (error instanceof Error) {

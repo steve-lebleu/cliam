@@ -13,7 +13,6 @@ import { SOCIAL_NETWORK } from '@typings/social-network.type';
 export const configurationSchema = Joi.object({
   sandbox: Joi.boolean().default(false),
   variables: Joi.object({
-    domain: Joi.string().uri().required(),
     addresses: Joi.object({
       from: Joi.object({
         email: Joi.string().email().required(),
@@ -109,7 +108,7 @@ export const configurationSchema = Joi.object({
               },
               {
                 is: Joi.any().valid(PROVIDER.resend).required(),
-                then: Joi.string().regex(/^re_[a-zA-Z0-9]{32}$/)
+                then: Joi.string().regex(/^re_[a-zA-Z0-9_]{32}$/)
               },
               {
                 is: Joi.any().valid(PROVIDER.ses).required(),
@@ -132,15 +131,30 @@ export const configurationSchema = Joi.object({
               }
             ]
           })
-        }).xor('username', 'apiKey').xor('password', 'apiKey').required(),
-        options: Joi.object().when('provider', {
-          not: Joi.exist(),
-          then: Joi.object({
+        })
+          .xor('username', 'apiKey')
+          .xor('password', 'apiKey')
+          .required(),
+        options: Joi.when('provider', {
+          switch: [
+            {
+              is: Joi.any().valid(PROVIDER.mailgun).required(),
+              then: Joi.object({ domain: Joi.string().required() }).required()
+            },
+            {
+              is: Joi.any().valid(PROVIDER.ses).required(),
+              then: Joi.object({ region: Joi.string().required() }).required()
+            },
+            {
+              is: Joi.exist(),
+              then: Joi.object().optional()
+            },
+          ],
+          otherwise: Joi.object({
             host: host('smtp').required(),
             port: port().required(),
             secure: Joi.boolean().default(false),
           }).required()
-
         }),
         templates: Joi.object().pattern( Joi.string(), Joi.when('.provider', {
           switch: [

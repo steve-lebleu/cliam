@@ -1,4 +1,5 @@
 import ky, { type KyInstance } from 'ky';
+import { isParsable } from '@utils/string.util';
 
 export type HttpClientConfig = {
   baseUrl: string;
@@ -25,7 +26,7 @@ export class HttpClient {
   }
 
   async post<T = unknown, U = unknown, W = unknown>(path: string, body: T, headers?: Record<string, string>): Promise<HttpResult<U, W>> {
-    const response = await this.instance.post(path, { json: body, headers });
+    const response = await this.instance.post(path, { json: body, ...(headers && { headers }) });
     return this.normalize<U, W>(response);
   }
 
@@ -40,18 +41,18 @@ export class HttpClient {
       }
     }
 
-    const response = await this.instance.post(path, { body: form, headers });
+    const response = await this.instance.post(path, { body: form, ...(headers && { headers }) });
     return this.normalize<U, W>(response);
   }
 
   async postFormData<U = unknown, W = unknown>(path: string, form: FormData, headers?: Record<string, string>): Promise<HttpResult<U, W>> {
-    const response = await this.instance.post(path, { body: form, headers });
+    const response = await this.instance.post(path, { body: form, ...(headers && { headers }) });
     return this.normalize<U, W>(response);
   }
 
   private async normalize<U, W>(response: Response): Promise<HttpResult<U, W>> {
     const text = await response.text();
-    const data = text ? JSON.parse(text) : null;
+    const data = text && isParsable(text) ? JSON.parse(text) : text ? text : null;
     const status = response.status;
     const headers = Object.fromEntries(response.headers.entries());
 

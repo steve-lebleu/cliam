@@ -111,8 +111,9 @@ export class BrevoTransporter extends HttpTransporter<IBrevoBody> {
   }
 
   error(result: HttpFailure<IBrevoError>): SendingError {
-    const { name, message } = result.data;
+   console.log('result', result)
+    const { code, name, message } = result.data;
 
-    return new SendingError(result.status, name, [message]);
+    return new SendingError(result.status, code ?? name, [message]);
   }
 }
