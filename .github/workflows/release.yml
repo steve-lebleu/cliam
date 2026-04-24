@@ -30,6 +30,8 @@ jobs:
           path: |
             dist/
             package.json
+            LICENSE
+            README.md
   test:
     name: Test
     runs-on: ubuntu-latest
