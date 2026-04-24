@@ -1,10 +1,12 @@
 {
   "name": "cliam",
-  "version": "2.3.3",
+  "version": "3.0.0",
   "engines": {
     "node": ">=18.19.0"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "author": "Steve Lebleu",
   "license": "AGPL-3.0",
   "description": "Agnostic transactional email sending in Node.js environment",
