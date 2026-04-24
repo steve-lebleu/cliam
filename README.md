@@ -145,7 +145,7 @@ import 'cliam/providers/sendgrid';
 // import 'cliam/providers/smtp'; // add others as needed
 ```
 
-Types and enums are available separately, without pulling in any runtime code:
+Types and enums are available separately:
 
 ```typescript
 import type { IPayload, IClientConfiguration } from 'cliam/types';
@@ -217,6 +217,10 @@ See [email payload](https://github.com/steve-lebleu/cliam/wiki/Email-payload) wi
 **:white_check_mark: I have many projects which uses differents providers, it's a hell of a thing to maintain.**
 
 This is to be forgotten with Cliam. No more worries about polymorphics inputs / outputs. Whether you are working with an A, B, C, D provider or a smtp server, your input / output will always be the same regardless of your delivery method or service provider.
+
+**:white_check_mark: I'm just using many providers into a same project, it's convoluted to securize and maintain.**
+
+Same purpose. Whether you are working with a provider or a SMTP server - or boths, your input / output stays the same. With Cliam, you don't need anymore to embedd n libraries into your `node_modules` folder: we only embed `nodemailer` core library to send emails through SMTP and `ky` as HTTP client.
 
 **:white_check_mark: I wish change from supplier, but I'm in panic about the implementation ?**
 
