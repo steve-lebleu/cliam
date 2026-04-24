@@ -1,10 +1,14 @@
 ![Cliam](https://cdn.konfer.be/images/cliam/assets/banner-cliam.png)
 
+[![Node](https://img.shields.io/badge/Node-18.19.0-informational?logo=node.js&color=43853D)](https://nodejs.org/docs/latest-v18.x/api/index.html)
+[![TypeScript](https://img.shields.io/badge/Typescript-6.0.3-informational?logo=typescript&color=2F74C0)](https://www.typescriptlang.org/)
+
 ![Github action workflow status](https://github.com/steve-lebleu/cliam/actions/workflows/build.yml/badge.svg?branch=main)
-[![Coverage Status](https://coveralls.io/repos/github/steve-lebleu/cliam/badge.svg?branch=main)](https://coveralls.io/github/steve-lebleu/cliam?branch=main)
-[![CodeFactor](https://www.codefactor.io/repository/github/steve-lebleu/cliam/badge)](https://www.codefactor.io/repository/github/steve-lebleu/cliam)
 ![GitHub Release](https://img.shields.io/github/v/release/steve-lebleu/cliam?logo=Github)
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/gpl-license.php)
+
+[![Maintainability](https://qlty.sh/badges/b81700b3-a1e1-45ed-8475-9bbdfe1ab0ae/maintainability.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
+[![Code Coverage](https://qlty.sh/badges/b81700b3-a1e1-45ed-8475-9bbdfe1ab0ae/coverage.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
 
 # Transactional emails with a kick
 
