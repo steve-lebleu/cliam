@@ -1,7 +1,4 @@
-export interface IMailersendError extends Error {
-  name: string;
-  statusCode: number;
-  statusText: string;
+export interface IMailersendError {
   message: string;
-  body: { message: string, errors: string };
+  errors: { [key: string]: string[] };
 }

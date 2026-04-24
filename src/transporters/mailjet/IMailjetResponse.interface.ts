@@ -1,18 +1,18 @@
+import type { IMailjetError } from './IMailjetError.interface';
+
+export interface IMailjetMessageResult {
+  Email: string;
+  MessageUUID: string;
+  MessageID: number;
+  MessageHref: string;
+}
+
 export interface IMailjetResponse {
-  response: {
-    config: {
-      url: string,
-      method: string,
-      headers: Record<string,unknown>,
-      data: string,
-    },
-    headers: Record<string,string>
-    request: {
-      res: {
-        httpVersion: string
-      }
-    }
-    status: number,
-    statusText: string
-  }
+  Messages: Array<{
+    Status: string;
+    Errors?: IMailjetError[];
+    To?: IMailjetMessageResult[];
+    Cc?: IMailjetMessageResult[];
+    Bcc?: IMailjetMessageResult[];
+  }>;
 }

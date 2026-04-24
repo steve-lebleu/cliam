@@ -1,12 +1,5 @@
-import { Url } from "url";
-
+// SendGrid returns 202 with empty body; message ID is in the X-Message-Id response header
 export interface ISendgridResponse {
-  request: {
-    uri: Url,
-    method: string,
-    body: Record<string,unknown>
-  },
-  httpVersion: string;
-  headers: Record<string,unknown>;
-  statusMessage: string;
+  'x-message-id'?: string;
+  server?: string;
 }

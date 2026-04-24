@@ -1,156 +1,133 @@
-import { Transporter } from './../transporter.class';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { IMandrillResponse } from './IMandrillResponse.interface';
-import { IMandrillError } from './IMandrillError.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import { HttpTransporter } from '@transporters/http.transporter';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import type { HttpSuccess } from '@services/http.service';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
-import { PROVIDER } from '../../types/enums/provider.enum';
+import { Debug } from '@utils/debug.util';
+
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
+
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddress } from '@interfaces/IAddress.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
+
+import type { IMandrillBody } from './IMandrillBody.interface';
+import type { IMandrillError } from './IMandrillError.interface';
+import type { IMandrillResponse } from './IMandrillResponse.interface';
 
 /**
- * Set a Mandrill transporter for mail sending.
+ * Mandrill transporter — sends via the Mandrill Transactional API.
  *
- * @dependency nodemailer
- * @dependency nodemailer-mandrill-transport
- *
- * @see https://nodemailer.com/smtp/
- * @see https://www.npmjs.com/package/nodemailer-mandrill-transport
- * @see https://mandrillapp.com/api/docs/
- * @see https://bitbucket.org/mailchimp/mandrill-api-node/src
+ * @see https://mailchimp.com/developer/transactional/api/messages/
  */
-export class MandrillTransporter extends Transporter {
-
-  /**
-   * @description
-   *
-   * @param transporterEngine Transporter instance
-   * @param configuration Transporter configuration
-   */
-  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
-    super(transporterEngine, configuration);
-  }
-
-  /**
-   * @description Build body request according to Mailgun requirements
-   */
-  build({...args}: IMail): Record<string,unknown> {
-
+export class MandrillTransporter extends HttpTransporter<IMandrillBody> {
+  @Debug('mandrill')
+  build({ ...args }: IMail): IMandrillBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output = {
+    const message: Record<string, unknown> = {
       subject: payload.meta.subject,
-      from_email: this.address(payload.meta.from, 'string'), // TODO This must be dynamic -> if not -> bug
-      from_name: payload.meta.from.name,
-      from: this.address(payload.meta.from, 'string'),
+      from_email: this.address(payload.meta.from, 'string'),
+      from_name: (payload.meta.from as IAddressable).name,
       to: this.addresses(payload.meta.to, 'to'),
-      headers: {
-        'Reply-To': this.address(payload.meta.replyTo.email, 'string') // TODO This must be dynamic -> if not -> bug
-      },
+      headers: { 'Reply-To': this.address(payload.meta.replyTo.email, 'string') },
       track_opens: true,
       track_click: true,
-      preserve_recipients: true
+      preserve_recipients: true,
     };
 
-    switch(renderEngine.valueOf()) {
+    switch (renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
-        Object.assign(output, {
+        return {
+          template_name: templateId,
           template_content: [payload.data],
-          template_name: payload.meta.templateId || templateId
-        });
-        break;
+          message,
+        } as unknown as IMandrillBody;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
-        Object.assign(output, {
-          text: body.text,
-          html: body.html
-        });
+        Object.assign(message, { text: body?.text, html: body?.html });
         break;
     }
 
-    if (typeof(payload.meta.cc) !== 'undefined') {
-      output.to = [].concat(output.to).concat(this.addresses(payload.meta.cc, 'cc')) as Array<string|IAddressB>
+    if (typeof payload.meta.cc !== 'undefined') {
+      (message.to as Array<unknown>) = [...(message.to as Array<unknown>), ...this.addresses(payload.meta.cc, 'cc')];
     }
 
-    if (typeof(payload.meta.bcc) !== 'undefined') {
-      output.to = [].concat(output.to).concat(this.addresses(payload.meta.bcc, 'bcc')) as Array<string|IAddressB>
+    if (typeof payload.meta.bcc !== 'undefined') {
+      (message.to as Array<unknown>) = [...(message.to as Array<unknown>), ...this.addresses(payload.meta.bcc, 'bcc')];
     }
 
-    if (typeof(payload.meta.attachments) !== 'undefined') {
-      Object.assign(output, { attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
-        return { type: attachment.type, name: attachment.filename, content: attachment.content };
-      } ) });
+    if (typeof payload.meta.attachments !== 'undefined') {
+      Object.assign(message, {
+        attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
+          type: attachment.type,
+          name: attachment.filename,
+          content: attachment.content,
+        })),
+      });
     }
 
-    return output;
+    return { message } as unknown as IMandrillBody;
   }
 
-  /**
-   * @description Format email address according to Mandrill requirements
-   *
-   * @param recipient Entry to format as email address
-   * @param type type Discriminator for body property settings
-   */
-  address(recipient: string|IAddressable, type?: string): string|IAddressB {
+  address(recipient: string | IAddressable, type?: string): string | IAddress {
     if (typeof recipient === 'string') {
       return recipient;
     }
-    if (type === 'single') {
+    if (type === 'string') {
       return recipient.email;
     }
-    return typeof recipient.email !== 'undefined' ? recipient.email : recipient;
+    return typeof recipient.email !== 'undefined' ? recipient.email : (recipient as unknown as string);
   }
 
-  /**
-   * @description Format email addresses according to Mandrill requirements
-   *
-   * @param recipients Entries to format as email address
-   * @param type Discriminator for body property settings
-   */
-  addresses(recipients: Array<string|IAddressable>, type?: string): Array<string|IAddressB> {
-    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient, type) );
+  addresses(recipients: Array<string | IAddressable>, type?: string): Array<string | IAddress> {
+    return [...recipients].map((recipient: string | IAddressable) => this.address(recipient, type));
   }
 
-  /**
-   * @description Format API response
-   *
-   * @param response Response from Mandrill API
-   */
-  response(response: IMandrillResponse): SendingResponse {
+  async send(body: IMandrillBody): Promise<SendingResponse> {
+    const isTemplate = 'template_name' in body;
+    const endpoint = isTemplate ? 'messages/send-template' : 'messages/send';
 
-    const res = new SendingResponse();
+    const result = await this.httpClient.post<Record<string, unknown>, IMandrillResponse[], IMandrillError>(endpoint, {
+      key: this.configuration.auth.apiKey,
+      ...body,
+    });
 
-    if (response.rejected.length) {
-      throw { statusCode: 400, statusText: response.rejected[0].status, message: `${response.rejected[0].reject_reason} (email: ${response.rejected[0].email})` };
+    if (!result.ok) {
+      throw this.error(result.data);
     }
 
-    res
+    const rejected = result.data.find(r => r.status === 'rejected' || r.status === 'invalid');
+
+    if (rejected) {
+      throw this.error({ status: 'error', code: 400, name: rejected.status, message: `${rejected.reject_reason} (email: ${rejected.email})` });
+    }
+
+    return this.response(result);
+  }
+
+  response(result: HttpSuccess<IMandrillResponse[]>): SendingResponse {
+    const { headers, status, data } = result;
+
+    return new SendingResponse()
       .set('provider', PROVIDER.mandrill)
       .set('server', null)
       .set('uri', null)
-      .set('headers', null)
+      .set('headers', headers)
       .set('timestamp', Date.now())
-      .set('messageId', response.accepted[0]._id)
-      .set('body', response.accepted[0].status)
-      .set('statusCode', 202)
+      .set('messageId', data[0]?._id ?? null)
+      .set('body', data[0]?.status ?? null)
+      .set('statusCode', status)
       .set('statusMessage', null);
-
-    return res;
   }
 
-  /**
-   * @description Format error output
-   *
-   * @param error Error from Mandrill API
-   */
   error(error: IMandrillError): SendingError {
-    return new SendingError(error.code, error.name, [error.message]);
+    const { code, name, message } = error;
+
+    return new SendingError(code, name, [message]);
   }
 }

@@ -1,8 +1,7 @@
-/**
- * @description
- */
 export interface ISparkpostResponse {
-  messageId: string
-  accepted: number
-  rejected: number
+  results: {
+    id: string;
+    total_accepted_recipients: number;
+    total_rejected_recipients: number;
+  };
 }

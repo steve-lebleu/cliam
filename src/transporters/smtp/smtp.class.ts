@@ -1,19 +1,19 @@
-import { Transporter } from './../transporter.class';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { ISMTPResponse } from './ISMTPResponse.interface';
-import { IAttachment } from './../../types/interfaces/IAttachment.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { IGmailError } from './IGmailError.interface';
-import { IInfomaniakError } from './IInformaniakError.interface';
-import { ISMTPError } from './ISMTPError.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import { Transporter } from '@transporters/transporter.class';
 
-import { SendingError } from './../../classes/sending-error.class';
-import { SendingResponse } from './../../classes/sending-response.class';
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
+import type { ISendingError } from '@interfaces/ISendingError.interface';
+import type { ITransporterConfiguration } from '@transporters/ITransporterConfiguration.interface';
 
-import { Debug } from './../../types/decorators/debug.decorator';
+import type { IInfomaniakError } from './IInformaniakError.interface';
+import type { ISmtpBody } from './ISmtpBody.interface';
+import type { ISmtpTransport } from './ISmtpTransport.interface';
+import type { ISmtpError } from './ISmtpError.interface';
+import type { ISmtpResponse } from './ISmtpResponse.interface';
 
 /**
  * Set a Nodemailer SMTP transporter for mail sending.
@@ -22,57 +22,41 @@ import { Debug } from './../../types/decorators/debug.decorator';
  *
  * @see https://nodemailer.com/smtp/
  */
-export class SmtpTransporter extends Transporter {
+export class SmtpTransporter extends Transporter<ISmtpBody> {
+  protected readonly transport: ISmtpTransport;
 
-  /**
-   * @description
-   *
-   * @param transporterEngine Transporter instance
-   * @param configuration Transporter configuration
-   */
-  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
-    super(transporterEngine, configuration);
+  constructor(transport: ISmtpTransport, configuration: ITransporterConfiguration) {
+    super(configuration);
+    this.transport = transport;
   }
 
-  /**
-   * @description Build body request according to Mailjet requirements
-   */
-  @Debug('smtp')
-  build({...args }: IMail): Record<string,unknown> {
-
+  build({ ...args }: IMail): ISmtpBody {
     const { payload, body } = args;
 
-    const output = {
+    const output: ISmtpBody = {
       from: this.address(payload.meta.from),
       to: this.addresses(payload.meta.to),
       replyTo: this.address(payload.meta.replyTo),
-      subject: payload.meta.subject
+      subject: payload.meta.subject,
+      text: body?.text,
+      html: body?.html,
     };
 
-    if (typeof(payload.meta.cc) !== 'undefined') {
-      Object.assign(output, { cc: this.addresses(payload.meta.cc) });
+    if (typeof payload.meta.cc !== 'undefined') {
+      output.cc = this.addresses(payload.meta.cc);
     }
 
-    if (typeof(payload.meta.bcc) !== 'undefined') {
-      Object.assign(output, { bcc: this.addresses(payload.meta.bcc) });
+    if (typeof payload.meta.bcc !== 'undefined') {
+      output.bcc = this.addresses(payload.meta.bcc);
     }
 
-    if (typeof(payload.meta.attachments) !== 'undefined') {
-      Object.assign(output, {
-        attachments: payload.meta.attachments.map( (attachment: IAttachment) => {
-          return {
-            filename: attachment.filename,
-            content: attachment.content,
-            encoding: 'base64'
-          };
-        })
-      });
+    if (typeof payload.meta.attachments !== 'undefined') {
+      output.attachments = payload.meta.attachments.map((attachment: IAttachment) => ({
+        filename: attachment.filename,
+        content: attachment.content,
+        encoding: 'base64' as const,
+      }));
     }
-
-    Object.assign(output, {
-      text: body.text,
-      html: body.html
-    });
 
     return output;
   }
@@ -82,10 +66,11 @@ export class SmtpTransporter extends Transporter {
    *
    * @param recipient
    */
-  address(recipient: string|IAddressable): string {
+  address(recipient: string | IAddressable): string {
     if (typeof recipient === 'string') {
       return recipient;
     }
+
     return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : `<${recipient.email}>`;
   }
 
@@ -94,8 +79,17 @@ export class SmtpTransporter extends Transporter {
    *
    * @param recipients Entries to format as email address
    */
-  addresses(recipients: Array<string|IAddressable>): Array<string> {
-    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient) );
+  addresses(recipients: Array<string | IAddressable>): Array<string> {
+    return [...recipients].map( (recipient: string | IAddressable) => this.address(recipient) );
+  }
+
+  async send(body: ISmtpBody): Promise<SendingResponse> {
+    try {
+      const info = await this.transport.sendMail(body);
+      return this.response(info);
+    } catch (err: unknown) {
+      throw this.error(err as Error | ISmtpError | IInfomaniakError);
+    }
   }
 
   /**
@@ -103,8 +97,7 @@ export class SmtpTransporter extends Transporter {
    *
    * @param response Response from Nodemailer SMTP API
    */
-  response(response: ISMTPResponse): SendingResponse {
-
+  response(response: ISmtpResponse): SendingResponse {
     const incoming = response;
     const res = new SendingResponse();
 
@@ -119,7 +112,6 @@ export class SmtpTransporter extends Transporter {
       .set('statusCode', 202)
       .set('statusMessage', incoming.response)
       .set('messageId', incoming.messageId);
-
   }
 
   /**
@@ -129,31 +121,40 @@ export class SmtpTransporter extends Transporter {
    *
    * @fixme Non managed error with smtp.gmail.com and secure true : error have a different pattern and this regError.exec(error.response)[0] not working
    */
-  error(error: Error|IGmailError|IInfomaniakError|ISMTPError): SendingError {
-
+  error(error: Error | ISmtpError | IInfomaniakError): SendingError {
     if (error instanceof TypeError) {
       return new SendingError(417, error.name, [error.message]);
     }
 
-    if (this.transporter.options.host === 'smtp.gmail.com') {
+    const output: ISendingError = {
+      errors: ['Unknown error'],
+      statusCode: 500,
+      statusText: 'SMTP Error',
+    };
 
-      error = error as IGmailError;
+    if (this.transport.options?.host === 'smtp.gmail.com') {
+      const e = error as ISmtpError;
 
       const regError = /[A-Z]{1}[a-z\s\W]+\./g;
-      const matchError = regError.exec(error.response)[0];
-      const regHelp = /https:\/\/[a-z-A-Z0-9\w\.-\/\?\=]+/g;
-      const matchHelp = regHelp.exec(error.response)[0];
+      const matchError = regError.exec(e.response)?.[0];
 
-      return new SendingError(error.responseCode, error.code.toString(), [matchError]);
+      output.errors = [matchError ?? 'Unknown error'];
+      output.statusText = e.responseCode.toString();
+      output.statusCode = e.code;
     }
 
-    if (this.transporter.options.host === 'mail.infomaniak.com') {
-      error = error as IInfomaniakError;
-      return new SendingError(error.responseCode, error.code, [ error.response ]);
+    if (this.transport.options?.host === 'mail.infomaniak.com') {
+      const { responseCode, command, code, response } = error as IInfomaniakError;
+
+      output.statusCode = responseCode ?? 500;
+      output.statusText = `${command}:${code}`;
+      output.errors = [response];
     }
 
-    error = error as ISMTPError;
+    if (error instanceof Error) {
+      output.errors = [error.message];
+    }
 
-    return new SendingError(error.responseCode, error.code.toString(), [error.response])
+    return new SendingError(output.statusCode, output.statusText, output.errors)
   }
 }

@@ -1,0 +1,118 @@
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
+
+import { HttpTransporter } from '@transporters/http.transporter';
+
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
+
+import { Debug } from '@utils/debug.util';
+
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
+
+import type { IAttachment } from '@interfaces/IAttachment.interface';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
+
+import type { IResendBody } from './IResendBody.interface';
+import type { IResendError } from './IResendError.interface';
+import type { IResendResponse } from './IResendResponse.interface';
+
+/**
+ * Resend transporter — sends via the Resend API.
+ *
+ * @see https://resend.com/docs/api-reference/emails/send-email
+ */
+export class ResendTransporter extends HttpTransporter<IResendBody> {
+  @Debug('resend')
+  build({ ...args }: IMail): IResendBody {
+    const { payload, templateId, body, renderEngine } = args;
+
+    const output: IResendBody = {
+      from: this.address(payload.meta.from),
+      to: this.addresses(payload.meta.to),
+      subject: payload.meta.subject,
+      reply_to: this.address(payload.meta.replyTo),
+    };
+
+    switch (renderEngine.valueOf()) {
+      case RENDER_ENGINE.provider:
+        Object.assign(output, {
+          template: {
+            id: templateId,
+            variables: payload.data,
+          },
+        });
+        break;
+      case RENDER_ENGINE.cliam:
+      case RENDER_ENGINE.self:
+        Object.assign(output, {
+          html: body?.html,
+          text: body?.text,
+        });
+        break;
+    }
+
+    if (typeof payload.meta.cc !== 'undefined') {
+      Object.assign(output, { cc: this.addresses(payload.meta.cc) });
+    }
+
+    if (typeof payload.meta.bcc !== 'undefined') {
+      Object.assign(output, { bcc: this.addresses(payload.meta.bcc) });
+    }
+
+    if (typeof payload.meta.attachments !== 'undefined') {
+      Object.assign(output, {
+        attachments: payload.meta.attachments.map((attachment: IAttachment) => ({
+          filename: attachment.filename,
+          content: attachment.content,
+          content_type: attachment.type,
+        })),
+      });
+    }
+
+    return output;
+  }
+
+  address(recipient: string | IAddressable): string {
+    if (typeof recipient === 'string') {
+      return recipient;
+    }
+    return typeof recipient.name !== 'undefined' ? `${recipient.name} <${recipient.email}>` : recipient.email;
+  }
+
+  addresses(recipients: Array<string | IAddressable>): Array<string> {
+    return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
+  }
+
+  async send(body: IResendBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<IResendBody, IResendResponse, IResendError>('emails', body);
+
+    if (!result.ok) {
+      throw this.error(result);
+    }
+
+    return this.response(result);
+  }
+
+  response(result: HttpSuccess<IResendResponse>): SendingResponse {
+    const { headers, status, data } = result;
+
+    return new SendingResponse()
+      .set('provider', PROVIDER.resend)
+      .set('server', headers.server)
+      .set('uri', null)
+      .set('headers', headers)
+      .set('timestamp', Date.now())
+      .set('messageId', data.id)
+      .set('body', null)
+      .set('statusCode', status)
+      .set('statusMessage', null);
+  }
+
+  error(error: HttpFailure<IResendError>): SendingError {
+    const { status, data: { name, message, statusCode } } = error;
+
+    return new SendingError(statusCode ?? status, name, [message]);
+  }
+}

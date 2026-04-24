@@ -8,11 +8,11 @@
 
 # Transactional emails with a kick
 
-Agnostic transactional email sending in Node.js environment :boom: :muscle: :pill:
+Agnostic transactional email sending in Node.js environment
 
 ## > Why ?
 
-To improve and facilitate the implementation, flexibility and maintenance of transactional emailing tasks.
+To improve and facilitate the implementation, the flexibility and the maintenance of transactional emailing tasks.
 
 ## > Features
 
@@ -27,8 +27,10 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 - [Requirements](#requirements)
 - [Getting started](#getting-started)
+- [Selective imports](#selective-imports)
 - [Beneficiary use cases](#beneficiary-use-cases)
 - [Supported web API providers](#supported-web-api-providers)
+- [Upgrading to v3](#upgrading-to-v3)
 - [Licence](#licence)
 - [Documentation](https://github.com/steve-lebleu/cliam/wiki)
 
@@ -47,65 +49,143 @@ To improve and facilitate the implementation, flexibility and maintenance of tra
 
 ### Configure
 
-Create a *.cliamrc.js* module on the root of your project.
+Cliam must be configured once at application startup, before any call to `mail()`. Two approaches are available.
 
-```shell
-> touch .cliamrc.js
-```
+**Option A - Pass a configuration object directly:**
 
-Define a minimalist configuration in *.cliamrc.js* newly created:
+```typescript
+import { Cliam } from 'cliam';
+import type { IClientConfiguration } from 'cliam';
 
-```javascript
-module.exports = {
-  "sandbox": true,
-  "transporters": [
+const config: IClientConfiguration = {
+  sandbox: true,
+  variables: {
+    domain: 'https://www.my-website.com',
+    addresses: {
+      from: { name: 'My App', email: 'no-reply@my-website.com' },
+      replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
+    }
+  },
+  transporters: [
     {
-      "id": "unique-transporter-key",
-      "auth": {
-        "username": process.env.SMTP_USERNAME,
-        "password": process.env.SMTP_PWD
+      id: 'smtp-main',
+      auth: {
+        username: process.env.SMTP_USERNAME,
+        password: process.env.SMTP_PASSWORD
       },
-      "options": {
-        "host": process.env.SMTP_HOST,
-        "port": 587,
-        "secure": false
+      options: {
+        host: process.env.SMTP_HOST,
+        port: 587,
+        secure: false
       }
     },
     {
-      "id": "other-unique-transporter-key",
-      "provider": "sendgrid",
-      "auth": {
-        "apiKey": process.env.WEB_API_SENDGRID_API_KEY,
+      id: 'sendgrid-api',
+      provider: 'sendgrid',
+      auth: {
+        apiKey: process.env.SENDGRID_API_KEY
       },
-      "templates": {
-        "user.welcome": "d-321bb40f548e4db8a628b4d6464ebacc",
-        ...
+      templates: {
+        'user.welcome': 'd-321bb40f548e4db8a628b4d6464ebacc'
       }
     }
   ]
-}
+};
+
+Cliam.configure(config);
 ```
 
-It's advised to use environment secrets to fill in sensible values like api keys. Dotenv is embedded in Cliam, so you can just write an .env file with the required keys regarding your *cliamrc.js* definition.
+**Option B - Load from a `.cliamrc.js` file:**
 
-See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for more information about availables options and configurations.
+```typescript
+import { Cliam } from 'cliam';
+
+// Loads .cliamrc.js from process.cwd() by default
+Cliam.configureFromFile();
+
+// Or pass an explicit path
+Cliam.configureFromFile('/path/to/my-cliam-config.js');
+```
+
+The `.cliamrc.js` file should export the same configuration object as above:
+
+```javascript
+require('dotenv').config();
+
+module.exports = {
+  sandbox: true,
+  variables: {
+    domain: 'https://www.my-website.com',
+    addresses: {
+      from: { name: 'My App', email: 'no-reply@my-website.com' },
+      replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
+    }
+  },
+  transporters: [ ... ]
+};
+```
+
+Use environment variables for sensitive values such as API keys. Cliam does not load `.env` automatically — that is the responsibility of the calling application.
+
+See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for the full list of available options.
+
+### Selective imports
+
+The default entry point registers all supported providers at import time:
+
+```typescript
+import { Cliam } from 'cliam'; // all providers loaded
+```
+
+If you use a bundler and want to reduce your bundle size, import the core and load only the providers you actually use:
+
+```typescript
+import { Cliam } from 'cliam/core';
+import 'cliam/providers/sendgrid';
+// import 'cliam/providers/smtp'; // add others as needed
+```
+
+Types and enums are available separately:
+
+```typescript
+import type { IPayload, IClientConfiguration } from 'cliam/types';
+import { EVENT, PROVIDER } from 'cliam/types';
+```
+
+Available sub-paths:
+
+| Sub-path | Exports |
+|---|---|
+| `cliam` | `Cliam`, `SendingResponse`, `SendingError`, all types — registers all providers |
+| `cliam/core` | `Cliam`, `SendingResponse`, `SendingError` — no providers registered |
+| `cliam/types` | All interfaces, enums and types — no runtime code |
+| `cliam/providers/brevo` | Side-effect: registers the Brevo transporter |
+| `cliam/providers/mailersend` | Side-effect: registers the Mailersend transporter |
+| `cliam/providers/mailgun` | Side-effect: registers the Mailgun transporter |
+| `cliam/providers/mailjet` | Side-effect: registers the Mailjet transporter |
+| `cliam/providers/mandrill` | Side-effect: registers the Mandrill transporter |
+| `cliam/providers/postmark` | Side-effect: registers the Postmark transporter |
+| `cliam/providers/resend` | Side-effect: registers the Resend transporter |
+| `cliam/providers/sendgrid` | Side-effect: registers the Sendgrid transporter |
+| `cliam/providers/ses` | Side-effect: registers the Amazon SES transporter |
+| `cliam/providers/sparkpost` | Side-effect: registers the Sparkpost transporter |
+| `cliam/providers/smtp` | Side-effect: registers the SMTP transporter |
+
+If a transporter is configured but its provider was never imported, Cliam throws at send time with a clear message.
 
 ### Implement
 
-```javascript
+```typescript
 import { Cliam } from 'cliam';
+import type { IPayload } from 'cliam';
 
-// Do some stuffs ...
-  
-const payload = {
+const payload: IPayload = {
   meta: {
-    from: { email: 'john.doe@hotmail.com' },
-    to: [
-      { email: 'john.allan.poe@hotmail.com' }
-    ],
-    replyTo: { email: 'john.doe@hotmail.com' },
+    from: { email: 'john.doe@hotmail.com', name: 'John Doe' },
+    to: [{ email: 'john.allan.poe@hotmail.com' }],
+    replyTo: { email: 'john.doe@hotmail.com', name: 'John Doe' },
     subject: 'Welcome John'
-  }
+  },
   content: [
     {
       type: 'text/html',
@@ -116,22 +196,31 @@ const payload = {
 
 Cliam.mail('user.welcome', payload)
   .then(res => {
-    console.log('Email has been delivered: ', res);
+    console.log('Email delivered: ', res);
   })
   .catch(err => {
-    console.log('Error while mail sending: ', err)
+    console.log('Error: ', err);
   });
 ```
 
-By default, Cliam will use the first transporter found in the cliamrc file, except if you precise wich transporterId you want to use on the fly.
+The render engine is inferred automatically:
+- `content` provided → uses your HTML directly
+- No `content`, template ID configured for the event → delegates to the provider's template engine
+- No `content`, no template → uses Cliam's built-in default templates
 
-See [email payload](https://github.com/steve-lebleu/cliam/wiki/Email-payload) wiki section for more information about availables options and configurations.
+By default, Cliam uses the first transporter in the configuration. Pass `transporterId` in the payload to target a specific one.
+
+See [email payload](https://github.com/steve-lebleu/cliam/wiki/Email-payload) wiki section for the full payload reference.
 
 <h2 id="beneficiary-use-cases">> Beneficiary use cases</h2>
 
 **:white_check_mark: I have many projects which uses differents providers, it's a hell of a thing to maintain.**
 
 This is to be forgotten with Cliam. No more worries about polymorphics inputs / outputs. Whether you are working with an A, B, C, D provider or a smtp server, your input / output will always be the same regardless of your delivery method or service provider.
+
+**:white_check_mark: I'm just using many providers into a same project, it's convoluted to securize and maintain.**
+
+Same purpose. Whether you are working with a provider or a SMTP server - or boths, your input / output stays the same. With Cliam, you don't need anymore to embedd n libraries into your `node_modules` folder: we only embed `nodemailer` core library to send emails through SMTP and `ky` as HTTP client.
 
 **:white_check_mark: I wish change from supplier, but I'm in panic about the implementation ?**
 
@@ -151,29 +240,56 @@ The same: fallback on a SMTP server. In two minutes you're ready and your mailin
 
 <h2 id="supported-web-api-providers">> Supported web API providers</h2>
 
-<p>
-  <a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="240px" hspace="15" /></a>
-  <a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="240px" hspace="15" /></a>
-  <a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="240px" hspace="15" /></a>
-</p>
+<table>
+    <tr align="center">
+        <td valign="middle"><a href="https://www.resend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/resend.png" alt="Resend" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://sparkpost.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sparkpost.png" alt="Sparkpost" width="320px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://sendgrid.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendgrid.png" alt="Sendgrid" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="320px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://mailgun.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailgun.png" alt="Mailgun" width="320px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="320px" hspace="15" /></a></td>
+    </tr>
+    <tr align="center">
+        <td valign="middle"><a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="320px" hspace="15" /></a></td>
+        <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="320px" hspace="15" /></a></td>
+    </tr>
+</table>
 
-<p>
-  <a href="https://postmarkapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/postmark.png" alt="Postmark" width="240px" hspace="15" /></a>
-  <a href="https://mailjet.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailjet.png" alt="Mailjet" width="240px" hspace="15" /></a>
-  <a href="https://www.sendinblue.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/sendinblue.png" alt="Sendinblue" width="240px" hspace="15" /></a>
-</p>
+<h2 id="upgrading-to-v3">> Upgrading to v3</h2>
 
-<p>
-  <a href="https://brevo.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/brevo.png" alt="Brevo" width="240px" hspace="15" /></a>
-  <a href="https://app.mailersend.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mailersend.png" alt="Mailersend" width="240px" hspace="15" /></a>
-  <a href="https://mandrillapp.com/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/mandrill.png" alt="Mandrill" width="240px" hspace="15" /></a>
-</p>
+### What's new
 
-<!--
-<p>
-  <a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="240px" hspace="15" /></a>
-</p>
--->
+- **Resend** is now a supported provider (`cliam/providers/resend`, `provider: 'resend'`).
+
+### Breaking changes
+
+**`inlineImages` removed from `IPayload`**
+
+The `inlineImages` field no longer exists. Inline images must be passed as attachments via the `content` array.
+
+**`sendinblue` provider removed**
+
+`sendinblue` has been removed — it was already an alias for `brevo`. Update your configuration:
+
+```diff
+- provider: 'sendinblue'
++ provider: 'brevo'
+```
+
+and update any selective import:
+
+```diff
+- import 'cliam/providers/sendinblue';
++ import 'cliam/providers/brevo';
+```
 
 <h2 id="licence">> Licence</h2>
 

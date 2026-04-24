@@ -1,20 +1,36 @@
 {
   "compilerOptions": {
-    "incremental": true,
-    "target": "ES2020",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "outDir": "./dist",
     "removeComments": true,
     "sourceMap": false,
-    "baseUrl": "./src",
-    "lib": ["ES2020"],
-    "declaration": false,
-    "module": "commonjs",
+    "lib": ["ES2022"],
+    "declaration": true,
     "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@core/*": ["src/core/*"],
+      "@decorators/*": ["src/types/decorators/*"],
+      "@enums/*": ["src/types/enums/*"],
+      "@interfaces/*": ["src/types/interfaces/*"],
+      "@schemas/*": ["src/validations/schemas/*"],
+      "@typings/*": ["src/types/types/*"],
+      "@services/*": ["src/services/*"],
+      "@transporters/*": ["src/transporters/*"],
+      "@validations/*": ["src/validations/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "types": ["node", "bun-types"]
   },
-  "exclude" : [
-    "**/**/node_modules",
-    "node_modules"
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
   ]
-}  
+}

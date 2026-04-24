@@ -1,97 +1,53 @@
-import * as Chalk from 'chalk';
+import { ClientConfiguration } from '@core/client-configuration.class';
 
-import { existsSync } from 'fs';
+import type { Transporter } from '@transporters/transporter.class';
+import { TransporterFactory } from '@transporters/transporter.factory';
 
-import { Transporter } from './../transporters/transporter.class';
-import { TransporterFactory } from './../transporters/transporter.factory';
-import { ClientConfiguration } from './../classes/client-configuration.class';
-import { configurationSchema } from './../validations/configuration.validation';
+import type { IClientConfiguration } from '@interfaces/IClientConfiguration.interface';
 
-const CliamConfiguration = require(process.cwd() + '/.cliamrc.js');
+import { configurationSchema } from '@validations/configuration.validation';
+
+let _configuration: ClientConfiguration | null = null;
+let _transporters: { [id: string]: Transporter<any> } | null = null;
 
 /**
- * @description This class act like ... a container. She's a singleton, instanciated only one time when the application is ran. Mostly, she's responsible of:
- * 
- * - Reading, validation and expostion of the client configuration
- * - Instanciation and exposition of the transporters
+ * @description The Container acts as initiator and configuration provider through a module pattern.
+ *
+ * - Manage initialisation of the configuration, validation included
+ * - Act next like a Singleton (module pattern) to be a configuration provider
  */
-class Container {
-
-  /**
-   * @description Container instance
-   */
-  private static instance: Container = null;
-
-  /**
-   * @description ClientConfiguration instance
-   */
-  public configuration: ClientConfiguration = null;
-
-
-  /**
-   * @description Transporter instances stored by key / value pairs
-   */
-  public transporters: { [id:string]: Transporter } = null;
-
-  /**
-   * @description Path of the cliamrc configuration. Always at root of the project.
-   */
-  private readonly PATH: string = `${process.cwd()}/.cliamrc.js`;
-
-  /**
-   * @description Don't come here motherfucker
-   */
-  private constructor() {}
-
-  /**
-   * @description Get current container instance. Instanciate it if not present.
-   * 
-   * @returns {Container} Container instance
-   */
-  static get(): Container {
-    if (!Container.instance) {
-      Container.instance = new Container();
+export const Container = {
+  get configuration(): ClientConfiguration {
+    if (!_configuration) {
+      throw new Error('Cliam is not configured. Call Cliam.configure() or Cliam.configureFromFile() first.');
     }
-    return Container.instance.set();
-  }
 
-  /**
-   * @description Set configuration and transporters properties
-   * 
-   * @returns {Container} Container instance
-   */
-  private set(): Container {
-    if (!existsSync(this.PATH)) {
-      process.stdout.write( Chalk.bold.red('.cliamrc.js file cannot be found\n') );
-      process.exit(0);
+    return _configuration;
+  },
+
+  get transporters(): { [id: string]: Transporter<any> } {
+    if (!_transporters) {
+      throw new Error('Cliam is not configured. Call Cliam.configure() or Cliam.configureFromFile() first.');
     }
-    this.configuration = new ClientConfiguration( this.validates( CliamConfiguration ) );
 
-    this.transporters = this.configuration.transporters.reduce((result, transporterDefinition) => {
-      result[transporterDefinition.id] = TransporterFactory.get(this.configuration.variables, transporterDefinition);
-      return result;
-    }, {});
+    return _transporters;
+  },
 
-    return this;
-  }
+  configure(raw: IClientConfiguration): void {
+    const { error, value } = configurationSchema.validate(raw, { abortEarly: true, allowUnknown: false });
 
-  /**
-   * @description Validates the client configuration setup
-   *
-   * @param configuration
-   * 
-   * @returns {Record<string,unknown>}
-   */
-  private validates(configuration: Record<string,unknown>): Record<string,unknown> {
-    const error = configurationSchema.validate(configuration, { abortEarly: true, allowUnknown: false })?.error;
     if (error) {
-      process.stdout.write( Chalk.bold.red(`Error in .cliamrc.js: ${error.details.shift().message}\n`) );
-      process.exit(0);
+      throw new Error(`Invalid Cliam configuration: ${error.details[0].message}`);
     }
-    return configuration;
+
+    _configuration = new ClientConfiguration(value);
+
+    const { transporters, defaults } = _configuration;
+
+    _transporters = transporters
+      .reduce((result: { [id: string]: Transporter<any> }, transporterDefinition) => {
+        result[transporterDefinition.id] = TransporterFactory.get(defaults, transporterDefinition);
+        return result;
+      }, {});
   }
-}
-
-const service = Container.get();
-
-export { service as Container };
+};

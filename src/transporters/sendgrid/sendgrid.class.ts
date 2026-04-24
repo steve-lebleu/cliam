@@ -1,146 +1,112 @@
-import { Transporter } from './../transporter.class';
+import { SendingError } from '@core/sending-error.class';
+import { SendingResponse } from '@core/sending-response.class';
 
-import { ITransporterConfiguration } from './../ITransporterConfiguration.interface';
-import { IMail } from './../../types/interfaces/IMail.interface';
-import { ISendgridResponse } from './ISendgridResponse.interface';
-import { IAddressable } from './../../types/interfaces/addresses/IAddressable.interface';
-import { IAddressB } from './../../types/interfaces/addresses/IAddressB.interface';
-import { ISendgridError } from './ISendgridError.interface';
-import { ITransporterMailer } from './../ITransporterMailer.interface';
+import type { HttpFailure, HttpSuccess } from '@services/http.service';
 
-import { SendingResponse } from './../../classes/sending-response.class';
-import { SendingError } from './../../classes/sending-error.class';
+import { HttpTransporter } from '@transporters/http.transporter';
 
-import { RENDER_ENGINE } from '../../types/enums/render-engine.enum';
-import { PROVIDER } from '../../types/enums/provider.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { RENDER_ENGINE } from '@typings/render-engine.type';
 
-import { Debug } from './../../types/decorators/debug.decorator';
+import { Debug } from '@utils/debug.util';
 
+import type { IMail } from '@interfaces/IMail.interface';
+import type { IAddress } from '@interfaces/IAddress.interface';
+import type { IAddressable } from '@interfaces/IAddressable.interface';
+
+import type { ISendgridBody } from './ISendgridBody.interface';
+import type { ISendgridError } from './ISendgridError.interface';
 
 /**
- * Set a Sendgrid transporter for mail sending.
+ * SendGrid transporter — sends via the SendGrid Mail Send API v3.
  *
- * @dependency nodemailer
- * @dependency nodemailer-sendgrid
- *
- * @see https://nodemailer.com/smtp/
- * @see https://www.npmjs.com/package/nodemailer-sendgrid
- * @see https://sendgrid.com/
- * @see https://sendgrid.com/docs/API_Reference/api_v3.html
+ * @see https://docs.sendgrid.com/api-reference/mail-send/mail-send
  */
-export class SendgridTransporter extends Transporter {
-
-  /**
-   * @description
-   *
-   * @param transporterEngine Transporter instance
-   * @param configuration Transporter configuration
-   */
-  constructor( transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration ) {
-    super(transporterEngine, configuration);
-  }
-
-  /**
-   * @description Build body request according to Mailjet requirements
-   */
+export class SendgridTransporter extends HttpTransporter<ISendgridBody> {
   @Debug('sendgrid')
-  build({...args}: IMail): Record<string,unknown> {
-
+  build({ ...args }: IMail): ISendgridBody {
     const { payload, templateId, body, renderEngine } = args;
 
-    const output = {
-      from: this.address(payload.meta.from, 'from'),
-      personalizations: [{
-        to: this.addresses(payload.meta.to),
-      }],
-      to: this.addresses(payload.meta.to),
+    const output: ISendgridBody = {
+      from: this.address(payload.meta.from),
+      personalizations: [{ to: this.addresses(payload.meta.to) }],
       reply_to: this.address(payload.meta.replyTo),
-      subject: payload.meta.subject
+      subject: payload.meta.subject,
     };
 
-    switch(renderEngine.valueOf()) {
+    switch (renderEngine.valueOf()) {
       case RENDER_ENGINE.provider:
         Object.assign(output, {
-          dynamic_template_data: payload.data,
-          templateId: payload.meta.templateId || templateId
+          substitutions: payload.data,
+          template_id: templateId,
         });
         break;
       case RENDER_ENGINE.cliam:
       case RENDER_ENGINE.self:
         Object.assign(output, {
-          text: body.text,
-          html: body.html
+          content: [
+            { type: 'text/plain', value: body?.text },
+            { type: 'text/html', value: body?.html },
+          ],
         });
         break;
     }
 
-    if (typeof(payload.meta.cc) !== 'undefined') {
-      Object.assign(output.personalizations, { cc: this.addresses(payload.meta.cc) });
+    if (typeof payload.meta.cc !== 'undefined') {
+      output.personalizations[0].cc = this.addresses(payload.meta.cc) as IAddress[];
     }
 
-    if (typeof(payload.meta.bcc) !== 'undefined') {
-      Object.assign(output.personalizations, { bcc: this.addresses(payload.meta.bcc) });
+    if (typeof payload.meta.bcc !== 'undefined') {
+      output.personalizations[0].bcc = this.addresses(payload.meta.bcc) as IAddress[];
     }
 
-    if (typeof(payload.meta.attachments) !== 'undefined') {
+    if (typeof payload.meta.attachments !== 'undefined') {
       Object.assign(output, { attachments: payload.meta.attachments });
     }
 
     return output;
   }
 
-  /**
-   * @description Format email address according to Sendgrid requirements
-   *
-   * @param recipient  Entry to format as email address
-   * @param type Discriminator
-   */
-  address(recipient: string|IAddressable, type?: string): string|IAddressB {
+  address(recipient: string | IAddressable): IAddress {
     if (typeof recipient === 'string') {
-      return type === 'from' ? recipient : { email: recipient };
+      return { email: recipient };
     }
-    return type === 'from' ? recipient.email : { email: recipient.email, name: recipient.name };
+
+    return { email: recipient.email, name: recipient?.name };
   }
 
-  /**
-   * @description Format email addresses according to Sendgrid requirements
-   *
-   * @param recipients Entries to format as email address
-   */
-  addresses(recipients: Array<string|IAddressable>): Array<string|IAddressB> {
-    return [...recipients].map( (recipient: string|IAddressable) => this.address(recipient) );
+  addresses(recipients: Array<string | IAddressable>): Array<IAddress> {
+    return [...recipients].map((recipient: string | IAddressable) => this.address(recipient));
   }
 
-  /**
-   * @description Format API response
-   *
-   * @param response Response from Sendgrid API
-   */
-  response(response: ISendgridResponse[]): SendingResponse {
+  async send(body: ISendgridBody): Promise<SendingResponse> {
+    const result = await this.httpClient.post<ISendgridBody, null, ISendgridError>('v3/mail/send', body);
 
-    const incoming = response.shift();
-    const res = new SendingResponse();
+    if (!result.ok) {
+      throw this.error(result);
+    }
 
-    res
+    return this.response(result);
+  }
+
+  response(result: HttpSuccess<null>): SendingResponse {
+    const { status, headers } = result;
+
+    return new SendingResponse()
       .set('provider', PROVIDER.sendgrid)
-      .set('server', incoming.headers['server'] as string)
-      .set('uri', incoming.request.uri.href)
-      .set('headers', incoming.headers)
+      .set('server', headers.server ?? null)
+      .set('uri', null)
+      .set('headers', headers)
       .set('timestamp', Date.now())
-      .set('messageId', incoming.headers['x-message-id'] as string)
-      .set('body', incoming.request.body)
-      .set('statusCode', 202)
-      .set('statusMessage', incoming.statusMessage);
-
-    return res;
+      .set('messageId', headers['x-message-id'] ?? null)
+      .set('body', null)
+      .set('statusCode', status)
+      .set('statusMessage', null);
   }
 
-  /**
-   * @description Format error output
-   *
-   * @param error Error from Sendgrid API
-   */
-  error(error: ISendgridError): SendingError {
-    return new SendingError(error.code || error.statusCode, error.name || error.message, error.hasOwnProperty('response') ? error.response.body.errors : [error.message]);
+  error(error: HttpFailure<ISendgridError>): SendingError {
+    const { status, data: { errors } } = error;
+
+    return new SendingError(status, status === 400 ? 'Bad request' : 'Unknown error', errors.map(e => `${e.field}: ${e.message}`));
   }
 }

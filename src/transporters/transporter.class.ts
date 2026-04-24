@@ -1,64 +1,46 @@
-import { SendingResponse } from './../classes/sending-response.class';
-import { SendingError } from './../classes/sending-error.class';
-import { ITransporterMailer } from './ITransporterMailer.interface';
-import { IMail } from './../types/interfaces/IMail.interface';
-import { ITransporterConfiguration } from './ITransporterConfiguration.interface';
+import type { SendingError } from '@core/sending-error.class';
+import type { SendingResponse } from '@core/sending-response.class';
+import type { IMail } from '@interfaces/IMail.interface';
+import type { ITransporterConfiguration } from './ITransporterConfiguration.interface';
 
 /**
- * Main Transporter class
+ * @summary Base class for all Transporter classes
  */
-export abstract class Transporter {
-
+export abstract class Transporter<TBody> {
   /**
    * @description Initial transporter configuration options defined in cliamrc
    */
-  public configuration: ITransporterConfiguration = null;
+  public configuration!: ITransporterConfiguration;
 
-  /**
-   * @description Wrapped concrete transporter instance
-   */
-  public transporter: ITransporterMailer = null;
-
-  constructor(transporterEngine: ITransporterMailer, configuration: ITransporterConfiguration) {
-    this.transporter = transporterEngine;
+  constructor(configuration: ITransporterConfiguration) {
     this.configuration = configuration;
   }
 
   /**
-   * @description
+   * @description Method in charge of parsing the transporter engine error into a SendingError object
    *
-   * @param err
+   * @param err An error object from the transporter engine
    */
-  public error(err): any {}
+  abstract error(err: unknown): SendingError;
 
   /**
-   * @description
+   * @description Method in charge of parsing the transporter engine response into a SendingResponse object
    *
-   * @param err
+   * @param res A response object from the transporter engine
    */
-  public response(res): any {}
+  abstract response(res: unknown): SendingResponse;
 
   /**
-   * @description
+   * @description Method in charge to build the transporter engine specific request body
    *
-   * @param err
+   * @param args IMail interface arguments
    */
-  public build({...args }: IMail): any {}
+  abstract build({ ...args }: IMail): TBody;
 
   /**
-   * @description Send email
+   * @description Method in charge to send the email through the transporter engine
    *
-   * @returns
+   * @param body The transporter engine specific request body
    */
-  async send(body: Record<string,unknown>): Promise<SendingResponse|SendingError> {
-		return new Promise( (resolve, reject) => {
-			this.transporter.sendMail( body, (err, info) => {
-        if (err) {
-          reject(this.error(err));
-        } else {
-          resolve(this.response(info));
-        }
-      });
-		});
-  }
+  abstract send(body: TBody): Promise<SendingResponse>;
 }

@@ -2,8 +2,7 @@ require('dotenv').config();
 
 module.exports = {
   "sandbox": true,
-  "variables": {
-    "domain": "https://www.my-website.com",
+  "defaults": {
     "addresses": {
       "from": {
         "name": "John Doe",
@@ -120,32 +119,6 @@ module.exports = {
       }
     },
     {
-      "id": "sendinblue-api",
-      "provider": "sendinblue",
-      "auth": {
-        "apiKey": process.env.SENDINBLUE_API_KEY,
-      },
-      "options": {},
-      "templates": {
-        "default": "1",
-        "event.subscribe": "1",
-        "event.unsubscribe": "1",
-        "event.updated": "1",
-        "user.bye": "1",
-        "user.confirm": "1",
-        "user.contact": "1",
-        "user.invite": "1",
-        "user.progress": "1",
-        "user.survey": "1",
-        "user.welcome": "1",
-        "order.invoice": "1",
-        "order.progress": "1",
-        "order.shipped": "1",
-        "password.request": "1",
-        "password.updated": "1"
-      }
-    },
-    {
       "id": "sendgrid-api",
       "provider": "sendgrid",
       "auth": {
@@ -177,7 +150,9 @@ module.exports = {
       "auth": {
         "apiKey": process.env.MAILGUN_API_KEY,
       },
-      "options": {},
+      "options": {
+        "domain": "mg.my-website.com"
+      },
       "templates": {
         "default": "welcome",
         "event.subscribe": "welcome",
@@ -221,6 +196,61 @@ module.exports = {
         "order.shipped": "0p7kx4xdn18l9yjr",
         "password.request": "0p7kx4xdn18l9yjr",
         "password.updated": "0p7kx4xdn18l9yjr"
+      }
+    },
+    {
+      "id": "resend-api",
+      "provider": "resend",
+      "auth": {
+        "apiKey": process.env.RESEND_API_KEY,
+      },
+      "options": {},
+      "templates": {
+        "default": "my-template-id",
+        "event.subscribe": "my-template-id",
+        "event.unsubscribe": "my-template-id",
+        "event.updated": "my-template-id",
+        "user.bye": "my-template-id",
+        "user.confirm": "my-template-id",
+        "user.contact": "my-template-id",
+        "user.invite": "my-template-id",
+        "user.progress": "my-template-id",
+        "user.survey": "my-template-id",
+        "user.welcome": "my-template-id",
+        "order.invoice": "my-template-id",
+        "order.progress": "my-template-id",
+        "order.shipped": "my-template-id",
+        "password.request": "my-template-id",
+        "password.updated": "my-template-id"
+      }
+    },
+    {
+      "id": "ses-api",
+      "provider": "ses",
+      "auth": {
+        "apiKey": process.env.AWS_ACCESS_KEY_ID,
+        "apiSecret": process.env.AWS_SECRET_ACCESS_KEY,
+      },
+      "options": {
+        "region": "us-east-1"
+      },
+      "templates": {
+        "default": "my-ses-template",
+        "event.subscribe": "my-ses-template",
+        "event.unsubscribe": "my-ses-template",
+        "event.updated": "my-ses-template",
+        "user.bye": "my-ses-template",
+        "user.confirm": "my-ses-template",
+        "user.contact": "my-ses-template",
+        "user.invite": "my-ses-template",
+        "user.progress": "my-ses-template",
+        "user.survey": "my-ses-template",
+        "user.welcome": "my-ses-template",
+        "order.invoice": "my-ses-template",
+        "order.progress": "my-ses-template",
+        "order.shipped": "my-ses-template",
+        "password.request": "my-ses-template",
+        "password.updated": "my-ses-template"
       }
     },
     {

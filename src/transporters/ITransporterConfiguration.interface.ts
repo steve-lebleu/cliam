@@ -1,14 +1,14 @@
-import { PROVIDER } from "types/enums/provider.enum"
-import { ITransporterOptions } from "./ITransporterOptions.interface"
-import { ITransporterCredentials } from "./ITransporterCredentials.interface"
+import type { ITransporterCredentials } from '@transporters/ITransporterCredentials.interface';
+import type { ITransporterOptions } from '@transporters/ITransporterOptions.interface';
+import type { Provider } from '@typings/provider.type';
 
 /**
- * @description Define how a transporter configuration must be formed
+ * @description Define how a transporter configuration must be formed.
  */
 export interface ITransporterConfiguration {
-  id: string
-  provider: PROVIDER
-  auth: ITransporterCredentials
-  options: ITransporterOptions
-  templates?: Record<string,string>[]
+  id: string;
+  provider: Provider;
+  auth: ITransporterCredentials;
+  options: ITransporterOptions;
+  templates?: Record<string, string>;
 }

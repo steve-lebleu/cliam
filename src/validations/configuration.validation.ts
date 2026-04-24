@@ -1,20 +1,18 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
-import { smtp as smtpSchema } from '../types/schemas/smtp.schema';
-import { host } from '../types/schemas/host.schema';
-import { port } from '../types/schemas/port.schema';
-import { username } from '../types/schemas/username.schema';
-import { password } from '../types/schemas/password.schema';
+import { host } from '@schemas/host.schema';
+import { password } from '@schemas/password.schema';
+import { port } from '@schemas/port.schema';
+import { username } from '@schemas/username.schema';
 
-import { list } from '../utils/enum.util';
+import { list } from '@utils/enum.util';
 
-import { PROVIDER } from '../types/enums/provider.enum';
-import { SOCIAL_NETWORK } from '../types/enums/social-network.enum';
+import { PROVIDER } from '@typings/provider.type';
+import { SOCIAL_NETWORK } from '@typings/social-network.type';
 
-const configurationSchema = Joi.object({
+export const configurationSchema = Joi.object({
   sandbox: Joi.boolean().default(false),
-  variables: Joi.object({
-    domain: Joi.string().uri().required(),
+  defaults: Joi.object({
     addresses: Joi.object({
       from: Joi.object({
         email: Joi.string().email().required(),
@@ -97,10 +95,6 @@ const configurationSchema = Joi.object({
                 then: Joi.string().regex(/^mlsn.[a-z-0-9]{64}$/)
               },
               {
-                is: Joi.any().valid(PROVIDER.sendinblue).required(),
-                then: Joi.string().regex(/^xkeysib-[a-z-0-9]{64}-[a-z-A-Z-0-9]{16}$/)
-              },
-              {
                 is: Joi.any().valid(PROVIDER.brevo).required(),
                 then: Joi.string().regex(/^xkeysib-[a-z-0-9]{64}-[a-z-A-Z-0-9]{16}$/)
               },
@@ -112,24 +106,55 @@ const configurationSchema = Joi.object({
                 is: Joi.any().valid(PROVIDER.postmark).required(),
                 then: Joi.string().regex(/^[a-z-0-9]{8}-[a-z-0-9]{4}-[a-z-0-9]{4}-[a-z-0-9]{4}-[a-z-0-9]{12}$/)
               },
+              {
+                is: Joi.any().valid(PROVIDER.resend).required(),
+                then: Joi.string().regex(/^re_[a-zA-Z0-9_]{32}$/)
+              },
+              {
+                is: Joi.any().valid(PROVIDER.ses).required(),
+                then: Joi.string().regex(/^(AKIA|ASIA)[A-Z0-9]{16}$/)
+              },
             ]
           }).concat(Joi.string().when('...provider', {
             is: Joi.exist(),
             then: Joi.string().required()
           })),
           apiSecret: Joi.string().when('...provider', {
-            is: Joi.any().valid(PROVIDER.mailjet).required(),
-            then: Joi.string().regex(/^[a-z-0-9]{32}$/),
+            switch: [
+              {
+                is: Joi.any().valid(PROVIDER.mailjet).required(),
+                then: Joi.string().regex(/^[a-z-0-9]{32}$/).required()
+              },
+              {
+                is: Joi.any().valid(PROVIDER.ses).required(),
+                then: Joi.string().regex(/^[A-Za-z0-9/+=]{40}$/).required()
+              }
+            ]
           })
-        }).xor('username', 'apiKey').xor('password', 'apiKey').required(),
-        options: Joi.object().when('provider', {
-          not: Joi.exist(),
-          then: Joi.object({
+        })
+          .xor('username', 'apiKey')
+          .xor('password', 'apiKey')
+          .required(),
+        options: Joi.when('provider', {
+          switch: [
+            {
+              is: Joi.any().valid(PROVIDER.mailgun).required(),
+              then: Joi.object({ domain: Joi.string().required() }).required()
+            },
+            {
+              is: Joi.any().valid(PROVIDER.ses).required(),
+              then: Joi.object({ region: Joi.string().required() }).required()
+            },
+            {
+              is: Joi.exist(),
+              then: Joi.object().optional()
+            },
+          ],
+          otherwise: Joi.object({
             host: host('smtp').required(),
             port: port().required(),
             secure: Joi.boolean().default(false),
           }).required()
-
         }),
         templates: Joi.object().pattern( Joi.string(), Joi.when('.provider', {
           switch: [
@@ -154,10 +179,6 @@ const configurationSchema = Joi.object({
               then: Joi.number()
             },
             {
-              is: Joi.any().valid(PROVIDER.sendinblue).required(),
-              then: Joi.number()
-            },
-            {
               is: Joi.any().valid(PROVIDER.sendgrid).required(),
               then: Joi.string().regex(/^d-[a-z0-9]{32}$/)
             },
@@ -172,5 +193,3 @@ const configurationSchema = Joi.object({
     .min(1).required()
     .unique((a, b) => a.id === b.id).required(),
 });
-
-export { configurationSchema }

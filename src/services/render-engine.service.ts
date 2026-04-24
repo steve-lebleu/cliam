@@ -1,27 +1,15 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
+import Color from 'color';
 import * as Hbs from 'hbs';
-import * as Color from 'color';
+import { convert } from 'html-to-text';
 
-import { htmlToText } from 'html-to-text';
-
-import { Container } from './container.service';
+import { Container } from '@services/container.service';
 
 /**
- * Light render engine embedding on the fly an hbs compilation middleware
+ * @description Light render engine embedding on the fly an hbs compilation middleware.
  */
 class RenderEngine {
-
-  /**
-   * @description
-   */
-  private static instance: RenderEngine = null;
-
-  /**
-   * @description
-   */
-  private readonly THEME = Container.configuration?.placeholders?.theme;
-
   /**
    * @description
    */
@@ -37,7 +25,7 @@ class RenderEngine {
    */
   private readonly BLOCKS: string = '/../../src/views/blocks';
 
-  /**
+/**
    * @description TODO: find / remember what this fucking default property is
    */
    public readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
@@ -72,38 +60,30 @@ class RenderEngine {
     { facebook: 'https://i.ibb.co/wSZ1ks0/faceboook.png' }
   ];
 
-  /**
-   * @description
-   */
-  private readonly COLORS: Array<{key: string, value: string}> = [
-    { key: '111111', value: this.THEME?.primaryColor || null },
-    { key: '222222', value: this.THEME?.secondaryColor || null },
-    { key: '333333', value: this.THEME?.tertiaryColor || null },
-    { key: '444444', value: this.THEME?.quaternaryColor || null },
-    { key: 'fffff1', value: this.THEME?.primaryColor ? Color(`#${this.THEME.primaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: 'fffff2', value: this.THEME?.secondaryColor ? Color(`#${this.THEME.secondaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: 'fffff3', value: this.THEME?.tertiaryColor ? Color(`#${this.THEME.tertiaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: 'fffff4', value: this.THEME?.quaternaryColor ? Color(`#${this.THEME.quaternaryColor}`).lighten(0.50).hex().substring(1) : null },
-    { key: '000001', value: this.THEME?.primaryColor ? Color(`#${this.THEME.primaryColor}`).darken(0.50).hex().substring(1) : null },
-    { key: '000002', value: this.THEME?.secondaryColor ? Color(`#${this.THEME.secondaryColor}`).darken(0.50).hex().substring(1) : null },
-    { key: '000003', value: this.THEME?.tertiaryColor ? Color(`#${this.THEME.tertiaryColor}`).darken(0.50).hex().substring(1) : null },
-    { key: '000004', value: this.THEME?.quaternaryColor ? Color(`#${this.THEME.quaternaryColor}`).darken(0.50).hex().substring(1) : null }
-  ];
+  private getColors(): Record<string, string> {
+    const t = Container.configuration?.placeholders?.theme;
+    const lighten = (hex: string) => Color(`#${hex}`).lighten(0.50).hex().substring(1);
+    const darken  = (hex: string) => Color(`#${hex}`).darken(0.50).hex().substring(1);
+    return {
+      primaryColor:          t?.primaryColor    || '111111',
+      secondaryColor:        t?.secondaryColor  || '222222',
+      tertiaryColor:         t?.tertiaryColor   || '333333',
+      quaternaryColor:       t?.quaternaryColor || '444444',
+      primaryColorLight:     t?.primaryColor    ? lighten(t.primaryColor)    : 'fffff1',
+      secondaryColorLight:   t?.secondaryColor  ? lighten(t.secondaryColor)  : 'fffff2',
+      tertiaryColorLight:    t?.tertiaryColor   ? lighten(t.tertiaryColor)   : 'fffff3',
+      quaternaryColorLight:  t?.quaternaryColor ? lighten(t.quaternaryColor) : 'fffff4',
+      primaryColorDark:      t?.primaryColor    ? darken(t.primaryColor)     : '000001',
+      secondaryColorDark:    t?.secondaryColor  ? darken(t.secondaryColor)   : '000002',
+      tertiaryColorDark:     t?.tertiaryColor   ? darken(t.tertiaryColor)    : '000003',
+      quaternaryColorDark:   t?.quaternaryColor ? darken(t.quaternaryColor)  : '000004',
+    };
+  }
 
   constructor() {
     Hbs.handlebars.registerHelper('year', () => {
       return new Date().getFullYear();
     });
-  }
-
-  /**
-   * @description
-   */
-  static get(): RenderEngine {
-    if(!RenderEngine.instance) {
-      RenderEngine.instance = new RenderEngine();
-    }
-    return RenderEngine.instance;
   }
 
   /**
@@ -115,24 +95,28 @@ class RenderEngine {
    * @todo LOW :: do better about socials and banner
    */
   compile(event: string, data: Record<string,unknown>): { text: string, html: string } {
+    const colors = this.getColors();
+    const company = Container.configuration?.placeholders?.company;
 
-    if (Container.configuration?.placeholders?.company?.socials) {
-      Container.configuration?.placeholders?.company?.socials.map(social => {
-        social.icon = this.SOCIALS.find(s => s[social.name])[social.name];
+    if (company?.socials) {
+      company.socials.forEach(social => {
+        social.icon = this.SOCIALS.find(s => s[social.name])![social.name];
       });
     }
 
     data.banner = this.getBanner(event);
 
-    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(Container.configuration?.placeholders?.company))
-    Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
-    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(Container.configuration?.placeholders?.company))
+    const companyData = { ...company, ...colors };
 
-    const html = Hbs.handlebars.compile( readFileSync(`${__dirname}${this.LAYOUT}`, { encoding: 'utf-8' } ) )(data);
+    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(companyData))
+    Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
+    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(companyData))
+
+    const html = Hbs.handlebars.compile( readFileSync(`${__dirname}${this.LAYOUT}`, { encoding: 'utf-8' } ) )({ ...data, ...colors });
 
     return {
       text: this.textify(html),
-      html: this.customize(html)
+      html,
     }
   }
 
@@ -142,7 +126,7 @@ class RenderEngine {
    * @param html
    */
   textify(html: string): string {
-    return htmlToText(html, {}) as string;
+    return convert(html, {}) as string;
   }
 
   /**
@@ -162,19 +146,8 @@ class RenderEngine {
   private getSegment(event: string) {
     return this.TEMPLATES.find(template => template.event === event)?.default ? 'default' : event;
   }
-
-  /**
-   * @description
-   *
-   * @param html
-   */
-  private customize(html: string): string {
-    return this.COLORS.reduce( (acc, current) => {
-      return acc.replace(new RegExp(current.key, 'g'), current.value);
-    }, html);
-  }
 }
 
-const service = RenderEngine.get();
+const service = new RenderEngine();
 
 export { service as RenderEngine }

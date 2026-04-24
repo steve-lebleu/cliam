@@ -1,13 +1,13 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { createDecipheriv, createCipheriv,randomBytes } from 'crypto';
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 const chars   = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 const numbers = ['0','1','2','3','4','5','6','7','8','9'];
 const symbols = ['@','#','&','$','.'];
 
 const algorithm = 'aes-256-cbc';
-const key = randomBytes(32);
-const iv = randomBytes(16);
+const key = new Uint8Array(randomBytes(32));
+const iv = new Uint8Array(randomBytes(16));
 
 /**
  * @decription Shuffle an array | string as array of chars
@@ -35,7 +35,8 @@ const hash = (str: string, length: number): string => {
 
 /**
  * @description Encode binary file in base64
- * @param path
+ *
+ * @param path Path to the file to encode
  */
 const base64Encode = (path: string): string => {
   const stream = readFileSync(path);
@@ -47,8 +48,7 @@ const base64Encode = (path: string): string => {
  * @param path
  */
 const base64Decode = (stream: Buffer, path: string): void => {
-  const size = stream.toString('ascii').length;
-  writeFileSync(path, Buffer.alloc(size, stream, 'ascii'));
+  writeFileSync(path, stream.toString('ascii'));
 };
 
 /**
@@ -73,6 +73,7 @@ const encrypt = (text: string): string => {
 
 /**
  * @description Get filename without extension
+ *
  * @param name Filename to parse
  */
 const filename = (name: string): string => {
@@ -81,6 +82,7 @@ const filename = (name: string): string => {
 
 /**
  * @description Get file extension with or without .
+ *
  * @param name Filename to parse
  * @param include Get extension with . if true, without . else
  */
@@ -88,5 +90,18 @@ const extension = (name: string, include = false): string => {
   return name.lastIndexOf('.') !== -1 ? include === true ? name.substring(name.lastIndexOf('.')) : name.substring(name.lastIndexOf('.') + 1) : name;
 };
 
+/**
+ * @description Check if a string is parsable as JSON
+ *
+ * @param str String to check
+ */
+const isParsable = (str: string): boolean => {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
-export { base64Encode, base64Decode, decrypt, encrypt, extension, filename, hash, shuffle };
+export { base64Encode, base64Decode, decrypt, encrypt, extension, filename, hash, shuffle, isParsable };

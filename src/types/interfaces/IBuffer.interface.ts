@@ -1,10 +1,9 @@
-import { BufferMimeType } from '../types/buffer-mime-type.type';
+import type { BufferMimeType } from '@typings/buffer-mime-type.type';
 
 /**
  * Describe fields of an email buffer
  */
 export interface IBuffer {
-
   /**
    * @description Mime-type of the buffer
    */

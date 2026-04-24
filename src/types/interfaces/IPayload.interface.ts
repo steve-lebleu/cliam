@@ -1,34 +1,20 @@
-import { IAttachment } from './IAttachment.interface';
-import { IAddressable } from './addresses/IAddressable.interface';
-import { IBuffer } from './IBuffer.interface';
-import { RENDER_ENGINE } from '../enums/render-engine.enum';
+import type { IAttachment } from './IAttachment.interface';
+import type { IBuffer } from './IBuffer.interface';
+import type { IAddressable } from './IAddressable.interface';
 
 /**
  * Define a payload schema type
  */
 export interface IPayload {
-
   /**
    * @description Unique transporter id reference
    */
   transporterId?: string;
 
   /**
-   * @description Render engine to use for the current mail request
-   */
-  renderEngine: RENDER_ENGINE;
-
-  /**
    * @description Meta data for email sending
    */
   meta: {
-
-    /**
-     * @description Template id to use
-     * @deprecated The template is retrieved regarding the action and the compilation type
-     */
-    templateId?: string;
-
     /**
      * @description From address object
      */
@@ -63,17 +49,12 @@ export interface IPayload {
      * @description Attachments objects to join to email
      */
     attachments?: Array<IAttachment>;
-
-    /**
-     * @description Images objects to include to email
-     */
-    inlineImages?: Array<IAttachment>
   };
 
   /**
    * @description Variables to use when template is compilated
    */
-  data?: Record<string,unknown>;
+  data?: Record<string, unknown>;
 
   /**
    * @description Email stream contents to send
