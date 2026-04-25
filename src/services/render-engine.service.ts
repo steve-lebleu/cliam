@@ -25,8 +25,8 @@ class RenderEngine {
    */
   private readonly BLOCKS: string = '/../../src/views/blocks';
 
-/**
-   * @description TODO: find / remember what this fucking default property is
+  /**
+   * @description
    */
    public readonly TEMPLATES: Array<{[key: string]: string|boolean}> = [
     { event: 'default', banner: '', default: true },
@@ -64,6 +64,7 @@ class RenderEngine {
     const t = Container.configuration?.placeholders?.theme;
     const lighten = (hex: string) => Color(`#${hex}`).lighten(0.50).hex().substring(1);
     const darken  = (hex: string) => Color(`#${hex}`).darken(0.50).hex().substring(1);
+
     return {
       primaryColor:          t?.primaryColor    || '111111',
       secondaryColor:        t?.secondaryColor  || '222222',
@@ -134,7 +135,7 @@ class RenderEngine {
    *
    * @param event
    */
-   private getBanner(event: string) {
+  private getBanner(event: string) {
     return this.TEMPLATES.find(template => template.event === event)?.banner || 'https://cdn.konfer.be/images/cliam/default/default-thumbnail.jpg'; // 600x300
   }
 
