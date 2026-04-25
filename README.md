@@ -7,8 +7,8 @@
 ![GitHub Release](https://img.shields.io/github/v/release/steve-lebleu/cliam?logo=Github)
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/gpl-license.php)
 
-[![Maintainability](https://qlty.sh/badges/b81700b3-a1e1-45ed-8475-9bbdfe1ab0ae/maintainability.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
-[![Code Coverage](https://qlty.sh/badges/b81700b3-a1e1-45ed-8475-9bbdfe1ab0ae/coverage.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
+[![Maintainability](https://qlty.sh/gh/steve-lebleu/projects/cliam/maintainability.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
+[![Code Coverage](https://qlty.sh/gh/steve-lebleu/projects/cliam/coverage.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
 
 # Transactional emails with a kick
 
@@ -129,7 +129,7 @@ module.exports = {
 };
 ```
 
-Use environment variables for sensitive values such as API keys. Cliam does not load `.env` automatically — that is the responsibility of the calling application.
+Use environment variables for sensitive values such as API keys. Cliam does not load `.env` automatically.
 
 See [cliamrc configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) wiki section for the full list of available options.
 
@@ -266,34 +266,6 @@ The same: fallback on a SMTP server. In two minutes you're ready and your mailin
         <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="320px" hspace="15" /></a></td>
     </tr>
 </table>
-
-<h2 id="upgrading-to-v3">> Upgrading to v3</h2>
-
-### What's new
-
-- **Resend** is now a supported provider (`cliam/providers/resend`, `provider: 'resend'`).
-
-### Breaking changes
-
-**`inlineImages` removed from `IPayload`**
-
-The `inlineImages` field no longer exists. Inline images must be passed as attachments via the `content` array.
-
-**`sendinblue` provider removed**
-
-`sendinblue` has been removed — it was already an alias for `brevo`. Update your configuration:
-
-```diff
-- provider: 'sendinblue'
-+ provider: 'brevo'
-```
-
-and update any selective import:
-
-```diff
-- import 'cliam/providers/sendinblue';
-+ import 'cliam/providers/brevo';
-```
 
 <h2 id="licence">> Licence</h2>
 
