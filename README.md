@@ -1,11 +1,12 @@
 ![Cliam](https://cdn.konfer.be/images/cliam/assets/banner-cliam.png)
 
 [![Node](https://img.shields.io/badge/Node-18.19.0-informational?logo=node.js&color=43853D)](https://nodejs.org/docs/latest-v18.x/api/index.html)
+[![Bun](https://img.shields.io/badge/Bun-1.3.11-informational?logo=bun&color=ff73a8)](https://bun.sh/docs/)
 [![TypeScript](https://img.shields.io/badge/Typescript-6.0.3-informational?logo=typescript&color=2F74C0)](https://www.typescriptlang.org/)
 
 ![Github action workflow status](https://github.com/steve-lebleu/cliam/actions/workflows/build.yml/badge.svg?branch=main)
 ![GitHub Release](https://img.shields.io/github/v/release/steve-lebleu/cliam?logo=Github)
-[![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/gpl-license.php)
+[![GPL Licence](https://img.shields.io/github/license/steve-lebleu/cliam?logo=github)](https://opensource.org/licenses/gpl-license.php)
 
 [![Maintainability](https://qlty.sh/gh/steve-lebleu/projects/cliam/maintainability.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
 [![Code Coverage](https://qlty.sh/gh/steve-lebleu/projects/cliam/coverage.svg)](https://qlty.sh/gh/steve-lebleu/projects/cliam)
@@ -224,7 +225,7 @@ This is to be forgotten with Cliam. No more worries about polymorphics inputs / 
 
 **:white_check_mark: I'm just using many providers into a same project, it's convoluted to securize and maintain.**
 
-Same purpose. Whether you are working with a provider or a SMTP server - or boths, your input / output stays the same. With Cliam, you don't need anymore to embedd n libraries into your `node_modules` folder: we only embed `nodemailer` core library to send emails through SMTP and `ky` as HTTP client.
+Same purpose. Whether you are working with a provider or a SMTP server - or boths, with Cliam, you don't get anymore `n` libraries into your `node_modules` folder: we only embed the bare metal minimum, and not some old deprecated SDK's.
 
 **:white_check_mark: I wish change from supplier, but I'm in panic about the implementation ?**
 
