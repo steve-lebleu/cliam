@@ -14,7 +14,7 @@ jobs:
       - name: Github checkout
         uses: actions/checkout@v4
       - name: Setup Bun environment
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@2b176a6e02983d9ed668db3c687439eb49fe611a # v2.2.0
         with:
           bun-version: latest
       - name: Install NPM dependencies
@@ -44,24 +44,22 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Bun environment
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@2b176a6e02983d9ed668db3c687439eb49fe611a # v2.2.0
         with:
           bun-version: latest
       - name: Install NPM dependencies
         run: bun install
-      - name: Copy .env file
-        run: cp .local.env .env
-      - name: Copy .cliamrc.js file
-        run: cp ./test/fixtures/cliamrc.js ./.cliamrc.js
+      - name: Copy .env + cliamrc files
+        run: cp .local.env .env && cp ./test/fixtures/cliamrc.js ./.cliamrc.js
       - name: Execute units tests
         run: bun run ci:test
       - name: Publish coverage to coveralls.io
-        uses: coverallsapp/github-action@v1.1.2
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./reports/coverage/lcov.info
+          file: ./reports/coverage/lcov.info
       - name: Publish coverage to Qlty
-        uses: qltysh/qlty-action/coverage@v2
+        uses: qltysh/qlty-action/coverage@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: ./reports/coverage/lcov.info
@@ -75,7 +73,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Create release
-        uses: konfer-be/action-create-release-from-tag@v1.0.2
+        uses: konfer-be/action-create-release-from-tag@b689c557664cfc70da514ad757f39d62aef72f1e # v1.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
   publish:
