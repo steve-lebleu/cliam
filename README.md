@@ -23,7 +23,7 @@ To improve and facilitate the implementation, the flexibility and the maintenanc
 
 - Agnostic transactional email sending using web API or SMTP server. One [input](https://github.com/steve-lebleu/cliam/wiki/Email-payload), one [output](https://github.com/steve-lebleu/cliam/wiki/Email-response).
 - Multiple simultaneous transporters.
-- [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) based, not implementation based : easy switch between different modes.
+- [Configuration](https://github.com/steve-lebleu/cliam/wiki/Configuration-with-cliamrc.js) based, not implementation based: easy switch between different modes.
 - Normalized [transactions events](https://github.com/steve-lebleu/cliam/wiki/Transactions).
 - Securized payloads.
 - Customisable default templates.
