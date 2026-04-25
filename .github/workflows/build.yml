@@ -23,6 +23,7 @@ jobs:
         run: bun run lint
       - name: Build
         run: bun run build
+
   test:
     runs-on: ubuntu-latest
     env:
@@ -43,3 +44,13 @@ jobs:
         run: cp .local.env .env && cp ./test/fixtures/cliamrc.js ./.cliamrc.js
       - name: Execute units tests
         run: bun run ci:test
+      - name: Publish coverage to coveralls.io
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./reports/coverage/lcov.info
+      - name: Publish coverage to Qlty
+        uses: qltysh/qlty-action/coverage@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: ./reports/coverage/lcov.info
