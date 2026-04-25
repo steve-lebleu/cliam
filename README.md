@@ -65,7 +65,6 @@ import type { IClientConfiguration } from 'cliam';
 const config: IClientConfiguration = {
   sandbox: true,
   variables: {
-    domain: 'https://www.my-website.com',
     addresses: {
       from: { name: 'My App', email: 'no-reply@my-website.com' },
       replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
@@ -120,7 +119,6 @@ require('dotenv').config();
 module.exports = {
   sandbox: true,
   variables: {
-    domain: 'https://www.my-website.com',
     addresses: {
       from: { name: 'My App', email: 'no-reply@my-website.com' },
       replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
@@ -161,9 +159,9 @@ Available sub-paths:
 
 | Sub-path | Exports |
 |---|---|
-| `cliam` | `Cliam`, `SendingResponse`, `SendingError`, all types — registers all providers |
-| `cliam/core` | `Cliam`, `SendingResponse`, `SendingError` — no providers registered |
-| `cliam/types` | All interfaces, enums and types — no runtime code |
+| `cliam` | `Cliam`, `SendingResponse`, `SendingError`, all types - registers all providers |
+| `cliam/core` | `Cliam`, `SendingResponse`, `SendingError`- no providers registered |
+| `cliam/types` | All interfaces, enums and types - no runtime code |
 | `cliam/providers/brevo` | Side-effect: registers the Brevo transporter |
 | `cliam/providers/mailersend` | Side-effect: registers the Mailersend transporter |
 | `cliam/providers/mailgun` | Side-effect: registers the Mailgun transporter |
@@ -227,21 +225,17 @@ This is to be forgotten with Cliam. No more worries about polymorphics inputs / 
 
 Same purpose. Whether you are working with a provider or a SMTP server - or boths, with Cliam, you don't get anymore `n` libraries into your `node_modules` folder: we only embed the bare metal minimum, and not some old deprecated SDK's.
 
-**:white_check_mark: I wish change from supplier, but I'm in panic about the implementation ?**
+**:white_check_mark: I wish change from supplier, but I'm afraid about the implementation ?**
 
-Your implementation does not move, you just have to adapt a configuration file, remove your legacy code and implement some lines of code. 
+Without Cliam, indeed you could be. With, your implementation does not move, you just have to adapt a configuration when you want to change your method. Remove your legacy code, and embrace simplicity through Cliam. 
 
 **:white_check_mark: I don't have a subscription to a supplier, and no templates**
 
 No problem, we have all been poor once. Start with a simple SMTP server and use default templates. When your business is up, you can use a paid web api.
 
-**:white_check_mark: I did not have time to prepare the template for an important email that should be send today !**
-
-No more, you can fallback easily with a one shot default template.
-
 **:white_check_mark: I have a big problem with a provider, and my emails stay blocked in the pipe !**
 
-The same: fallback on a SMTP server. In two minutes you're ready and your mailing is back in operation.
+The same: fallback on a SMTP server or another provider. In two minutes you're ready and your mailing is back in operation.
 
 <h2 id="supported-web-api-providers">> Supported web API providers</h2>
 
