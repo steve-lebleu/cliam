@@ -29,6 +29,7 @@ jobs:
           name: dist
           path: |
             dist/
+            src/views/
             package.json
             LICENSE
             README.md
