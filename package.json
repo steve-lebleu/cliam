@@ -114,6 +114,7 @@
     "lint": "biome lint src",
     "check": "biome check --write src",
     "test": "bun test test/",
+    "test:node": "npm run build && node test/node/dist-smoke.mjs",
     "ci:test": "bun test test/ --coverage --coverage-reporter=lcov --coverage-dir=./reports/coverage",
     "doc:typedoc": "typedoc --name 'Cliam documentation' --defaultCategory 'Test' --categorizeByGroup true --out ./docs/typedoc ./src"
   },
