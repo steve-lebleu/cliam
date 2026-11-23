@@ -6,6 +6,7 @@
   },
   "files": [
     "dist",
+    "src/views",
     "README.md"
   ],
   "author": "Steve Lebleu",
