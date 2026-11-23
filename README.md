@@ -64,7 +64,7 @@ import type { IClientConfiguration } from 'cliam';
 
 const config: IClientConfiguration = {
   sandbox: true,
-  variables: {
+  defaults: {
     addresses: {
       from: { name: 'My App', email: 'no-reply@my-website.com' },
       replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
@@ -118,7 +118,7 @@ require('dotenv').config();
 
 module.exports = {
   sandbox: true,
-  variables: {
+  defaults: {
     addresses: {
       from: { name: 'My App', email: 'no-reply@my-website.com' },
       replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
@@ -261,6 +261,15 @@ The same: fallback on a SMTP server or another provider. In two minutes you're r
         <td valign="middle"><a href="https://aws.amazon.com/fr/ses/" target="_blank"><img src="https://cdn.konfer.be/images/cliam/providers/amazon-ses.png" alt="Amazon SES" width="320px" hspace="15" /></a></td>
     </tr>
 </table>
+
+<h2 id="upgrading-to-v3">> Upgrading to v3</h2>
+
+- **ESM only**: the package exposes `import` entry points only. `require('cliam')` no longer works, use `import` or a dynamic `import()`.
+- **Explicit configuration**: `.cliamrc.js` is no longer read at import time. Call `Cliam.configureFromFile()` (or `Cliam.configure(config)`) once before the first `Cliam.mail()`.
+- **`variables` is now `defaults`** in the configuration, and `variables.domain` is gone. Unknown keys are rejected.
+- **`renderEngine` and `templateId` are removed from the payload**: the engine is inferred (`content` given, provider template configured for the event, or built-in template). Passing them is rejected.
+- **`meta.replyTo` is typed as a single recipient**, matching what the validation always expected (v2 typings declared an array).
+- **Selective imports**: providers can be loaded one by one from `cliam/core` + `cliam/providers/*` (see [Selective imports](#selective-imports)).
 
 <h2 id="licence">> Licence</h2>
 

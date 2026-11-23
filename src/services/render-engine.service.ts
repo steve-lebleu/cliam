@@ -1,10 +1,29 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import Color from 'color';
-import * as Hbs from 'hbs';
+// Default import: hbs is CommonJS and exports an instance, whose properties are not visible on a Node.js ESM namespace import.
+import Hbs from 'hbs';
 import { convert } from 'html-to-text';
 
 import { Container } from '@services/container.service';
+
+/**
+ * @description Absolute path of the bundled views (<package root>/src/views).
+ *
+ * The package root is the first parent directory holding a package.json, so the path is the same whether this module
+ * runs from the sources (src/services) or from the build output (dist).
+ */
+const VIEWS_DIR: string = (() => {
+  let dir = dirname(fileURLToPath(import.meta.url));
+
+  while (!existsSync(join(dir, 'package.json')) && dirname(dir) !== dir) {
+    dir = dirname(dir);
+  }
+
+  return join(dir, 'src', 'views');
+})();
 
 /**
  * @description Light render engine embedding on the fly an hbs compilation middleware.
@@ -13,17 +32,17 @@ class RenderEngine {
   /**
    * @description
    */
-  private readonly LAYOUT: string = '/../../src/views/layouts/default.hbs';
+  private readonly LAYOUT: string = join(VIEWS_DIR, 'layouts', 'default.hbs');
 
   /**
    * @description
    */
-  private readonly PARTIALS: string = '/../../src/views/partials';
+  private readonly PARTIALS: string = join(VIEWS_DIR, 'partials');
 
   /**
    * @description
    */
-  private readonly BLOCKS: string = '/../../src/views/blocks';
+  private readonly BLOCKS: string = join(VIEWS_DIR, 'blocks');
 
   /**
    * @description
@@ -109,11 +128,11 @@ class RenderEngine {
 
     const companyData = { ...company, ...colors };
 
-    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(companyData))
-    Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
-    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${__dirname}${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(companyData))
+    Hbs.handlebars.registerPartial('header', Hbs.handlebars.compile( readFileSync(`${this.PARTIALS}/header.hbs`, { encoding: 'utf-8' } ))(companyData))
+    Hbs.handlebars.registerPartial('body', Hbs.handlebars.compile( readFileSync(`${this.BLOCKS}/${this.getSegment(event)}.hbs`, { encoding: 'utf-8' } ))(data))
+    Hbs.handlebars.registerPartial('footer', Hbs.handlebars.compile( readFileSync(`${this.PARTIALS}/footer.hbs`, { encoding: 'utf-8' } ))(companyData))
 
-    const html = Hbs.handlebars.compile( readFileSync(`${__dirname}${this.LAYOUT}`, { encoding: 'utf-8' } ) )({ ...data, ...colors });
+    const html = Hbs.handlebars.compile( readFileSync(this.LAYOUT, { encoding: 'utf-8' } ) )({ ...data, ...colors });
 
     return {
       text: this.textify(html),
