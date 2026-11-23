@@ -64,7 +64,7 @@ import type { IClientConfiguration } from 'cliam';
 
 const config: IClientConfiguration = {
   sandbox: true,
-  variables: {
+  defaults: {
     addresses: {
       from: { name: 'My App', email: 'no-reply@my-website.com' },
       replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
@@ -118,7 +118,7 @@ require('dotenv').config();
 
 module.exports = {
   sandbox: true,
-  variables: {
+  defaults: {
     addresses: {
       from: { name: 'My App', email: 'no-reply@my-website.com' },
       replyTo: { name: 'My App', email: 'no-reply@my-website.com' }
