@@ -1,6 +1,6 @@
 ![Cliam](https://cdn.konfer.be/images/cliam/assets/banner-cliam.png)
 
-[![Node](https://img.shields.io/badge/Node-18.19.0-informational?logo=node.js&color=43853D)](https://nodejs.org/docs/latest-v18.x/api/index.html)
+[![Node](https://img.shields.io/badge/Node-22.0.0-informational?logo=node.js&color=43853D)](https://nodejs.org/docs/latest-v22.x/api/index.html)
 [![Bun](https://img.shields.io/badge/Bun-1.3.11-informational?logo=bun&color=ff73a8)](https://bun.sh/docs/)
 [![TypeScript](https://img.shields.io/badge/Typescript-6.0.3-informational?logo=typescript&color=2F74C0)](https://www.typescriptlang.org/)
 
@@ -41,7 +41,7 @@ To improve and facilitate the implementation, the flexibility and the maintenanc
 
 <h2 id="requirements">> Requirements</h2>
 
-- Node.js >= 18.19.0
+- Node.js >= 22.0.0
 - NPM >= 10.2.3
 
 <h2 id="getting-started">> Getting started</h2>
